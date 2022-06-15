@@ -555,8 +555,8 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertFalse($response['result']['download'], 'Document not downloaded.');
-    $this->assertSame('Download for target es_ES in document dummy-document-hash-id not happening as it is not ready to download.', $response['messages'][0]);
+    $this->assertTrue($response['result']['download'], 'Document downloaded.');
+    $this->assertSame('Document downloaded.', $response['messages'][0]);
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -570,7 +570,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     // Assert the content is imported.
     $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is intermediate.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertIdentical(Lingotek::STATUS_INTERMEDIATE, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -610,7 +610,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the target is intermediate.
-    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_INTERMEDIATE, $config_translation_service->getTargetStatus($entity, 'es'));
   }
 
   /**
@@ -789,7 +789,8 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertFalse($response['result']['download'], 'Spanish language has been downloaded after notification automatically.');
+    $this->assertTrue($response['result']['download'], 'Document downloaded.');
+    $this->assertSame('Document downloaded.', $response['messages'][0]);
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -803,11 +804,11 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     // Assert the content is imported.
     $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is intermediate.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertIdentical(Lingotek::STATUS_INTERMEDIATE, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Assert a translation has been downloaded.
     $this->drupalGet('admin/structure/types/manage/article/translate');
-    $assert_session->linkByHrefNotExists('admin/structure/types/manage/article/translate/es/edit');
+    $assert_session->linkByHrefExists('admin/structure/types/manage/article/translate/es/edit');
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -848,7 +849,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the target is intermediate.
-    $this->assertEquals(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertEquals(Lingotek::STATUS_INTERMEDIATE, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();

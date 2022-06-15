@@ -452,7 +452,9 @@ class LingotekNotificationController extends LingotekControllerBase {
 
         $readyToDownload = is_string($readyToDownload) ? filter_var($readyToDownload, FILTER_VALIDATE_BOOLEAN) :
           (bool) $readyToDownload;
-        if (!$readyToDownload) {
+        // For interim we always want to download, so check that it's a target
+        // callback before preventing it to happen.
+        if (!$readyToDownload && $type === 'target') {
           $messages[] = new FormattableMarkup('Download for target @locale in document @document not happening as it is not ready to download.', [
             '@locale' => $locale,
             '@document' => $document_id,

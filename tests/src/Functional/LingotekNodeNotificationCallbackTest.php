@@ -633,7 +633,8 @@ class LingotekNodeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertTrue($response['result']['download'], 'Spanish language has been downloaded after notification automatically.');
+    $this->assertTrue($response['result']['download'], 'Document downloaded.');
+    $this->assertSame('Document downloaded.', $response['messages'][0]);
 
     $this->goToContentBulkManagementForm();
 
