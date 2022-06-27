@@ -89,9 +89,6 @@ lingotek.settings:
           type: boolean
         always_show_translate_tabs:
           type: boolean
-        delete_tms_documents_upon_disassociation:
-          type: boolean
-          deprecated: "This option is unused since lingotek:8.x-2.14. Will be removed in lingotek:4.0.0"
         show_language_labels:
           type: boolean
         allow_local_editing:
@@ -104,21 +101,8 @@ lingotek.settings:
         append_type_to_title:
           label: 'Global setting to set whether to append content type to title in TMS'
           type: boolean
-        enable_content_cloud:
-          type: boolean
-          deprecated: "This option is unused since lingotek:8.x-2.21. Will be removed in lingotek:4.0.0"
         enable_download_source:
           type: boolean
-        enable_download_interim:
-          label: 'Allow to download interim translations (translations that are pending some phases)'
-          type: boolean
-          deprecated: "This option is unused since lingotek:3.8.0. Will be removed in lingotek:4.0.0"
-        content_cloud_import_format:
-          type: string
-          deprecated: "This option is unused since lingotek:8.x-2.21. Will be removed in lingotek:4.0.0"
-        content_cloud_import_status:
-          type: integer
-          deprecated: "This option is unused since lingotek:8.x-2.21. Will be removed in lingotek:4.0.0"
         split_download_all:
           label: 'Use a different batch per locale when downloading all translations'
           type: boolean
@@ -226,14 +210,6 @@ lingotek.settings:
       label: 'Account'
       deprecated: "Account settings are stored in lingotek.account config object since lingotek:4.0.0. Will be removed from schema in lingotek:5.0.0"
       mapping:
-        use_production:
-          type: boolean
-          label: 'Use production'
-          deprecated: "account.use_production lingotek setting is unused since lingotek:3.5.0. Will be removed in lingotek:4.0.0"
-        sandbox_host:
-          type: string
-          label: 'Sandbox Host'
-          deprecated: "account.sandbox_host property lingotek setting is unused since lingotek:8.x-2.6. Will be removed in lingotek:4.0.0"
         host:
           type: string
           label: 'Lingotek Host'

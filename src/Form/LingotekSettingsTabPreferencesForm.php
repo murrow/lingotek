@@ -131,13 +131,6 @@ class LingotekSettingsTabPreferencesForm extends LingotekConfigFormBase {
       '#default_value' => $lingotek_config->getPreference('target_download_status') ?: 'same-as-source',
     ];
 
-    $form['prefs']['enable_content_cloud'] = [
-      '#type' => 'checkbox',
-      '#title' => t('Enable importing from Lingotek Content Cloud (beta)'),
-      '#description' => t("Allows the importing of documents that are in your TMS. An 'Import' tab will appear next to the 'Settings' tab. <br> Note: The settings could take longer to save if this setting is changed."),
-      '#default_value' => $lingotek_config->getPreference('enable_content_cloud', FALSE),
-    ];
-
     $form['prefs']['enable_download_source'] = [
       '#type' => 'checkbox',
       '#title' => t('Download source if content is missing'),

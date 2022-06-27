@@ -8,7 +8,6 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Routing\UrlGeneratorInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\workflows\WorkflowInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -137,60 +136,6 @@ class LingotekContentModerationSettingsForm implements LingotekModerationSetting
   }
 
   /**
-   * Get workflow states helper method.
-   *
-   * @param \Drupal\workflows\WorkflowInterface $workflow
-   *   The workflow.
-   *
-   * @return \Drupal\workflows\StateInterface[]
-   *   The states.
-   *
-   * @deprecated in lingotek:3.0.0 and is removed from lingotek:4.0.0.
-   *   Use $workflow->getTypePlugin()->getStates() instead.
-   * @see \Drupal\workflows\WorkflowTypeInterface::getStates()
-   */
-  protected  function getWorkflowStates(WorkflowInterface $workflow) {
-    return $workflow->getTypePlugin()->getStates();
-  }
-
-  /**
-   * Get workflow transitions helper method.
-   *
-   * @param \Drupal\workflows\WorkflowInterface $workflow
-   *   The workflow.
-   *
-   * @return \Drupal\workflows\TransitionInterface[]
-   *   An array of transition objects.
-   *
-   * @deprecated in lingotek:3.0.0 and is removed from lingotek:4.0.0.
-   *   Use $workflow->getTypePlugin()->getTransitions() instead.
-   * @see \Drupal\workflows\WorkflowTypeInterface::getTransitions()
-   */
-  protected  function getWorkflowTransitions(WorkflowInterface $workflow) {
-    return $workflow->getTypePlugin()->getTransitions();
-  }
-
-  /**
-   * Get workflow transitions for a given state helper method.
-   *
-   * @param \Drupal\workflows\WorkflowInterface $workflow
-   *   The workflow.
-   *
-   * @param string $state
-   *   State id.
-   *
-   * @return \Drupal\workflows\TransitionInterface[]
-   *   An array of transition objects.
-   *
-   * @deprecated in lingotek:3.0.0 and is removed from lingotek:4.0.0.
-   *   Use $workflow->getTypePlugin()->getTransitionsForState($state) instead.
-   * @see \Drupal\workflows\WorkflowTypeInterface::getTransitionsForState()
-   */
-  protected  function getWorkflowTransitionsForState(WorkflowInterface $workflow, $state) {
-    return $workflow->getTypePlugin()->getTransitionsForState($state);
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function getDefaultModerationUploadStatus($entity_type_id, $bundle) {
@@ -291,26 +236,6 @@ class LingotekContentModerationSettingsForm implements LingotekModerationSetting
       $this->moderationConfiguration->setUploadStatus($entity_type_id, $bundle, $upload_status);
       $this->moderationConfiguration->setDownloadTransition($entity_type_id, $bundle, $download_transition);
     }
-  }
-
-  /**
-   * Get configure link for content moderation.
-   *
-   * @param string $bundle
-   *   The bundle id.
-   * @param string $bundle_type_id
-   *   The bundle type id.
-   *
-   * @return \Drupal\Core\GeneratedUrl|string
-   *   An url.
-   *
-   * @deprecated in lingotek:3.0.0 and is removed from lingotek:4.0.0.
-   *   Use $this->urlGenerator->generateFromRoute("entity.workflow.collection")
-   *   instead.
-   * @see \Drupal\workflows\Entity\Workflow
-   */
-  protected function getContentModerationConfigurationLink($bundle, $bundle_type_id) {
-    return $this->urlGenerator->generateFromRoute("entity.workflow.collection");
   }
 
 }

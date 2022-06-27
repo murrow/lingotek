@@ -4,7 +4,6 @@ namespace Drupal\lingotek\Form;
 
 use Drupal\content_translation\ContentTranslationManagerInterface;
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Entity\ContentEntityType;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -145,34 +144,6 @@ class LingotekManagementRelatedEntitiesForm extends LingotekManagementFormBase {
    */
   public function getFormId() {
     return 'lingotek_entity_management';
-  }
-
-  /**
-   * @deprecated in lingotek:3.1.0 and is removed from lingotek:4.0.0.
-   *
-   * @see \Drupal\lingotek\RelatedEntities\RelatedEntitiesDetectorInterface
-   */
-  public function calculateNestedEntities(ContentEntityInterface &$entity, &$visited = [], &$entities = []) {
-    $visited[$entity->bundle()][] = $entity->id();
-    $entities[$entity->getEntityTypeId()][] = $entity;
-    $field_definitions = $this->entityFieldManager->getFieldDefinitions($entity->getEntityTypeId(), $entity->bundle());
-    foreach ($field_definitions as $k => $definition) {
-      $field_type = $field_definitions[$k]->getType();
-      if ($field_type === 'entity_reference' || $field_type === 'er_viewmode' || $field_type === 'entity_reference_revisions' || $field_type === 'cohesion_entity_reference_revisions') {
-        $target_entity_type_id = $field_definitions[$k]->getFieldStorageDefinition()
-          ->getSetting('target_type');
-        $target_entity_type = $this->entityTypeManager->getDefinition($target_entity_type_id);
-        if ($target_entity_type instanceof ContentEntityType) {
-          foreach ($entity->{$k} as $field_item) {
-            if (!isset($entities[$target_entity_type_id])) {
-              $entities[$target_entity_type_id] = [];
-            }
-            $entities[$target_entity_type_id][] = $field_item->target_id;
-          }
-        }
-      }
-    }
-    return $entities;
   }
 
   protected function getFilteredEntities() {

@@ -97,15 +97,11 @@ class Lingotek implements LingotekInterface {
    * @param LingotekFilterManagerInterface $lingotek_filter_manager
    *   The Lingotek Filter manager.
    */
-  public function __construct(LingotekApiInterface $api, LanguageLocaleMapperInterface $language_locale_mapper, ConfigFactoryInterface $config_factory, LingotekFilterManagerInterface $lingotek_filter_manager, LingotekConfigurationServiceInterface $lingotek_configuration = NULL) {
+  public function __construct(LingotekApiInterface $api, LanguageLocaleMapperInterface $language_locale_mapper, ConfigFactoryInterface $config_factory, LingotekFilterManagerInterface $lingotek_filter_manager, LingotekConfigurationServiceInterface $lingotek_configuration) {
     $this->api = $api;
     $this->languageLocaleMapper = $language_locale_mapper;
     $this->configFactory = $config_factory;
     $this->lingotekFilterManager = $lingotek_filter_manager;
-    if (!$lingotek_configuration) {
-      @trigger_error('The lingotek.configuration service must be passed to Lingotek::__construct, it is included in lingotek:3.1.0 and required for lingotek:4.0.0.', E_USER_DEPRECATED);
-      $lingotek_configuration = \Drupal::service('lingotek.configuration');
-    }
     $this->lingotekConfiguration = $lingotek_configuration;
   }
 
@@ -785,11 +781,6 @@ class Lingotek implements LingotekInterface {
               $readyToDownload = is_string($data['properties']['ready_to_download']) ?
                 filter_var($data['properties']['ready_to_download'], FILTER_VALIDATE_BOOLEAN) :
                 (bool) $data['properties']['ready_to_download'];
-            }
-            // We need this for compatibility before this flag existed.
-            // TODO: Remove the else after 4.0.0 is released.
-            else {
-              $readyToDownload = $progress === self::PROGRESS_COMPLETE;
             }
             if ($data['properties']['status'] === Lingotek::STATUS_CANCELLED) {
               $progress = $data['properties']['status'];

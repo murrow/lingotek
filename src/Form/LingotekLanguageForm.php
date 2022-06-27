@@ -52,13 +52,9 @@ class LingotekLanguageForm {
    * @param \Drupal\lingotek\LingotekConfigurationServiceInterface $lingotek_configuration
    *   The Lingotek configuration service.
    */
-  public function __construct(LingotekInterface $lingotek, LanguageLocaleMapperInterface $language_locale_mapper, LingotekConfigurationServiceInterface $lingotek_configuration = NULL) {
+  public function __construct(LingotekInterface $lingotek, LanguageLocaleMapperInterface $language_locale_mapper, LingotekConfigurationServiceInterface $lingotek_configuration) {
     $this->lingotek = $lingotek;
     $this->languageLocaleMapper = $language_locale_mapper;
-    if (!$lingotek_configuration) {
-      @trigger_error('The lingotek.configuration service must be passed to LingotekLanguageForm::__construct, it is required before Lingotek 4.0.0.', E_USER_DEPRECATED);
-      $lingotek_configuration = \Drupal::service('lingotek.configuration');
-    }
     $this->lingotekConfiguration = $lingotek_configuration;
   }
 

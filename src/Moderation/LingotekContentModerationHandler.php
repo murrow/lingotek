@@ -7,7 +7,6 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\workflows\WorkflowInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -127,25 +126,6 @@ class LingotekContentModerationHandler implements LingotekModerationHandlerInter
         }
       }
     }
-  }
-
-  /**
-   * Get workflow transition helper method.
-   *
-   * @param \Drupal\workflows\WorkflowInterface $workflow
-   *   The workflow.
-   * @param $transition_id
-   *   The transition id.
-   *
-   * @return \Drupal\workflows\TransitionInterface
-   *   A transition.
-   *
-   * @deprecated in lingotek:3.0.0 and is removed from lingotek:4.0.0.
-   *   Use $workflow->getTypePlugin()->getTransition($transition_id) instead.
-   * @see \Drupal\workflows\WorkflowTypeInterface::getTransition()
-   */
-  protected function getWorkflowTransition(WorkflowInterface $workflow, $transition_id) {
-    return $workflow->getTypePlugin()->getTransition($transition_id);
   }
 
   /**

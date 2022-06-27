@@ -61,17 +61,9 @@ class LingotekEntityController extends LingotekControllerBase {
    * @param \Drupal\Core\Entity\EntityTypeBundleInfoInterface $entity_type_bundle_info
    *   The entity type bundle info.
    */
-  public function __construct(Request $request, ConfigFactoryInterface $config_factory, LingotekInterface $lingotek, LanguageLocaleMapperInterface $language_locale_mapper, FormBuilderInterface $form_builder, LoggerInterface $logger, LingotekConfigurationServiceInterface $lingotek_configuration = NULL, EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL) {
+  public function __construct(Request $request, ConfigFactoryInterface $config_factory, LingotekInterface $lingotek, LanguageLocaleMapperInterface $language_locale_mapper, FormBuilderInterface $form_builder, LoggerInterface $logger, LingotekConfigurationServiceInterface $lingotek_configuration, EntityTypeBundleInfoInterface $entity_type_bundle_info) {
     parent::__construct($request, $config_factory, $lingotek, $language_locale_mapper, $form_builder, $logger);
-    if (!$lingotek_configuration) {
-      @trigger_error('The lingotek.configuration service must be passed to LingotekEntityController::__construct, it is included in lingotek:3.2.0 and required for lingotek:4.0.0.', E_USER_DEPRECATED);
-      $lingotek_configuration = \Drupal::service('lingotek.configuration');
-    }
     $this->lingotekConfiguration = $lingotek_configuration;
-    if (!$entity_type_bundle_info) {
-      @trigger_error('The entity_type.bundle.info service must be passed to LingotekEntityController::__construct, it is included in lingotek:3.2.0 and required for lingotek:4.0.0.', E_USER_DEPRECATED);
-      $entity_type_bundle_info = \Drupal::service('entity_type.bundle.info');
-    }
     $this->entityTypeBundleInfo = $entity_type_bundle_info;
   }
 

@@ -80,15 +80,11 @@ class LingotekNotificationController extends LingotekControllerBase {
    * @param \Drupal\lingotek\LingotekInterfaceTranslationServiceInterface $interface_translation_service
    *   The Lingotek interface translation service.
    */
-  public function __construct(Request $request, ConfigFactoryInterface $config_factory, LingotekInterface $lingotek, LanguageLocaleMapperInterface $language_locale_mapper, FormBuilderInterface $form_builder, LoggerInterface $logger, LingotekConfigurationServiceInterface $lingotek_configuration, LingotekContentTranslationServiceInterface $content_translation_service, LingotekConfigTranslationServiceInterface $config_translation_service, LingotekInterfaceTranslationServiceInterface $interface_translation_service = NULL) {
+  public function __construct(Request $request, ConfigFactoryInterface $config_factory, LingotekInterface $lingotek, LanguageLocaleMapperInterface $language_locale_mapper, FormBuilderInterface $form_builder, LoggerInterface $logger, LingotekConfigurationServiceInterface $lingotek_configuration, LingotekContentTranslationServiceInterface $content_translation_service, LingotekConfigTranslationServiceInterface $config_translation_service, LingotekInterfaceTranslationServiceInterface $interface_translation_service) {
     parent::__construct($request, $config_factory, $lingotek, $language_locale_mapper, $form_builder, $logger);
     $this->lingotekConfiguration = $lingotek_configuration;
     $this->lingotekContentTranslation = $content_translation_service;
     $this->lingotekConfigTranslation = $config_translation_service;
-    if (!$interface_translation_service) {
-      @trigger_error('The lingotek.interface_translation service must be passed to LingotekNotificationController::__construct, it is included in lingotek:3.2.0 and required for lingotek:4.0.0.', E_USER_DEPRECATED);
-      $interface_translation_service = \Drupal::service('lingotek.interface_translation');
-    }
     $this->lingotekInterfaceTranslation = $interface_translation_service;
   }
 

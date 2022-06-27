@@ -9,7 +9,6 @@ use Drupal\Component\Utility\SortArray;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\ContentEntityTypeInterface;
-use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\EntityStorageException;
@@ -226,14 +225,6 @@ class LingotekContentTranslationService implements LingotekContentTranslationSer
       else {
         // Document still may be importing and the MAX import time didn't
         // complete yet, so we do nothing.
-      }
-      // TODO: Remove the elseif clause after 4.0.0 is released
-    }
-    elseif ($entity->getEntityType()->entityClassImplements(EntityChangedInterface::class)) {
-      $last_uploaded_time = $entity->getChangedTime();
-      if (\Drupal::time()->getRequestTime() - $last_uploaded_time > $maxImportTime) {
-        $timedOut = TRUE;
-        $this->setSourceStatus($entity, Lingotek::STATUS_ERROR);
       }
     }
     return $timedOut;

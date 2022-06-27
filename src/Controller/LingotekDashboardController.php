@@ -69,20 +69,12 @@ class LingotekDashboardController extends LingotekControllerBase {
    * @param \Drupal\Core\Session\AccountInterface $current_user
    *   The current user.
    */
-  public function __construct(Request $request, ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, LanguageManagerInterface $language_manager, LingotekInterface $lingotek, LanguageLocaleMapperInterface $language_locale_mapper, LingotekConfigurationServiceInterface $lingotek_configuration, FormBuilderInterface $form_builder, LoggerInterface $logger, UrlGeneratorInterface $url_generator = NULL, AccountInterface $current_user = NULL) {
+  public function __construct(Request $request, ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager, LanguageManagerInterface $language_manager, LingotekInterface $lingotek, LanguageLocaleMapperInterface $language_locale_mapper, LingotekConfigurationServiceInterface $lingotek_configuration, FormBuilderInterface $form_builder, LoggerInterface $logger, UrlGeneratorInterface $url_generator, AccountInterface $current_user) {
     parent::__construct($request, $config_factory, $lingotek, $language_locale_mapper, $form_builder, $logger);
     $this->entityTypeManager = $entity_type_manager;
     $this->languageManager = $language_manager;
     $this->lingotek_configuration = $lingotek_configuration;
-    if (!$url_generator) {
-      @trigger_error('The url_generator service must be passed to LingotekDashboardController::__construct, it is included in lingotek:3.0.0 and required for lingotek:4.0.0.', E_USER_DEPRECATED);
-      $url_generator = \Drupal::service('url_generator');
-    }
     $this->urlGenerator = $url_generator;
-    if (!$current_user) {
-      @trigger_error('The current_user service must be passed to LingotekDashboardController::__construct, it is included in lingotek:3.4.0 and required for lingotek:4.0.0.', E_USER_DEPRECATED);
-      $current_user = \Drupal::service('current_user');
-    }
     $this->currentUser = $current_user;
   }
 

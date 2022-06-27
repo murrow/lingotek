@@ -413,24 +413,6 @@ abstract class LingotekTestBase extends BrowserTestBase {
   }
 
   /**
-   * Assert that there is a link to the workbench in a new tab.
-   *
-   * @param string $document_id
-   *   The document id.
-   * @param string $langcode
-   *   The language code.
-   * @param string $locale
-   *   The Lingotek locale.
-   *
-   * @deprecated in lingotek:3.0.0 and is removed from lingotek:4.0.0.
-   *   Use ::assertLingotekWorkbenchLink() instead.
-   * @see ::assertLingotekWorkbenchLink()
-   */
-  protected function assertLinkToWorkbenchInNewTabInSinglePage($document_id, $langcode, $locale) {
-    $this->assertLingotekWorkbenchLink($locale, $document_id);
-  }
-
-  /**
    * Assert that a content target has the given status.
    *
    * @param string $language
