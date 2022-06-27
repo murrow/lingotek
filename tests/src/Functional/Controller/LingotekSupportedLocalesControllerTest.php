@@ -16,9 +16,9 @@ class LingotekSupportedLocalesControllerTest extends LingotekTestBase {
    */
   public function testSupportedLocales() {
     $this->drupalGet('/admin/lingotek/supported-locales');
-    $this->assertText('German (Austria)');
-    $this->assertText('German (Germany)');
-    $this->assertText('Spanish (Spain)');
+    $this->assertSession()->pageTextContains('German (Austria)');
+    $this->assertSession()->pageTextContains('German (Germany)');
+    $this->assertSession()->pageTextContains('Spanish (Spain)');
   }
 
 }

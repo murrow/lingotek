@@ -67,10 +67,10 @@ class LingotekTranslationStatusesFormatterTest extends LingotekTestBase {
     $this->assertSession()->responseNotContains('Lingotek translation status');
 
     $link = $this->xpath("//a[@href='$basepath/admin/lingotek/entity/add_target/dummy-document-hash-id/de_DE?destination=" . $basepath . "/metadata/1' and @class='language-icon target-request' and @title='German - Request translation' and text()='DE']");
-    $this->assertEqual(count($link), 1, 'Link exists.');
+    $this->assertEquals(count($link), 1, 'Link exists.');
 
     $link = $this->xpath("//a[@href='$basepath/admin/lingotek/entity/add_target/dummy-document-hash-id/es_MX?destination=" . $basepath . "/metadata/1' and @class='language-icon target-request' and @title='Spanish - Request translation' and text()='ES']");
-    $this->assertEqual(count($link), 1, 'Link exists.');
+    $this->assertEquals(count($link), 1, 'Link exists.');
   }
 
   public function testStatusForMissingLanguage() {
@@ -94,10 +94,10 @@ class LingotekTranslationStatusesFormatterTest extends LingotekTestBase {
     $this->assertSession()->responseNotContains('Lingotek translation status');
 
     $link = $this->xpath("//a[@href='$basepath/admin/lingotek/entity/add_target/dummy-document-hash-id/de_DE?destination=" . $basepath . "/metadata/1' and @class='language-icon target-request' and @title='German - Request translation' and text()='DE']");
-    $this->assertEqual(count($link), 1, 'Link exists.');
+    $this->assertEquals(count($link), 1, 'Link exists.');
 
     $link = $this->xpath("//a[@href='$basepath/admin/lingotek/entity/add_target/dummy-document-hash-id/es_MX?destination=" . $basepath . "/metadata/1' and @class='language-icon target-request' and @title='Spanish - Request translation' and text()='ES']");
-    $this->assertEqual(count($link), 1, 'Link exists.');
+    $this->assertEquals(count($link), 1, 'Link exists.');
   }
 
 }

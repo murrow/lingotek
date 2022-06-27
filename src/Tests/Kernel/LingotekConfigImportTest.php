@@ -70,7 +70,7 @@ class LingotekConfigImportTest extends KernelTestBase {
     \Drupal::service('content_translation.manager')->setEnabled($entity_type_id, $entity_type_id, TRUE);
 
     // Verify the configuration to create does not exist yet.
-    $this->assertIdentical($storage->exists($config_name), FALSE, $config_name . ' not found.');
+    $this->assertSame($storage->exists($config_name), FALSE, $config_name . ' not found.');
 
     // Create new config entity for content language translation.
     $data = [
@@ -109,18 +109,18 @@ class LingotekConfigImportTest extends KernelTestBase {
       ],
     ];
     $sync->write($config_name, $data);
-    $this->assertIdentical($sync->exists($config_name), TRUE, $config_name . ' found.');
+    $this->assertSame($sync->exists($config_name), TRUE, $config_name . ' found.');
 
     // Import.
     $this->configImporter()->import();
 
     // Verify the values appeared.
     $config = $this->config($config_name);
-    $this->assertIdentical($config->get('translate.entity.entity_test_mul.entity_test_mul.field.field_test_text'), TRUE);
+    $this->assertSame($config->get('translate.entity.entity_test_mul.entity_test_mul.field.field_test_text'), TRUE);
 
     /** @var \Drupal\lingotek\LingotekConfigurationServiceInterface $lingotek_config */
     $lingotek_config = \Drupal::service('lingotek.configuration');
-    $this->assertIdentical($lingotek_config->isEnabled($entity_type_id), TRUE);
+    $this->assertSame($lingotek_config->isEnabled($entity_type_id), TRUE);
   }
 
 }

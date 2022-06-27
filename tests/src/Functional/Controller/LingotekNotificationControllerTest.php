@@ -81,7 +81,7 @@ class LingotekNotificationControllerTest extends LingotekTestBase {
     $content_translation_service = \Drupal::service('lingotek.content_translation');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $content_translation_service->getSourceStatus($node));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $content_translation_service->getSourceStatus($node));
 
     $this->goToContentBulkManagementForm();
 
@@ -107,7 +107,7 @@ class LingotekNotificationControllerTest extends LingotekTestBase {
 
     $response = json_decode($request->getBody(), TRUE);
     $this->verbose($request);
-    $this->assertIdentical(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
+    $this->assertSame(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
 
     // Simulate again the notification of content successfully uploaded.
     $request = $this->client->get($url, [
@@ -122,7 +122,7 @@ class LingotekNotificationControllerTest extends LingotekTestBase {
 
     $response = json_decode($request->getBody(), TRUE);
     $this->verbose($request);
-    $this->assertIdentical(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
+    $this->assertSame(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
   }
 
   /**
@@ -147,7 +147,7 @@ class LingotekNotificationControllerTest extends LingotekTestBase {
     $this->assertStringContainsString('max-age=0', $cache_control_header[0]);
 
     $response = (string) $request->getBody();
-    $this->assertIdentical($response, 'It works, but nothing to look here.');
+    $this->assertSame($response, 'It works, but nothing to look here.');
 
     // Simulate again the notification of content successfully uploaded.
     $request = $this->client->get($url, [
@@ -161,7 +161,7 @@ class LingotekNotificationControllerTest extends LingotekTestBase {
     $this->assertStringContainsString('max-age=0', $cache_control_header[0]);
 
     $response = (string) $request->getBody();
-    $this->assertIdentical($response, 'It works, but nothing to look here.');
+    $this->assertSame($response, 'It works, but nothing to look here.');
   }
 
 }

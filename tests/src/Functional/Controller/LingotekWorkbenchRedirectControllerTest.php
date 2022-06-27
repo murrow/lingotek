@@ -76,15 +76,15 @@ class LingotekWorkbenchRedirectControllerTest extends LingotekTestBase {
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('EN');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $this->clickLink('ES');
-    $this->assertText("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
 
     // Check translation status.
     $this->clickLink('ES');
-    $this->assertText('The es_AR translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Llamas are cool is ready for download.');
 
     // Download the Spanish translation.
     $this->assertLingotekDownloadTargetLink('es_AR');
@@ -97,7 +97,7 @@ class LingotekWorkbenchRedirectControllerTest extends LingotekTestBase {
     $this->clickLink('ES');
 
     $basepath = \Drupal::request()->getSchemeAndHttpHost();
-    $this->assertUrl($basepath . '/workbench/document/dummy-document-hash-id/locale/es_AR');
+    $this->assertSession()->addressEquals($basepath . '/workbench/document/dummy-document-hash-id/locale/es_AR');
   }
 
 }
