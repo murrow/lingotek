@@ -1,0 +1,6 @@
+name: Lingotek Secondary Actions Test Helper
+type: module
+package: Testing
+
+dependencies:
+  - lingotek:lingotek

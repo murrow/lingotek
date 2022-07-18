@@ -1,0 +1,5 @@
+services:
+  lingotek_secondary_actions_test.target_secondary_actions:
+    class: Drupal\lingotek_secondary_actions_test\Subscriber\LingotekTargetSecondaryActionsSubscriber
+    tags:
+      - { name: event_subscriber }

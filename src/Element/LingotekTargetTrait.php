@@ -5,6 +5,7 @@ namespace Drupal\lingotek\Element;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Url;
 use Drupal\language\Entity\ConfigurableLanguage;
+use Drupal\lingotek\Event\TargetSecondaryActionsEvent;
 use Drupal\lingotek\Lingotek;
 
 /**
@@ -98,7 +99,7 @@ trait LingotekTargetTrait {
     $actions = [];
     if ($document_id) {
       if (in_array($target_status, [Lingotek::STATUS_REQUEST, Lingotek::STATUS_DELETED])) {
-        $actions[] = [
+        $actions['request'] = [
           'title' => $this->t('Request translation'),
           'url' => Url::fromRoute('lingotek.entity.request_translation', [
             'doc_id' => $document_id,
@@ -107,7 +108,7 @@ trait LingotekTargetTrait {
         ];
       }
       if ($target_status == Lingotek::STATUS_PENDING) {
-        $actions[] = [
+        $actions['check_translation'] = [
           'title' => $this->t('Check translation status'),
           'url' => Url::fromRoute('lingotek.entity.check_target',
             [
@@ -117,7 +118,7 @@ trait LingotekTargetTrait {
             ['query' => $this->getDestinationWithQueryArray()]),
           'new_window' => FALSE,
         ];
-        $actions[] = [
+        $actions['workbench'] = [
           'title' => $this->t('Open in Lingotek Workbench'),
           'url' => Url::fromRoute('lingotek.workbench', [
             'doc_id' => $document_id,
@@ -127,7 +128,7 @@ trait LingotekTargetTrait {
         ];
       }
       if ($target_status == Lingotek::STATUS_READY) {
-        $actions[] = [
+        $actions['download'] = [
           'title' => $this->t('Download translation'),
           'url' => Url::fromRoute('lingotek.entity.download',
             [
@@ -137,7 +138,7 @@ trait LingotekTargetTrait {
             ['query' => $this->getDestinationWithQueryArray()]),
           'new_window' => FALSE,
         ];
-        $actions[] = [
+        $actions['workbench'] = [
           'title' => $this->t('Open in Lingotek Workbench'),
           'url' => Url::fromRoute('lingotek.workbench', [
             'doc_id' => $document_id,
@@ -148,7 +149,7 @@ trait LingotekTargetTrait {
         // TODO add url for disassociate.
       }
       if ($target_status == Lingotek::STATUS_ERROR) {
-        $actions[] = [
+        $actions['request'] = [
           'title' => $this->t('Retry request'),
           'url' => Url::fromRoute('lingotek.entity.request_translation',
             [
@@ -158,7 +159,7 @@ trait LingotekTargetTrait {
             ['query' => $this->getDestinationWithQueryArray()]),
           'new_window' => FALSE,
         ];
-        $actions[] = [
+        $actions['download'] = [
           'title' => $this->t('Retry download'),
           'url' => Url::fromRoute('lingotek.entity.download',
             [
@@ -172,13 +173,13 @@ trait LingotekTargetTrait {
       }
       if ($target_status == Lingotek::STATUS_CURRENT) {
         if ($entity->hasLinkTemplate('canonical') && $entity->hasTranslation($langcode)) {
-          $actions[] = [
+          $actions['view'] = [
             'title' => $this->t('View translation'),
             'url' => $entity->getTranslation($langcode)->toUrl(),
             'new_window' => FALSE,
           ];
         }
-        $actions[] = [
+        $actions['workbench'] = [
           'title' => $this->t('Open in Lingotek Workbench'),
           'url' => Url::fromRoute('lingotek.workbench', [
             'doc_id' => $document_id,
@@ -195,7 +196,7 @@ trait LingotekTargetTrait {
             'new_window' => FALSE,
           ];
         }
-        $actions[] = [
+        $actions['workbench'] = [
           'title' => $this->t('Open in Lingotek Workbench'),
           'url' => Url::fromRoute('lingotek.workbench', [
             'doc_id' => $document_id,
@@ -206,13 +207,13 @@ trait LingotekTargetTrait {
       }
       if ($target_status == Lingotek::STATUS_EDITED) {
         if ($entity->hasLinkTemplate('canonical') && $entity->hasTranslation($langcode)) {
-          $actions[] = [
+          $actions['view'] = [
             'title' => $this->t('View translation'),
             'url' => $entity->getTranslation($langcode)->toUrl(),
             'new_window' => FALSE,
           ];
         }
-        $actions[] = [
+        $actions['workbench'] = [
           'title' => $this->t('Open in Lingotek Workbench'),
           'url' => Url::fromRoute('lingotek.workbench', [
             'doc_id' => $document_id,
@@ -224,14 +225,14 @@ trait LingotekTargetTrait {
     }
     if (in_array($target_status, [Lingotek::STATUS_UNTRACKED, Lingotek::STATUS_ARCHIVED])) {
       if ($entity->hasLinkTemplate('canonical') && $entity->hasTranslation($langcode)) {
-        $actions[] = [
+        $actions['view'] = [
           'title' => $this->t('View translation'),
           'url' => $entity->getTranslation($langcode)->toUrl(),
           'new_window' => FALSE,
         ];
       }
       if ($document_id) {
-        $actions[] = [
+        $actions['request'] = [
           'title' => $this->t('Request translation'),
           'url' => Url::fromRoute('lingotek.entity.request_translation',
             [
@@ -248,14 +249,20 @@ trait LingotekTargetTrait {
       $delete_url = $entity->access('delete') ? $entity->getTranslation($langcode)->toUrl('delete-form') :
         Url::fromRoute("entity.$entity_type_id.content_translation_delete", [$entity_type_id => $entity->id(), 'language' => $langcode]);
       $delete_url->setOption('query', $this->getDestinationWithQueryArray());
-      $actions[] = [
+      $actions['delete'] = [
         'title' => $this->t('Delete translation'),
         'url' => $delete_url,
         'new_window' => FALSE,
       ];
     }
 
-    return $actions;
+    $event = new TargetSecondaryActionsEvent($entity, $target_status, $langcode, $actions);
+
+    // Get the event_dispatcher service and dispatch the event.
+    $event_dispatcher = \Drupal::service('event_dispatcher');
+    $event_dispatcher->dispatch($event, TargetSecondaryActionsEvent::EVENT_NAME);
+
+    return $event->getActions();
   }
 
   /**
