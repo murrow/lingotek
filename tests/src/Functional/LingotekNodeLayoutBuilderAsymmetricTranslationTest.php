@@ -28,6 +28,7 @@ class LingotekNodeLayoutBuilderAsymmetricTranslationTest extends LingotekTestBas
     'node',
     'layout_builder',
     'layout_builder_at',
+    'field_ui',
   ];
 
   /**

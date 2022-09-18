@@ -28,6 +28,7 @@ class LingotekNodeLayoutBuilderSymmetricTranslationTest extends LingotekTestBase
     'node',
     'layout_builder',
     'layout_builder_st',
+    'field_ui',
   ];
 
   /**
