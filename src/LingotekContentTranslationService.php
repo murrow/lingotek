@@ -1404,6 +1404,9 @@ class LingotekContentTranslationService implements LingotekContentTranslationSer
           $published_value = ($published_setting === 'published') ? NodeInterface::PUBLISHED : NodeInterface::NOT_PUBLISHED;
           $translation->set($published_field, $published_value);
         }
+        if ($entity->getEntityTypeId() === 'paragraph') {
+          $translation->set($published_field, $revision->get($revision->getEntityType()->getKey('published'))->value);
+        }
       }
 
       // If there is any content moderation module is enabled, we may need to
