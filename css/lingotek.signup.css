@@ -5,7 +5,6 @@
     content: "";
     background-size: 40%;
     background-repeat: no-repeat;
-    background-image: url("../images/ltk-badge-orng-gry60x60.svg");
     background-position: 0px;
     opacity: 0.25;
     top: 0;
@@ -68,7 +67,7 @@
     }
 
     .lingotek_signup_box .lingotek_signup_box_cta.lingotek_signup_box_main_cta {
-        background-color: #F47920;
+        background-color: #2EAEEF;
         color: white;
         font-weight: bold;
     }
@@ -179,7 +178,7 @@
 }
 
 .lingotek_signup_box .lingotek_signup_box_cta.lingotek_signup_box_main_cta {
-    background-color: #F47920;
+    background-color: #2EAEEF;
     color: white;
     font-weight: normal;
 
