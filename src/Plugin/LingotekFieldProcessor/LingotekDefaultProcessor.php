@@ -146,6 +146,16 @@ class LingotekDefaultProcessor extends PluginBase implements LingotekFieldProces
         elseif ($translation->get($field_name)) {
           $translation->get($field_name)->appendItem()->set($property, html_entity_decode($property_data));
         }
+
+        // Set properties to original value if not handled by Lingotek
+        // (e.g. long_text format).
+        if ($original_item = $translation->getUntranslated()->get($field_name)->offsetGet($delta)) {
+          $original_value = $original_item->getValue();
+          $missing_properties = array_diff(array_keys($original_value), array_keys($delta_data));
+          foreach ($missing_properties as $missing_property) {
+            $translation->get($field_name)->offsetGet($delta)->set($missing_property, $original_value[$missing_property]);
+          }
+        }
       }
     }
 

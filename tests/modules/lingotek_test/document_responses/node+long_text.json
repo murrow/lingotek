@@ -1,0 +1,17 @@
+{
+    "title": [
+      {
+        "value": "Las llamas son chulas"
+      }
+    ],
+    "body": [
+      {
+        "value": "Las llamas son muy chulas"
+      }
+    ],
+    "long_text": [
+      {
+        "value": "<p class='text-align-center'><span class='thsplay-1'><span class='text-white'>Hello test text!</span> </span></p>"
+      }
+    ]
+}
