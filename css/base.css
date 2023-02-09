@@ -9,11 +9,11 @@
  * @see lingotek.icons.css
  */
 .toolbar-icon-translation:before {
-  background-image: url("/modules/lingotek/images/straker-b&w.png");
+  background-image: url("/modules/lingotek/images/ray-bw.png");
 }
 .toolbar-icon-translation:active:before,
 .toolbar-icon-translation.active:before {
-  background-image: url("/modules/lingotek/images/straker-b&w.png");
+  background-image: url("/modules/lingotek/images/ray-bw.png");
 }
 
 .language-icon {
