@@ -95,13 +95,15 @@ class LingotekSourceStatus extends RenderElement {
 
   protected function getSecondarySourceActionUrls(ContentEntityInterface &$entity, $source_status, $language) {
     $actions = [];
-    $langcode = $language->getId();
-    if ($entity->hasLinkTemplate('canonical') && $entity->hasTranslation($langcode)) {
-      $actions[] = [
-        'title' => $this->t('View'),
-        'url' => $entity->getTranslation($langcode)->toUrl(),
-        'new_window' => FALSE,
-      ];
+    if ($language != null) {
+      $langcode = $language->getId();
+      if ($entity->hasLinkTemplate('canonical') && $entity->hasTranslation($langcode)) {
+        $actions[] = [
+          'title' => $this->t('View'),
+          'url' => $entity->getTranslation($langcode)->toUrl(),
+          'new_window' => FALSE,
+        ];
+      }
     }
     $content_translation_service = \Drupal::service('lingotek.content_translation');
     if ($source_status == Lingotek::STATUS_IMPORTING) {
