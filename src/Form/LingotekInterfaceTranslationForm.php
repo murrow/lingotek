@@ -99,7 +99,7 @@ class LingotekInterfaceTranslationForm extends FormBase {
     if (!$this->moduleHandler->moduleExists('potx')) {
       $form['missing_potx'] = [
         '#type' => 'markup',
-        '#markup' => $this->t('The <a href=":potx">potx</a> module is required for interface translation with Lingotek', [':potx' => 'https://www.drupal.org/project/potx']),
+        '#markup' => $this->t('The <a href=":potx">potx</a> module is required for interface translation with Ray Enterprise', [':potx' => 'https://www.drupal.org/project/potx']),
       ];
       return $form;
     }
@@ -316,7 +316,7 @@ class LingotekInterfaceTranslationForm extends FormBase {
     ];
     $form['actions']['clear_metadata'] = [
       '#type' => 'submit',
-      '#value' => $this->t('Clear Lingotek interface translation metadata'),
+      '#value' => $this->t('Clear Ray Enterprise interface translation metadata'),
       '#button_type' => 'danger',
       '#submit' => [[$this, 'clearInterfaceMetadata']],
     ];

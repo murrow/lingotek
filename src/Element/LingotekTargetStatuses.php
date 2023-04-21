@@ -347,7 +347,7 @@ class LingotekTargetStatuses extends RenderElement {
           'new_window' => FALSE,
         ];
         $actions[] = [
-          'title' => $this->t('Open in Lingotek Workbench'),
+          'title' => $this->t('Open in Ray Enterprise Workbench'),
           'url' => Url::fromRoute('lingotek.workbench', [
             'doc_id' => $document_id,
             'locale' => $locale,
@@ -364,7 +364,7 @@ class LingotekTargetStatuses extends RenderElement {
           'new_window' => FALSE,
         ];
         $actions[] = [
-          'title' => $this->t('Open in Lingotek Workbench'),
+          'title' => $this->t('Open in Ray Enterprise Workbench'),
           'url' => Url::fromRoute('lingotek.workbench', [
             'doc_id' => $document_id,
             'locale' => $locale,
@@ -384,7 +384,7 @@ class LingotekTargetStatuses extends RenderElement {
       }
       if ($target_status == Lingotek::STATUS_CURRENT) {
         $actions[] = [
-          'title' => $this->t('Open in Lingotek Workbench'),
+          'title' => $this->t('Open in Ray Enterprise Workbench'),
           'url' => Url::fromRoute('lingotek.workbench', [
             'doc_id' => $document_id,
             'locale' => $locale,
@@ -394,7 +394,7 @@ class LingotekTargetStatuses extends RenderElement {
       }
       if ($target_status == Lingotek::STATUS_INTERMEDIATE) {
         $actions[] = [
-          'title' => $this->t('Open in Lingotek Workbench'),
+          'title' => $this->t('Open in Ray Enterprise Workbench'),
           'url' => Url::fromRoute('lingotek.workbench', [
             'doc_id' => $document_id,
             'locale' => $locale,
@@ -404,7 +404,7 @@ class LingotekTargetStatuses extends RenderElement {
       }
       if ($target_status == Lingotek::STATUS_EDITED) {
         $actions[] = [
-          'title' => $this->t('Open in Lingotek Workbench'),
+          'title' => $this->t('Open in Ray Enterprise Workbench'),
           'url' => Url::fromRoute('lingotek.workbench', [
             'doc_id' => $document_id,
             'locale' => $locale,

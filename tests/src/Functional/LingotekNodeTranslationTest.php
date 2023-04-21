@@ -164,7 +164,7 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     $this->assertText('The es_MX translation for node Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
-    $this->assertLingotekWorkbenchLink('es_MX', 'dummy-document-hash-id', 'Edit in Lingotek Workbench');
+    $this->assertLingotekWorkbenchLink('es_MX', 'dummy-document-hash-id', 'Edit in Ray Enterprise Workbench');
 
     // Download translation.
     $this->clickLink('Download completed translation');
@@ -289,7 +289,7 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     $this->assertText('The es_MX translation for node Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
-    $this->assertLingotekWorkbenchLink('es_MX', 'dummy-document-hash-id', 'Edit in Lingotek Workbench');
+    $this->assertLingotekWorkbenchLink('es_MX', 'dummy-document-hash-id', 'Edit in Ray Enterprise Workbench');
 
     // Download translation.
     $this->clickLink('Download completed translation');
@@ -1671,7 +1671,7 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // ready.
     $this->assertSession()->linkExists('Add');
     $this->assertSession()->linkByHrefExists('/es/node/1/translations/add/en/es');
-    $this->assertSession()->linkExistsExact('Edit in Lingotek Workbench');
+    $this->assertSession()->linkExistsExact('Edit in Ray Enterprise Workbench');
     $this->assertSession()->linkByHrefExists('/admin/lingotek/workbench/dummy-document-hash-id/es_MX');
 
     // Download translation.
@@ -1681,7 +1681,7 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
 
     // Check that we can edit a translation for Spanish when translation is
     // downloaded. Also locally.
-    $this->assertSession()->linkExistsExact('Edit in Lingotek Workbench');
+    $this->assertSession()->linkExistsExact('Edit in Ray Enterprise Workbench');
     $this->assertSession()->linkByHrefExists('/admin/lingotek/workbench/dummy-document-hash-id/es_MX');
     $this->assertSession()->linkExistsExact('Edit');
     $this->assertSession()->linkByHrefExists('/es/node/1/edit');

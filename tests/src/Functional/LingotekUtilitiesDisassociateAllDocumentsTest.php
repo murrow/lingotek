@@ -184,7 +184,7 @@ class LingotekUtilitiesDisassociateAllDocumentsTest extends LingotekTestBase {
   public function testDisassociateAllDocuments() {
     $this->drupalGet('/admin/lingotek/settings');
     $this->drupalPostForm(NULL, [], 'Disassociate');
-    $this->assertRaw("Are you sure you want to disassociate everything from Lingotek?");
+    $this->assertRaw("Are you sure you want to disassociate everything from Ray Enterprise?");
     $this->drupalPostForm(NULL, [], 'Disassociate');
     $this->assertText('All translations have been disassociated.');
 
@@ -258,7 +258,7 @@ class LingotekUtilitiesDisassociateAllDocumentsTest extends LingotekTestBase {
     // Disassociate.
     $this->drupalGet('/admin/lingotek/settings');
     $this->drupalPostForm(NULL, [], 'Disassociate');
-    $this->assertRaw("Are you sure you want to disassociate everything from Lingotek?");
+    $this->assertRaw("Are you sure you want to disassociate everything from Ray Enterprise?");
     $this->drupalPostForm(NULL, [], 'Disassociate');
     $this->assertText('All translations have been disassociated.');
 
@@ -322,7 +322,7 @@ class LingotekUtilitiesDisassociateAllDocumentsTest extends LingotekTestBase {
     // Let's try to disassociate then.
     $this->drupalGet('/admin/lingotek/settings');
     $this->drupalPostForm('admin/lingotek/settings', [], 'Disassociate');
-    $this->assertRaw("Are you sure you want to disassociate everything from Lingotek?");
+    $this->assertRaw("Are you sure you want to disassociate everything from Ray Enterprise?");
     $this->drupalPostForm(NULL, [], 'Disassociate');
     $this->assertText('All translations have been disassociated.');
 
@@ -336,7 +336,7 @@ class LingotekUtilitiesDisassociateAllDocumentsTest extends LingotekTestBase {
     // Let's try to disassociate then.
     $this->drupalGet('/admin/lingotek/settings');
     $this->drupalPostForm('admin/lingotek/settings', [], 'Disassociate');
-    $this->assertRaw("Are you sure you want to disassociate everything from Lingotek?");
+    $this->assertRaw("Are you sure you want to disassociate everything from Ray Enterprise?");
     $this->drupalPostForm(NULL, [], 'Disassociate');
     $this->assertText('All translations have been disassociated.');
   }

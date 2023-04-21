@@ -2,7 +2,7 @@ lingotek.dashboard:
   path: '/admin/lingotek'
   defaults:
     _controller: '\Drupal\lingotek\Controller\LingotekDashboardController::dashboardPage'
-    _title: 'Lingotek Translation Dashboard'
+    _title: 'Ray Enterprise Translation Dashboard'
   requirements:
     _permission: 'administer lingotek+manage lingotek translations'
 
@@ -10,7 +10,7 @@ lingotek.config.dashboard:
   path: '/admin/lingotek'
   defaults:
     _controller: '\Drupal\lingotek\Controller\LingotekDashboardController::dashboardPage'
-    _title: 'Lingotek Translation Dashboard'
+    _title: 'Ray Enterprise Translation Dashboard'
   requirements:
     _permission: 'administer lingotek+manage lingotek translations'
 
@@ -35,7 +35,7 @@ lingotek.setup_account:
   path: '/admin/lingotek/setup/account'
   defaults:
     _controller: '\Drupal\lingotek\Controller\LingotekSetupController::accountPage'
-    _title: 'Connect to Lingotek Account'
+    _title: 'Connect to Ray Enterprise Account'
   requirements:
     _permission: 'administer lingotek'
 
@@ -43,7 +43,7 @@ lingotek.setup_account_handshake:
   path: '/admin/lingotek/setup/account/handshake'
   defaults:
     _controller: '\Drupal\lingotek\Controller\LingotekSetupController::handshake'
-    _title: 'Connect to Lingotek Account'
+    _title: 'Connect to Ray Enterprise Account'
   requirements:
     _permission: 'administer lingotek'
 

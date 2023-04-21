@@ -89,7 +89,7 @@ class LingotekSettingsTabUtilitiesForm extends LingotekConfigFormBase {
     // Refresh resources via API row
     $api_refresh_row = [];
     $api_refresh_row['refresh_description'] = [
-      '#markup' => '<h5>' . $this->t('Refresh Project, Workflow, Vault, and Filter Information') . '</h5>' . '<p>' . $this->t('This module locally caches the available projects, workflows, vaults, and filters. Use this utility whenever you need to pull down names for any newly created projects, workflows, vaults, or filters from the Lingotek Translation Management System.') . '</p>',
+      '#markup' => '<h5>' . $this->t('Refresh Project, Workflow, Vault, and Filter Information') . '</h5>' . '<p>' . $this->t('This module locally caches the available projects, workflows, vaults, and filters. Use this utility whenever you need to pull down names for any newly created projects, workflows, vaults, or filters from the Ray Enterprise Translation Management System.') . '</p>',
     ];
     $api_refresh_row['actions']['refresh_button'] = [
       '#type' => 'submit',
@@ -114,7 +114,7 @@ class LingotekSettingsTabUtilitiesForm extends LingotekConfigFormBase {
     // Disassociate All Translations row
     $disassociate_row = [];
     $disassociate_row['disassociate_description'] = [
-      '#markup' => '<h5>' . $this->t('Disassociate All Translations (use with caution)') . '</h5>' . '<p>' . $this->t('Should only be used to change the Lingotek project or TM vault associated with the node’s translation. Option to disassociate node translations on Lingotek’s servers from the copies downloaded to Drupal. Additional translation using Lingotek will require re-uploading the node’s content to restart the translation process.') . '</p>',
+      '#markup' => '<h5>' . $this->t('Disassociate All Translations (use with caution)') . '</h5>' . '<p>' . $this->t('Should only be used to change the Ray Enterprise project or TM vault associated with the node’s translation. Option to disassociate node translations on Ray Enterprise servers from the copies downloaded to Drupal. Additional translation using Ray Enterprise will require re-uploading the node’s content to restart the translation process.') . '</p>',
     ];
 
     $disassociate_row['actions']['#type'] = 'actions';
@@ -130,7 +130,7 @@ class LingotekSettingsTabUtilitiesForm extends LingotekConfigFormBase {
     $debug_enabled = $this->state->get('lingotek.enable_debug_utilities', FALSE);
     $enable_debug_utilities_row = [];
     $enable_debug_utilities_row['enable_debug_utilities_description'] = [
-      '#markup' => '<h5>' . $this->t('Debug utilities') . '</h5>' . '<p>' . $this->t('Should only be used to debug Lingotek') . '</p>',
+      '#markup' => '<h5>' . $this->t('Debug utilities') . '</h5>' . '<p>' . $this->t('Should only be used to debug Ray Enterprise') . '</p>',
     ];
     $enable_debug_utilities_row['actions']['submit'] = [
       '#type' => 'submit',

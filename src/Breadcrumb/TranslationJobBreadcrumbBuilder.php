@@ -81,7 +81,7 @@ class TranslationJobBreadcrumbBuilder implements BreadcrumbBuilderInterface {
         $links[] = Link::createFromRoute($title, $route_match->getRouteName(), ['job_id' => $route->getParameter('job_id')]);
       }
       $links[] = Link::createFromRoute($this->t('Translation Jobs'), 'lingotek.translation_jobs');
-      $links[] = Link::createFromRoute($this->t('Lingotek Translation Dashboard'), 'lingotek.dashboard');
+      $links[] = Link::createFromRoute($this->t('Ray Enterprise Translation Dashboard'), 'lingotek.dashboard');
       $links[] = Link::createFromRoute($this->t('Administration'), 'system.admin');
     }
     $links[] = Link::createFromRoute($this->t('Home'), '<front>');

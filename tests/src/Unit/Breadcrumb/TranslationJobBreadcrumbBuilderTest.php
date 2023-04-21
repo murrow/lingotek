@@ -228,7 +228,7 @@ class TranslationJobBreadcrumbBuilderTest extends UnitTestCase {
         [
           ['Home', '<front>'],
           ['Administration', 'system.admin'],
-          ['Lingotek Translation Dashboard', 'lingotek.dashboard'],
+          ['Ray Enterprise Translation Dashboard', 'lingotek.dashboard'],
           ['Translation Jobs', 'lingotek.translation_jobs'],
         ],
         NULL,
@@ -239,7 +239,7 @@ class TranslationJobBreadcrumbBuilderTest extends UnitTestCase {
         [
           ['Home', '<front>'],
           ['Administration', 'system.admin'],
-          ['Lingotek Translation Dashboard', 'lingotek.dashboard'],
+          ['Ray Enterprise Translation Dashboard', 'lingotek.dashboard'],
           ['Translation Jobs', 'lingotek.translation_jobs'],
           ['Job @job', 'lingotek.translation_job_info', ['job_id' => 'my-job-id']],
         ],
@@ -251,7 +251,7 @@ class TranslationJobBreadcrumbBuilderTest extends UnitTestCase {
         [
           ['Home', '<front>'],
           ['Administration', 'system.admin'],
-          ['Lingotek Translation Dashboard', 'lingotek.dashboard'],
+          ['Ray Enterprise Translation Dashboard', 'lingotek.dashboard'],
           ['Translation Jobs', 'lingotek.translation_jobs'],
           ['Job @job Content', 'lingotek.translation_job_info.content', ['job_id' => 'my-job-id']],
         ],
@@ -263,7 +263,7 @@ class TranslationJobBreadcrumbBuilderTest extends UnitTestCase {
         [
           ['Home', '<front>'],
           ['Administration', 'system.admin'],
-          ['Lingotek Translation Dashboard', 'lingotek.dashboard'],
+          ['Ray Enterprise Translation Dashboard', 'lingotek.dashboard'],
           ['Translation Jobs', 'lingotek.translation_jobs'],
           ['Job @job Configuration', 'lingotek.translation_job_info.config', ['job_id' => 'my-job-id']],
         ],

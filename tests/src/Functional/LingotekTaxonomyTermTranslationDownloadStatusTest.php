@@ -227,7 +227,7 @@ class LingotekTaxonomyTermTranslationDownloadStatusTest extends LingotekTestBase
     $this->assertText('The es_MX translation for taxonomy_term Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
-    $this->assertLingotekWorkbenchLink('es_MX', 'dummy-document-hash-id', 'Edit in Lingotek Workbench');
+    $this->assertLingotekWorkbenchLink('es_MX', 'dummy-document-hash-id', 'Edit in Ray Enterprise Workbench');
 
     // Download translation.
     $this->clickLink('Download completed translation');

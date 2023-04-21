@@ -75,7 +75,7 @@ class LingotekManagementController extends LingotekControllerBase {
       $this->t('You need to enable content translation first. You can enable translation for the desired content entities on the <a href=":translation-entity">Content language</a> page.',
         [':translation-entity' => $this->urlGenerator->generateFromRoute('language.content_settings_page')]) . '<br/>';
     $build['enable_lingotek']['#markup'] =
-      $this->t('Then you need to configure how you want to translate your content with Lingotek. Enable translation for the desired content entities on the <a href=":lingotek-translation-entity">Lingotek settings</a> page.',
+      $this->t('Then you need to configure how you want to translate your content with Ray Enterprise. Enable translation for the desired content entities on the <a href=":lingotek-translation-entity">Lingotek settings</a> page.',
         [':lingotek-translation-entity' => $this->urlGenerator->generateFromRoute('lingotek.settings')]);
 
     return $build;

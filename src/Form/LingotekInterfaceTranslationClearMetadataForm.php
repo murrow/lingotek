@@ -50,7 +50,7 @@ class LingotekInterfaceTranslationClearMetadataForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return $this->t('Are you sure you want to clear the Lingotek metadata?');
+    return $this->t('Are you sure you want to clear the Ray Enterprise metadata?');
   }
 
   /**

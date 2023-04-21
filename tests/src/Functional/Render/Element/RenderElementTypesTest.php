@@ -192,13 +192,13 @@ class RenderElementTypesTest extends LingotekTestBase {
     $this->assertTargetAction("Check translation status",
       "$basepath/admin/lingotek/entity/check_target/test-document-id/de_DE?destination=$basepath/lingotek_form_test/lingotek_translation_statuses/node/1"
       );
-    $this->assertTargetAction("Open in Lingotek Workbench",
+    $this->assertTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/de_DE"
     );
     $this->assertTargetAction("Request translation",
       "$basepath/admin/lingotek/entity/add_target/test-document-id/es_ES?destination=$basepath/lingotek_form_test/lingotek_translation_statuses/node/1"
     );
-    $this->assertTargetAction("Open in Lingotek Workbench",
+    $this->assertTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/ca_ES"
     );
     $this->assertTargetAction("Download translation",
@@ -218,13 +218,13 @@ class RenderElementTypesTest extends LingotekTestBase {
     $translation_service->setTargetStatus($entity, 'ca', Lingotek::STATUS_EDITED);
     $this->drupalGet('/lingotek_form_test/lingotek_translation_statuses/node/1');
 
-    $this->assertTargetAction("Open in Lingotek Workbench",
+    $this->assertTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/de_DE"
     );
-    $this->assertTargetAction("Open in Lingotek Workbench",
+    $this->assertTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/es_ES"
     );
-    $this->assertTargetAction("Open in Lingotek Workbench",
+    $this->assertTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/ca_ES"
     );
 
@@ -239,7 +239,7 @@ class RenderElementTypesTest extends LingotekTestBase {
     $translation_service->setTargetStatus($entity, 'es', Lingotek::STATUS_ERROR);
     $this->drupalGet('/lingotek_form_test/lingotek_translation_statuses/node/1');
 
-    $this->assertTargetAction("Open in Lingotek Workbench",
+    $this->assertTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/de_DE"
     );
     $this->assertTargetAction("Retry request",
@@ -249,7 +249,7 @@ class RenderElementTypesTest extends LingotekTestBase {
       "$basepath/admin/lingotek/entity/download/test-document-id/es_ES?destination=$basepath/lingotek_form_test/lingotek_translation_statuses/node/1"
     );
 
-    $this->assertTargetAction("Open in Lingotek Workbench",
+    $this->assertTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/ca_ES"
     );
 
@@ -260,13 +260,13 @@ class RenderElementTypesTest extends LingotekTestBase {
     $translation_service->setTargetStatus($entity, 'es', Lingotek::STATUS_DISABLED);
     $this->drupalGet('/lingotek_form_test/lingotek_translation_statuses/node/1');
 
-    $this->assertTargetAction("Open in Lingotek Workbench",
+    $this->assertTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/de_DE"
     );
-    $this->assertNoTargetAction("Open in Lingotek Workbench",
+    $this->assertNoTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/es_ES"
     );
-    $this->assertTargetAction("Open in Lingotek Workbench",
+    $this->assertTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/ca_ES"
     );
 
@@ -365,13 +365,13 @@ class RenderElementTypesTest extends LingotekTestBase {
     $this->assertTargetAction("Check translation status",
       "$basepath/admin/lingotek/entity/check_target/test-document-id/de_DE?destination=$basepath/lingotek_form_test/lingotek_translation_status/node/1"
     );
-    $this->assertTargetAction("Open in Lingotek Workbench",
+    $this->assertTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/de_DE"
     );
     $this->assertTargetAction("Request translation",
       "$basepath/admin/lingotek/entity/add_target/test-document-id/es_ES?destination=$basepath/lingotek_form_test/lingotek_translation_status/node/1"
     );
-    $this->assertTargetAction("Open in Lingotek Workbench",
+    $this->assertTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/ca_ES"
     );
     $this->assertTargetAction("Download translation",
@@ -391,13 +391,13 @@ class RenderElementTypesTest extends LingotekTestBase {
     $translation_service->setTargetStatus($entity, 'ca', Lingotek::STATUS_EDITED);
     $this->drupalGet('/lingotek_form_test/lingotek_translation_status/node/1');
 
-    $this->assertTargetAction("Open in Lingotek Workbench",
+    $this->assertTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/de_DE"
     );
-    $this->assertTargetAction("Open in Lingotek Workbench",
+    $this->assertTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/es_ES"
     );
-    $this->assertTargetAction("Open in Lingotek Workbench",
+    $this->assertTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/ca_ES"
     );
 
@@ -412,7 +412,7 @@ class RenderElementTypesTest extends LingotekTestBase {
     $translation_service->setTargetStatus($entity, 'es', Lingotek::STATUS_ERROR);
     $this->drupalGet('/lingotek_form_test/lingotek_translation_status/node/1');
 
-    $this->assertTargetAction("Open in Lingotek Workbench",
+    $this->assertTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/de_DE"
     );
     $this->assertTargetAction("Retry request",
@@ -422,7 +422,7 @@ class RenderElementTypesTest extends LingotekTestBase {
       "$basepath/admin/lingotek/entity/download/test-document-id/es_ES?destination=$basepath/lingotek_form_test/lingotek_translation_status/node/1"
     );
 
-    $this->assertTargetAction("Open in Lingotek Workbench",
+    $this->assertTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/ca_ES"
     );
 
@@ -433,13 +433,13 @@ class RenderElementTypesTest extends LingotekTestBase {
     $translation_service->setTargetStatus($entity, 'es', Lingotek::STATUS_DISABLED);
     $this->drupalGet('/lingotek_form_test/lingotek_translation_status/node/1');
 
-    $this->assertTargetAction("Open in Lingotek Workbench",
+    $this->assertTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/de_DE"
     );
-    $this->assertNoTargetAction("Open in Lingotek Workbench",
+    $this->assertNoTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/es_ES"
     );
-    $this->assertTargetAction("Open in Lingotek Workbench",
+    $this->assertTargetAction("Open in Ray Enterprise Workbench",
       "$basepath/admin/lingotek/workbench/test-document-id/ca_ES"
     );
 

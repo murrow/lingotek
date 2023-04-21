@@ -83,8 +83,8 @@ class LingotekSettingsTabPreferencesForm extends LingotekConfigFormBase {
 
     $form['prefs']['always_show_translate_tabs'] = [
       '#type' => 'checkbox',
-      '#title' => t('Always show non-Lingotek translate tabs'),
-      '#description' => t('If checked, edit-form tabs for both Content Translation and Entity Translation will not be hidden, even if the entity is managed by Lingotek.'),
+      '#title' => t('Always show non-Ray Enterprise translate tabs'),
+      '#description' => t('If checked, edit-form tabs for both Content Translation and Entity Translation will not be hidden, even if the entity is managed by Ray Enterprise.'),
       '#default_value' => $lingotek_config->getPreference('always_show_translate_tabs'),
     ];
 
@@ -105,14 +105,14 @@ class LingotekSettingsTabPreferencesForm extends LingotekConfigFormBase {
     $form['prefs']['language_specific_profiles'] = [
       '#type' => 'checkbox',
       '#title' => t('Enable language-specific profiles'),
-      '#description' => t('If checked, languages enabled for Lingotek translation will not automatically be queued for all content. Instead, languages enabled for Lingotek will be added to the available languages for profiles but will be disabled by default on profiles that have existing content. (Note: this cannot be unchecked if language-specific settings are in use.)'),
+      '#description' => t('If checked, languages enabled for Ray Enterprise translation will not automatically be queued for all content. Instead, languages enabled for Ray Enterprise will be added to the available languages for profiles but will be disabled by default on profiles that have existing content. (Note: this cannot be unchecked if language-specific settings are in use.)'),
       '#default_value' => $lingotek_config->getPreference('language_specific_profiles'),
     ];
 
     $form['prefs']['advanced_parsing'] = [
       '#type' => 'checkbox',
       '#title' => t('Enable advanced features'),
-      '#description' => t('Some features may not be available without an <a href=":url">Enterprise License</a> for the Lingotek TMS. Call <a href=":phone_link">%phone</a> for details.',
+      '#description' => t('Some features may not be available without an <a href=":url">Enterprise License</a> for the Ray Enterprise TMS. Call <a href=":phone_link">%phone</a> for details.',
         [':url' => 'http://www.lingotek.com', ':phone_link' => 'tel:1-801-331-7777', '%phone' => '+1 (801) 331-7777']),
       '#default_value' => $lingotek_config->getPreference('advanced_parsing'),
     ];

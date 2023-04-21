@@ -27,7 +27,7 @@ class LingotekSettingsCommunityForm extends LingotekConfigFormBase {
     $communities = $this->lingotek->getCommunities();
 
     $form['lingotek_user_directions_1'] = [
-    '#markup' => '<p>' . t('Your account is associated with multiple Lingotek communities.') . '</p>
+    '#markup' => '<p>' . t('Your account is associated with multiple Ray Enterprise communities.') . '</p>
       <p>' . t('Select the community that you would like associate with this site:') . '</p>',
 ];
     $community_options = [];

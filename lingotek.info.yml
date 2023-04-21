@@ -1,6 +1,6 @@
-name: Lingotek Translation
+name: Ray Enterprise Translation
 type: module
-description: 'Translates content, configuration, and interface using the Lingotek Translation Management System.'
+description: 'Translates content, configuration, and interface using the Ray Enterprise Translation Management System.'
 package: Multilingual
 core_version_requirement: ^8.8 || ^9
 hidden: false

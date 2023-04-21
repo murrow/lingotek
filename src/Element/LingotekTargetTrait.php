@@ -119,7 +119,7 @@ trait LingotekTargetTrait {
           'new_window' => FALSE,
         ];
         $actions['workbench'] = [
-          'title' => $this->t('Open in Lingotek Workbench'),
+          'title' => $this->t('Open in Ray Enterprise Workbench'),
           'url' => Url::fromRoute('lingotek.workbench', [
             'doc_id' => $document_id,
             'locale' => $locale,
@@ -139,7 +139,7 @@ trait LingotekTargetTrait {
           'new_window' => FALSE,
         ];
         $actions['workbench'] = [
-          'title' => $this->t('Open in Lingotek Workbench'),
+          'title' => $this->t('Open in Ray Enterprise Workbench'),
           'url' => Url::fromRoute('lingotek.workbench', [
             'doc_id' => $document_id,
             'locale' => $locale,
@@ -180,7 +180,7 @@ trait LingotekTargetTrait {
           ];
         }
         $actions['workbench'] = [
-          'title' => $this->t('Open in Lingotek Workbench'),
+          'title' => $this->t('Open in Ray Enterprise Workbench'),
           'url' => Url::fromRoute('lingotek.workbench', [
             'doc_id' => $document_id,
             'locale' => $locale,
@@ -197,7 +197,7 @@ trait LingotekTargetTrait {
           ];
         }
         $actions['workbench'] = [
-          'title' => $this->t('Open in Lingotek Workbench'),
+          'title' => $this->t('Open in Ray Enterprise Workbench'),
           'url' => Url::fromRoute('lingotek.workbench', [
             'doc_id' => $document_id,
             'locale' => $locale,
@@ -214,7 +214,7 @@ trait LingotekTargetTrait {
           ];
         }
         $actions['workbench'] = [
-          'title' => $this->t('Open in Lingotek Workbench'),
+          'title' => $this->t('Open in Ray Enterprise Workbench'),
           'url' => Url::fromRoute('lingotek.workbench', [
             'doc_id' => $document_id,
             'locale' => $locale,

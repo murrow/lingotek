@@ -73,7 +73,7 @@ class LingotekDisassociateAllConfirmForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return $this->t('Are you sure you want to disassociate everything from Lingotek?');
+    return $this->t('Are you sure you want to disassociate everything from Ray Enterprise?');
   }
 
   /**
@@ -81,7 +81,7 @@ class LingotekDisassociateAllConfirmForm extends ConfirmFormBase {
    */
   public function getDescription() {
     $string = '<p>' . $this->t("This is useful for switching between different environments. It will disassociate the content from TMS content so your next changes won't alter what is getting worked on from the TMS.") . '</p>';
-    $string .= '<p>' . $this->t("This option should only be used if you still want the translations to be completed (and eventually billed for) in Lingotek's TMS.") . '</p>';
+    $string .= '<p>' . $this->t("This option should only be used if you still want the translations to be completed (and eventually billed for) in Ray Enterprise's TMS.") . '</p>';
     $string .= '<p>' . $this->t("Check if you may want to use the Cancel option instead.") . '</p>';
     $string .= '<p>' . parent::getDescription() . '</p>';
     return $string;

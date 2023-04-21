@@ -167,12 +167,12 @@ class LingotekSettingsTabAccountForm extends LingotekConfigFormBase {
     ];
 
     $tmsRow = [
-      ['#markup' => $this->t('Lingotek TMS Server:'), '#prefix' => '<b>', '#suffix' => '</b>'],
+      ['#markup' => $this->t('Ray Enterprise TMS Server:'), '#prefix' => '<b>', '#suffix' => '</b>'],
       ['#markup' => $accountConfig->get('host')],
       ['#markup' => ''],
     ];
     $gmcRow = [
-      ['#markup' => $this->t('Lingotek GMC Server:'), '#prefix' => '<b>', '#suffix' => '</b>'],
+      ['#markup' => $this->t('Ray Enterprise GMC Server:'), '#prefix' => '<b>', '#suffix' => '</b>'],
       ['#markup' => 'https://gmc.lingotek.com'],
       ['#markup' => ''],
     ];

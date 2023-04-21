@@ -154,7 +154,7 @@ class LingotekContentTranslationForm extends LingotekConfigFormBase {
         // Download button if translations are READY or CURRENT.
         elseif (($target_status === Lingotek::STATUS_READY || $target_status === Lingotek::STATUS_CURRENT)) {
           $path = '/admin/lingotek/workbench/' . $document_id . '/' . $locale;
-          $this->addOperationLink($entity, $option, 'Edit in Lingotek Workbench', $path, $language, TRUE);
+          $this->addOperationLink($entity, $option, 'Edit in Ray Enterprise Workbench', $path, $language, TRUE);
           $path = '/admin/lingotek/entity/download/' . $document_id . '/' . $locale;
           if ($target_status === Lingotek::STATUS_READY) {
             $this->addOperationLink($entity, $option, 'Download completed translation', $path, $language, TRUE);

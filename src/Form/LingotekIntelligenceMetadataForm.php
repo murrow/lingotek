@@ -28,7 +28,7 @@ class LingotekIntelligenceMetadataForm extends FormBase {
 
     $form['intelligence_metadata'] = [
       '#type' => 'details',
-      '#title' => $this->t('Lingotek Intelligence Metadata'),
+      '#title' => $this->t('Ray Enterprise Intelligence Metadata'),
       '#tree' => TRUE,
     ];
 
@@ -303,7 +303,7 @@ class LingotekIntelligenceMetadataForm extends FormBase {
     $form['intelligence_metadata']['actions'] = ['#type' => 'actions'];
     $form['intelligence_metadata']['actions']['submit'] = [
       '#type' => 'submit',
-      '#value' => $this->t('Save Lingotek Intelligence Metadata'),
+      '#value' => $this->t('Save Ray Enterprise Intelligence Metadata'),
       '#button_type' => 'primary',
     ];
     return $form;
@@ -346,7 +346,7 @@ class LingotekIntelligenceMetadataForm extends FormBase {
     // Show this message only if we are saving the general settings. For profiles
     // it's not needed.
     if ($metadata instanceof LingotekIntelligenceServiceConfig) {
-      $this->messenger()->addStatus($this->t('Lingotek Intelligence Metadata saved correctly.'));
+      $this->messenger()->addStatus($this->t('Ray Enterprise Intelligence Metadata saved correctly.'));
     }
   }
 

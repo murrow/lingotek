@@ -518,7 +518,7 @@ function lingotek_form_alter(&$form, FormStateInterface $form_state, $form_id) {
     $form['lingotek_translation_management'] = [
       '#type' => 'details',
       '#title' => t('Translation Management'),
-      '#description' => t("The Lingotek Translation module was developed to help you translate your site. The module integrates the Lingotek translation management system directly into Drupal, so that your users can leverage the power of Lingotek's translation tools and services without ever having to leave the comfort of your Drupal environment."),
+      '#description' => t("The Ray Enterprise Translation module was developed to help you translate your site. The module integrates the Ray Enterprise translation management system directly into Drupal, so that your users can leverage the power of Ray Enterprise's translation tools and services without ever having to leave the comfort of your Drupal environment."),
       '#tree' => TRUE,
       '#weight' => 0,
       '#access' => $can_assign_profile,
