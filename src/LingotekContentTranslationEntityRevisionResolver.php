@@ -61,7 +61,8 @@ class LingotekContentTranslationEntityRevisionResolver implements ContainerInjec
     if ($entity instanceof RevisionableInterface) {
       $storage = $this->entityTypeManager->getStorage($entity->getEntityTypeId());
       $langcode = $entity->getUntranslated()->language()->getId();
-      if ($mode === self::RESOLVE_LATEST_TRANSLATION_AFFECTED &&
+      if (!($entity instanceof \Drupal\paragraphs\Entity\Paragraph) &&
+        $mode === self::RESOLVE_LATEST_TRANSLATION_AFFECTED &&
         $revision_id = $storage->getLatestTranslationAffectedRevisionId($entity->id(), $langcode)) {
         $source_entity = $storage->loadRevision($revision_id);
       }
