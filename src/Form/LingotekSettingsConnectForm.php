@@ -28,7 +28,7 @@ class LingotekSettingsConnectForm extends LingotekConfigFormBase {
     $id = $accountConfig->get('default_client_id');
     $return_uri = $this->urlGenerator->generateFromRoute('lingotek.setup_account_handshake', ['success' => 'true', 'prod' => 'prod'], ['absolute' => TRUE]);
 
-    $lingotek_register_link = $host . '/' . 'lingopoint/portal/requestAccount.action?client_id=' . $id . '&response_type=token&app=' . urlencode($return_uri);
+    $lingotek_register_link = $accountConfig->get('new_registeration_landing');
     $lingotek_connect_link = $host . '/' . $auth_path . '?client_id=' . $id . '&response_type=token&redirect_uri=' . urlencode($return_uri);
     $lingotek_demo_link = 'https://www.lingotek.com/request-demo';
 

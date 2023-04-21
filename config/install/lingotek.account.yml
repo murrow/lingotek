@@ -1,4 +1,5 @@
 host: 'https://myaccount.lingotek.com'
+new_registeration_landing: 'https://insight.strakertranslations.com/lingotek-freemium-upgrade-connectors'
 authorize_path: 'auth/authorize.html'
 default_client_id: 'e39e24c7-6c69-4126-946d-cf8fbff38ef0'
 plan_type: 'basic'
