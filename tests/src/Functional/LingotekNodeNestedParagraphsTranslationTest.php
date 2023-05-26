@@ -21,7 +21,7 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'image', 'comment', 'paragraphs', 'lingotek_paragraphs_test'];
+  protected static $modules = ['block', 'node', 'image', 'comment', 'paragraphs', 'lingotek_paragraphs_test'];
 
   /**
    * @var \Drupal\node\NodeInterface
@@ -102,7 +102,7 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
     // Add paragraphed content.
     $this->drupalGet('node/add/paragraphed_nested_content');
 
-    $this->drupalPostForm(NULL, NULL, t('Add Image + Text'));
+    $this->submitForm(NULL, t('Add Image + Text'));
 
     $edit = [];
     $edit['title[0][value]'] = 'Llamas are cool';
@@ -114,18 +114,18 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
 
     // Check that only the configured fields have been uploaded, including metatags.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->verbose(var_export($data, TRUE));
+    dump(var_export($data, TRUE));
     $this->assertUploadedDataFieldCount($data, 2);
-    $this->assertEqual($data['title'][0]['value'], 'Llamas are cool');
-    $this->assertEqual($data['field_paragraph_container'][0]['field_paragraphs_demo'][0]['field_text_demo'][0]['value'], 'Llamas are very cool');
+    $this->assertEquals($data['title'][0]['value'], 'Llamas are cool');
+    $this->assertEquals($data['field_paragraph_container'][0]['field_paragraphs_demo'][0]['field_text_demo'][0]['value'], 'Llamas are very cool');
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
+    $this->assertSame(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -134,28 +134,28 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $link = $this->xpath('//a[normalize-space()="Request translation" and contains(@href,"es_AR")]');
     $link[0]->click();
-    $this->assertText("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_AR translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
     $this->assertLingotekWorkbenchLink('es_AR', 'dummy-document-hash-id', 'Edit in Ray Enterprise Workbench');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Llamas are cool into es_AR has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_AR has been downloaded.');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
   }
 
   /**
@@ -167,8 +167,8 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
 
     // Add paragraphed content.
     $this->drupalGet('node/add/paragraphed_nested_content');
-    $this->drupalPostForm(NULL, NULL, t('Add Image + Text'));
-    $this->drupalPostForm(NULL, NULL, t('Add Image + Text'));
+    $this->submitForm(NULL, t('Add Image + Text'));
+    $this->submitForm(NULL, t('Add Image + Text'));
 
     $edit = [];
     $edit['title[0][value]'] = 'Llamas are cool';
@@ -184,12 +184,12 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
     $translation_service = \Drupal::service('lingotek.content_translation');
 
     $serialized_node = $translation_service->getSourceData($this->node);
-    $this->verbose(var_export($serialized_node, TRUE));
+    dump(var_export($serialized_node, TRUE));
     // Main node metadata is there.
     $this->assertTrue(isset($serialized_node['_lingotek_metadata']), 'The Lingotek metadata is included in the extracted data.');
-    $this->assertEqual('node', $serialized_node['_lingotek_metadata']['_entity_type_id'], 'Entity type id is included as metadata.');
-    $this->assertEqual(1, $serialized_node['_lingotek_metadata']['_entity_id'], 'Entity id is included as metadata.');
-    $this->assertEqual(1, $serialized_node['_lingotek_metadata']['_entity_revision'], 'Entity revision id is included as metadata.');
+    $this->assertEquals('node', $serialized_node['_lingotek_metadata']['_entity_type_id'], 'Entity type id is included as metadata.');
+    $this->assertEquals(1, $serialized_node['_lingotek_metadata']['_entity_id'], 'Entity id is included as metadata.');
+    $this->assertEquals(1, $serialized_node['_lingotek_metadata']['_entity_revision'], 'Entity revision id is included as metadata.');
   }
 
   /**
@@ -201,8 +201,8 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
 
     // Add paragraphed content.
     $this->drupalGet('node/add/paragraphed_nested_content');
-    $this->drupalPostForm(NULL, NULL, t('Add Image + Text'));
-    $this->drupalPostForm(NULL, NULL, t('Add Image + Text'));
+    $this->submitForm(NULL, t('Add Image + Text'));
+    $this->submitForm(NULL, t('Add Image + Text'));
 
     $edit = [];
     $edit['title[0][value]'] = 'Llamas are cool';
@@ -213,7 +213,7 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
     $this->saveAndPublishNodeForm($edit, NULL);
 
     $this->goToContentBulkManagementForm('paragraph');
-    $this->assertNoField('filters[wrapper][label]', 'There is no filter by label as paragraphs have no label.');
+    $this->assertSession()->fieldNotExists('filters[wrapper][label]', 'There is no filter by label as paragraphs have no label.');
   }
 
   /**
@@ -225,8 +225,8 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
 
     // Add paragraphed content.
     $this->drupalGet('node/add/paragraphed_nested_content');
-    $this->drupalPostForm(NULL, NULL, t('Add Image + Text'));
-    $this->drupalPostForm(NULL, NULL, t('Add Image + Text'));
+    $this->submitForm(NULL, t('Add Image + Text'));
+    $this->submitForm(NULL, t('Add Image + Text'));
 
     $edit = [];
     $edit['title[0][value]'] = 'Llamas are cool';
@@ -235,13 +235,14 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
     $edit['field_paragraph_container[0][subform][field_paragraphs_demo][1][subform][field_text_demo][0][value]'] = 'Llamas are very cool for the second time';
 
     $this->saveAndPublishNodeForm($edit, NULL);
+    $this->drupalGet('admin/lingotek/settings', []);
 
     // Ensure paragraphs tab is enabled.
-    $this->drupalPostForm('admin/lingotek/settings', ['contrib[paragraphs][enable_bulk_management]' => 1], 'Save settings', [], 'lingoteksettings-integrations-form');
+    $this->submitForm(['contrib[paragraphs][enable_bulk_management]' => 1], 'Save settings', 'lingoteksettings-integrations-form');
 
     $this->goToContentBulkManagementForm('paragraph');
     // Assert there is at least one paragraph in the list.
-    $this->assertText('Image + Text');
+    $this->assertSession()->pageTextContains('Image + Text');
 
     // Set a filter, and there should still be paragraphs.
     /** @var \Drupal\user\PrivateTempStore $tempStore */
@@ -249,7 +250,7 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
     $tempStore->set('label', 'Llamas');
 
     $this->goToContentBulkManagementForm('paragraph');
-    $this->assertText('Image + Text');
+    $this->assertSession()->pageTextContains('Image + Text');
   }
 
   public function testParagraphEditsAreKeptWhenTranslating() {
@@ -259,8 +260,8 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
     // Add paragraphed content.
     $this->drupalGet('node/add/paragraphed_nested_content');
 
-    $this->drupalPostForm(NULL, NULL, t('Add Image + Text'));
-    $this->drupalPostForm(NULL, NULL, t('Add Image + Text'));
+    $this->submitForm(NULL, t('Add Image + Text'));
+    $this->submitForm(NULL, t('Add Image + Text'));
 
     $this->createNestedParagraphedNode('automatic');
 
@@ -268,19 +269,19 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
 
     // Check that only the configured fields have been uploaded.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->verbose(var_export($data, TRUE));
+    dump(var_export($data, TRUE));
     $this->assertUploadedDataFieldCount($data, 2);
-    $this->assertEqual($data['title'][0]['value'], 'Llamas are cool');
-    $this->assertEqual($data['field_paragraph_container'][0]['field_paragraphs_demo'][0]['field_text_demo'][0]['value'], 'Llamas are very cool for the first time');
-    $this->assertEqual($data['field_paragraph_container'][0]['field_paragraphs_demo'][1]['field_text_demo'][0]['value'], 'Llamas are very cool for the second time');
+    $this->assertEquals($data['title'][0]['value'], 'Llamas are cool');
+    $this->assertEquals($data['field_paragraph_container'][0]['field_paragraphs_demo'][0]['field_text_demo'][0]['value'], 'Llamas are very cool for the first time');
+    $this->assertEquals($data['field_paragraph_container'][0]['field_paragraphs_demo'][1]['field_text_demo'][0]['value'], 'Llamas are very cool for the second time');
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
+    $this->assertSame(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -289,16 +290,16 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $link = $this->xpath('//a[normalize-space()="Request translation" and contains(@href,"es_AR")]');
     $link[0]->click();
-    $this->assertText("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_AR translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
     $this->assertLingotekWorkbenchLink('es_AR', 'dummy-document-hash-id', 'Edit in Ray Enterprise Workbench');
@@ -314,32 +315,32 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
 
     $this->saveAndKeepPublishedNodeForm($edit, 1, FALSE);
 
-    $this->assertText('Paragraphed nested content Dogs are cool has been updated.');
-    $this->assertText('Dogs are very cool for the first time');
-    $this->assertText('Dogs are very cool for the second time');
+    $this->assertSession()->pageTextContains('Paragraphed nested content Dogs are cool has been updated.');
+    $this->assertSession()->pageTextContains('Dogs are very cool for the first time');
+    $this->assertSession()->pageTextContains('Dogs are very cool for the second time');
 
     // Go back to translations.
     $this->clickLink('Translate');
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_AR translation for node Dogs are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Dogs are cool is ready for download.');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Dogs are cool into es_AR has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Dogs are cool into es_AR has been downloaded.');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas por primera vez');
-    $this->assertText('Las llamas son muy chulas por segunda vez');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas por primera vez');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas por segunda vez');
 
     // The saved revision is kept.
     $this->clickLink('Translate');
     $this->clickLink('Dogs are cool');
-    $this->assertText('Dogs are very cool for the first time');
-    $this->assertText('Dogs are very cool for the second time');
+    $this->assertSession()->pageTextContains('Dogs are very cool for the first time');
+    $this->assertSession()->pageTextContains('Dogs are very cool for the second time');
   }
 
   public function testParagraphRevisionsAreKeptWhenTranslating() {
@@ -349,8 +350,8 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
     // Add paragraphed content.
     $this->drupalGet('node/add/paragraphed_nested_content');
 
-    $this->drupalPostForm(NULL, NULL, t('Add Image + Text'));
-    $this->drupalPostForm(NULL, NULL, t('Add Image + Text'));
+    $this->submitForm(NULL, t('Add Image + Text'));
+    $this->submitForm(NULL, t('Add Image + Text'));
 
     $this->createNestedParagraphedNode('automatic');
 
@@ -358,21 +359,21 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
 
     // Check that only the configured fields have been uploaded.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->verbose(var_export($data, TRUE));
+    dump(var_export($data, TRUE));
     $this->assertUploadedDataFieldCount($data, 2);
-    $this->assertEqual($data['title'][0]['value'], 'Llamas are cool');
-    $this->assertEqual($data['field_paragraph_container'][0]['field_paragraphs_demo'][0]['field_text_demo'][0]['value'], 'Llamas are very cool for the first time');
-    $this->assertEqual($data['field_paragraph_container'][0]['field_paragraphs_demo'][1]['field_text_demo'][0]['value'], 'Llamas are very cool for the second time');
-    $this->assertEqual($data['field_paragraph_container'][1]['field_paragraphs_demo'][0]['field_text_demo'][0]['value'], 'Dogs are very cool for the first time');
-    $this->assertEqual($data['field_paragraph_container'][1]['field_paragraphs_demo'][1]['field_text_demo'][0]['value'], 'Dogs are very cool for the second time');
+    $this->assertEquals($data['title'][0]['value'], 'Llamas are cool');
+    $this->assertEquals($data['field_paragraph_container'][0]['field_paragraphs_demo'][0]['field_text_demo'][0]['value'], 'Llamas are very cool for the first time');
+    $this->assertEquals($data['field_paragraph_container'][0]['field_paragraphs_demo'][1]['field_text_demo'][0]['value'], 'Llamas are very cool for the second time');
+    $this->assertEquals($data['field_paragraph_container'][1]['field_paragraphs_demo'][0]['field_text_demo'][0]['value'], 'Dogs are very cool for the first time');
+    $this->assertEquals($data['field_paragraph_container'][1]['field_paragraphs_demo'][1]['field_text_demo'][0]['value'], 'Dogs are very cool for the second time');
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
+    $this->assertSame(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -381,16 +382,16 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $link = $this->xpath('//a[normalize-space()="Request translation" and contains(@href,"es_AR")]');
     $link[0]->click();
-    $this->assertText("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_AR translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
     $this->assertLingotekWorkbenchLink('es_AR', 'dummy-document-hash-id', 'Edit in Ray Enterprise Workbench');
@@ -406,47 +407,47 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
     $edit['revision'] = 1;
     $this->saveAndUnpublishNodeForm($edit, 1, FALSE);
 
-    $this->assertText('Paragraphed nested content Cats are cool has been updated.');
-    $this->assertText('Cats are very cool for the first time');
-    $this->assertText('Cats are very cool for the second time');
+    $this->assertSession()->pageTextContains('Paragraphed nested content Cats are cool has been updated.');
+    $this->assertSession()->pageTextContains('Cats are very cool for the first time');
+    $this->assertSession()->pageTextContains('Cats are very cool for the second time');
 
     // Go back to translations.
     $this->clickLink('Translate');
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_AR translation for node Cats are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Cats are cool is ready for download.');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Cats are cool into es_AR has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Cats are cool into es_AR has been downloaded.');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas por primera vez');
-    $this->assertText('Las llamas son muy chulas por segunda vez');
-    $this->assertText('Los perros son muy chulos por primera vez');
-    $this->assertText('Los perros son muy chulos por segunda vez');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas por primera vez');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas por segunda vez');
+    $this->assertSession()->pageTextContains('Los perros son muy chulos por primera vez');
+    $this->assertSession()->pageTextContains('Los perros son muy chulos por segunda vez');
 
     // The latest revision is kept.
     $this->clickLink('Translate');
     $this->clickLink('Cats are cool');
-    $this->assertText('Cats are very cool for the first time');
-    $this->assertText('Cats are very cool for the second time');
-    $this->assertText('Dogs are very cool for the first time');
-    $this->assertText('Dogs are very cool for the second time');
-    $this->assertNoText('Llamas are very cool for the first time');
-    $this->assertNoText('Llamas are very cool for the second time');
+    $this->assertSession()->pageTextContains('Cats are very cool for the first time');
+    $this->assertSession()->pageTextContains('Cats are very cool for the second time');
+    $this->assertSession()->pageTextContains('Dogs are very cool for the first time');
+    $this->assertSession()->pageTextContains('Dogs are very cool for the second time');
+    $this->assertSession()->pageTextNotContains('Llamas are very cool for the first time');
+    $this->assertSession()->pageTextNotContains('Llamas are very cool for the second time');
 
     // The published revision is not updated.
     $this->drupalGet('node/1/revisions/1/view');
-    $this->assertText('Llamas are very cool for the first time');
-    $this->assertText('Llamas are very cool for the second time');
-    $this->assertText('Dogs are very cool for the first time');
-    $this->assertText('Dogs are very cool for the second time');
-    $this->assertNoText('Cats are very cool for the first time');
-    $this->assertNoText('Cats are very cool for the second time');
+    $this->assertSession()->pageTextContains('Llamas are very cool for the first time');
+    $this->assertSession()->pageTextContains('Llamas are very cool for the second time');
+    $this->assertSession()->pageTextContains('Dogs are very cool for the first time');
+    $this->assertSession()->pageTextContains('Dogs are very cool for the second time');
+    $this->assertSession()->pageTextNotContains('Cats are very cool for the first time');
+    $this->assertSession()->pageTextNotContains('Cats are very cool for the second time');
   }
 
   /**
@@ -459,7 +460,7 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
     // Add paragraphed content.
     $this->drupalGet('node/add/paragraphed_nested_content');
 
-    $this->drupalPostForm(NULL, NULL, t('Add Image + Text'));
+    $this->submitForm(NULL, t('Add Image + Text'));
 
     $edit = [];
     $edit['title[0][value]'] = 'Llamas are cool';
@@ -468,7 +469,7 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
     $this->saveAndPublishNodeForm($edit, NULL);
 
     $metadata = LingotekContentMetadata::loadMultiple();
-    $this->assertEqual(3, count($metadata), 'There is metadata saved for the parent entity and the child nested entities.');
+    $this->assertEquals(3, count($metadata), 'There is metadata saved for the parent entity and the child nested entities.');
   }
 
   /**
@@ -481,7 +482,7 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
     // Add paragraphed content.
     $this->drupalGet('node/add/paragraphed_nested_content');
 
-    $this->drupalPostForm(NULL, NULL, t('Add Image + Text'));
+    $this->submitForm(NULL, t('Add Image + Text'));
 
     $edit = [];
     $edit['title[0][value]'] = 'Llamas are cool';
@@ -502,44 +503,44 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
     // Check that only the configured fields have been uploaded,
     // but not the missing one.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->verbose(var_export($data, TRUE));
+    dump(var_export($data, TRUE));
     $this->assertUploadedDataFieldCount($data, 2);
     $this->assertUploadedDataFieldCount($data['field_paragraph_container'][0], 0);
-    $this->assertEqual($data['title'][0]['value'], 'Llamas are cool');
+    $this->assertEquals($data['title'][0]['value'], 'Llamas are cool');
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
+    $this->assertSame(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('manual', $used_profile, 'The manual profile was used.');
+    $this->assertSame('manual', $used_profile, 'The manual profile was used.');
 
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $link = $this->xpath('//a[normalize-space()="Request translation" and contains(@href,"es_AR")]');
     $link[0]->click();
-    $this->assertText("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_AR translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
     $this->assertLingotekWorkbenchLink('es_AR', 'dummy-document-hash-id', 'Edit in Ray Enterprise Workbench');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Llamas are cool into es_AR has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_AR has been downloaded.');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertNoText('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextNotContains('Las llamas son muy chulas');
   }
 
   /**
@@ -560,26 +561,26 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check that only the configured fields have been uploaded,
     // but not the missing one.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->verbose(var_export($data, TRUE));
+    dump(var_export($data, TRUE));
     $this->assertUploadedDataFieldCount($data, 2);
-    $this->assertEqual($data['title'][0]['value'], 'Llamas are cool');
-    $this->assertEqual($data['field_paragraph_container'][0]['field_paragraphs_demo'][0]['field_text_demo'][0]['value'], 'Llamas are very cool for the first time');
-    $this->assertEqual($data['field_paragraph_container'][0]['field_paragraphs_demo'][1]['field_text_demo'][0]['value'], 'Llamas are very cool for the second time');
-    $this->assertEqual($data['field_paragraph_container'][1]['field_paragraphs_demo'][0]['field_text_demo'][0]['value'], 'Dogs are very cool for the first time');
-    $this->assertEqual($data['field_paragraph_container'][1]['field_paragraphs_demo'][1]['field_text_demo'][0]['value'], 'Dogs are very cool for the second time');
+    $this->assertEquals($data['title'][0]['value'], 'Llamas are cool');
+    $this->assertEquals($data['field_paragraph_container'][0]['field_paragraphs_demo'][0]['field_text_demo'][0]['value'], 'Llamas are very cool for the first time');
+    $this->assertEquals($data['field_paragraph_container'][0]['field_paragraphs_demo'][1]['field_text_demo'][0]['value'], 'Llamas are very cool for the second time');
+    $this->assertEquals($data['field_paragraph_container'][1]['field_paragraphs_demo'][0]['field_text_demo'][0]['value'], 'Dogs are very cool for the first time');
+    $this->assertEquals($data['field_paragraph_container'][1]['field_paragraphs_demo'][1]['field_text_demo'][0]['value'], 'Dogs are very cool for the second time');
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
+    $this->assertSame(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('manual', $used_profile, 'The manual profile was used.');
+    $this->assertSame('manual', $used_profile, 'The manual profile was used.');
 
     // Request translation.
     $key = $this->getBulkSelectionKey('en', 1);
@@ -587,13 +588,13 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => 'request_translation:es-ar',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $this->drupalGet('node/1');
     $this->clickLink('Edit');
-    $this->drupalPostForm(NULL, NULL, t('Remove'));
-    $this->drupalPostForm(NULL, NULL, t('Confirm removal'));
-    $this->drupalPostForm(NULL, NULL, t('Add Image + Text'));
+    $this->submitForm(NULL, t('Remove'));
+    $this->submitForm(NULL, t('Confirm removal'));
+    $this->submitForm(NULL, t('Add Image + Text'));
 
     $edit = [];
     $edit['field_paragraph_container[1][subform][field_paragraphs_demo][0][subform][field_text_demo][0][value]'] = 'Cats are very cool for the second time';
@@ -603,16 +604,16 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
     $edit['field_paragraph_container[1][subform][field_paragraphs_demo][2][subform][field_text_demo][0][value]'] = 'Cats are very cool for the FOURTH time';
     $this->saveAndKeepPublishedNodeForm($edit, 1, FALSE);
 
-    $this->assertNoText('Llamas are very cool for the first time');
-    $this->assertNoText('Llamas are very cool for the second time');
+    $this->assertSession()->pageTextNotContains('Llamas are very cool for the first time');
+    $this->assertSession()->pageTextNotContains('Llamas are very cool for the second time');
 
-    $this->assertNoText('Dogs are very cool for the first time');
-    $this->assertNoText('Dogs are very cool for the second time');
+    $this->assertSession()->pageTextNotContains('Dogs are very cool for the first time');
+    $this->assertSession()->pageTextNotContains('Dogs are very cool for the second time');
 
-    $this->assertNoText('Cats are very cool for the first time');
-    $this->assertText('Cats are very cool for the second time');
-    $this->assertText('Cats are very cool for the third time');
-    $this->assertText('Cats are very cool for the FOURTH time');
+    $this->assertSession()->pageTextNotContains('Cats are very cool for the first time');
+    $this->assertSession()->pageTextContains('Cats are very cool for the second time');
+    $this->assertSession()->pageTextContains('Cats are very cool for the third time');
+    $this->assertSession()->pageTextContains('Cats are very cool for the FOURTH time');
 
     // Download translation.
     $this->goToContentBulkManagementForm();
@@ -621,48 +622,48 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => 'download_translation:es-ar',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('es_AR', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('es_AR', \Drupal::state()->get('lingotek.downloaded_locale'));
 
     $this->drupalGet('node/1/translations');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
 
     if ($this->paragraphsTranslatable) {
-      $this->assertText('Las llamas son muy chulas por primera vez');
-      $this->assertText('Las llamas son muy chulas por segunda vez');
+      $this->assertSession()->pageTextContains('Las llamas son muy chulas por primera vez');
+      $this->assertSession()->pageTextContains('Las llamas son muy chulas por segunda vez');
     }
     else {
-      $this->assertNoText('Las llamas son muy chulas por primera vez');
-      $this->assertNoText('Las llamas son muy chulas por segunda vez');
+      $this->assertSession()->pageTextNotContains('Las llamas son muy chulas por primera vez');
+      $this->assertSession()->pageTextNotContains('Las llamas son muy chulas por segunda vez');
       // We show the data that was actually uploaded and translated from the
       // previous revision. The first revision is missing, as it was not
       // translated.
-      $this->assertText('Los perros son muy chulos por primera vez');
-      $this->assertText('Los perros son muy chulos por segunda vez');
+      $this->assertSession()->pageTextContains('Los perros son muy chulos por primera vez');
+      $this->assertSession()->pageTextContains('Los perros son muy chulos por segunda vez');
       // That paragraph exists, but was not translated so it's not shown at all.
-      $this->assertNoText('Los gatos son muy chulos por primera vez');
-      $this->assertNoText('Los gatos son muy chulos por segunda vez');
-      $this->assertNoText('Los gatos son muy chulos por tercera vez');
-      $this->assertNoText('Los gatos son muy chulos por cuarta vez');
+      $this->assertSession()->pageTextNotContains('Los gatos son muy chulos por primera vez');
+      $this->assertSession()->pageTextNotContains('Los gatos son muy chulos por segunda vez');
+      $this->assertSession()->pageTextNotContains('Los gatos son muy chulos por tercera vez');
+      $this->assertSession()->pageTextNotContains('Los gatos son muy chulos por cuarta vez');
     }
 
     $this->clickLink('Translate');
     $this->clickLink('Llamas are cool');
 
-    $this->assertText('Llamas are cool');
-    $this->assertNoText('Llamas are very cool for the first time');
-    $this->assertNoText('Llamas are very cool for the second time');
+    $this->assertSession()->pageTextContains('Llamas are cool');
+    $this->assertSession()->pageTextNotContains('Llamas are very cool for the first time');
+    $this->assertSession()->pageTextNotContains('Llamas are very cool for the second time');
 
-    $this->assertNoText('Dogs are very cool for the first time');
-    $this->assertNoText('Dogs are very cool for the second time');
+    $this->assertSession()->pageTextNotContains('Dogs are very cool for the first time');
+    $this->assertSession()->pageTextNotContains('Dogs are very cool for the second time');
 
-    $this->assertNoText('Cats are very cool for the first time');
-    $this->assertText('Cats are very cool for the FOURTH time');
-    $this->assertText('Cats are very cool for the third time');
-    $this->assertText('Cats are very cool for the second time');
+    $this->assertSession()->pageTextNotContains('Cats are very cool for the first time');
+    $this->assertSession()->pageTextContains('Cats are very cool for the FOURTH time');
+    $this->assertSession()->pageTextContains('Cats are very cool for the third time');
+    $this->assertSession()->pageTextContains('Cats are very cool for the second time');
   }
 
   public function testEditingAfterNodeWithParagraphsTranslation() {
@@ -677,8 +678,8 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
     $this->drupalGet('node/1/edit');
     $assert_session->fieldValueEquals('field_paragraph_container[0][subform][field_paragraphs_demo][0][subform][field_text_demo][0][value]', 'Llamas are very cool');
 
-    $this->drupalPostForm(NULL, NULL, t('Remove'));
-    $this->drupalPostForm(NULL, NULL, t('Confirm removal'));
+    $this->submitForm(NULL, t('Remove'));
+    $this->submitForm(NULL, t('Confirm removal'));
 
     $page->pressButton('Save (this translation)');
     $assert_session->pageTextContains('Llamas are cool has been updated.');
@@ -734,7 +735,8 @@ class LingotekNodeNestedParagraphsTranslationTest extends LingotekTestBase {
     $edit = [];
     $edit['settings[node][paragraphed_nested_content][fields][field_paragraph_container]'] = 1;
     $edit['settings[paragraph][paragraph_container][fields][field_paragraphs_demo]'] = 1;
-    $this->drupalPostForm('/admin/config/regional/content-language', $edit, 'Save configuration');
+    $this->drupalGet('/admin/config/regional/content-language');
+    $this->submitForm($edit, 'Save configuration');
     $this->assertSession()->responseContains('Settings successfully updated.');
   }
 

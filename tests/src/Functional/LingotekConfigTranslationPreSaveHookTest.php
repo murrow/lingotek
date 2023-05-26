@@ -14,7 +14,7 @@ class LingotekConfigTranslationPreSaveHookTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block'];
+  protected static $modules = ['block'];
 
   /**
    * {@inheritdoc}
@@ -53,8 +53,8 @@ class LingotekConfigTranslationPreSaveHookTest extends LingotekTestBase {
     // Check that [token] is encoded via hook_lingotek_config_entity_document_upload().
     // @see lingotek_test_lingotek_config_entity_document_upload()
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->verbose(var_export($data, TRUE));
-    $this->assertEqual($data['settings.label'], 'Title with [***SITE:NAME***]');
+    dump(var_export($data, TRUE));
+    $this->assertEquals($data['settings.label'], 'Title with [***SITE:NAME***]');
 
     // Translate the block using the Lingotek translate config admin form.
     $this->drupalGet("admin/structure/block/manage/$block_id/translate");
@@ -67,10 +67,10 @@ class LingotekConfigTranslationPreSaveHookTest extends LingotekTestBase {
     // Check that [token] is decoded via hook_lingotek_config_entity_translation_presave().
     // @see lingotek_test_lingotek_config_entity_translation_presave()
     $this->drupalGet("admin/structure/block/manage/$block_id/translate/es/edit");
-    $this->assertFieldByName("translation[config_names][block.block.$block_id][settings][label]", 'Título con [site:name]');
+    $this->assertSession()->fieldValueEquals("translation[config_names][block.block.$block_id][settings][label]", 'Título con [site:name]');
 
     $this->drupalGet('es/user');
-    $this->assertText('Título con [site:name]');
+    $this->assertSession()->pageTextContains('Título con [site:name]');
   }
 
 }

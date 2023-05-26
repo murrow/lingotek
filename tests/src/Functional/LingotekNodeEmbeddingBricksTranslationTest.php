@@ -25,7 +25,7 @@ class LingotekNodeEmbeddingBricksTranslationTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'field_ui',
     'block',
     'node',
@@ -86,7 +86,7 @@ class LingotekNodeEmbeddingBricksTranslationTest extends LingotekTestBase {
     $edit = [
       'settings[node][article][fields][field_brick]' => TRUE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save configuration');
+    $this->submitForm($edit, 'Save configuration');
 
     $bundle = $this->vocabulary->id();
     $this->saveLingotekContentTranslationSettings([
@@ -131,21 +131,21 @@ class LingotekNodeEmbeddingBricksTranslationTest extends LingotekTestBase {
 
     // Check that only the configured fields have been uploaded, including tags.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->verbose(var_export($data, TRUE));
+    dump(var_export($data, TRUE));
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
-    $this->assertEqual(1, count($data['field_brick']));
-    $this->assertEqual('Camelid', $data['field_brick'][0]['name'][0]['value']);
+    $this->assertEquals(1, count($data['field_brick']));
+    $this->assertEquals('Camelid', $data['field_brick'][0]['name'][0]['value']);
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
+    $this->assertSame(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -154,30 +154,30 @@ class LingotekNodeEmbeddingBricksTranslationTest extends LingotekTestBase {
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     // Request translation.
     $link = $this->xpath('//a[normalize-space()="Request translation" and contains(@href,"es_AR")]');
     $link[0]->click();
-    $this->assertText("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_AR translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
     $this->assertLingotekWorkbenchLink('es_AR', 'dummy-document-hash-id', 'Edit in Ray Enterprise Workbench');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Llamas are cool into es_AR has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_AR has been downloaded.');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
-    $this->assertText('Camélido');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Camélido');
   }
 
   protected function addBrickField() {
@@ -188,17 +188,17 @@ class LingotekNodeEmbeddingBricksTranslationTest extends LingotekTestBase {
       'label' => 'Brick field',
       'field_name' => 'brick',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save and continue');
+    $this->submitForm($edit, 'Save and continue');
     $edit = [
       'cardinality' => -1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save field settings');
+    $this->submitForm($edit, 'Save field settings');
 
     $edit = [
       'settings[handler_settings][auto_create]' => TRUE,
       'settings[handler_settings][target_bundles][' . $this->vocabulary->id() . ']' => TRUE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save settings');
+    $this->submitForm($edit, 'Save settings');
 
   }
 

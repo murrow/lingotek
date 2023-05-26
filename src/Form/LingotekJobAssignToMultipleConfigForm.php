@@ -308,6 +308,7 @@ class LingotekJobAssignToMultipleConfigForm extends FormBase {
       elseif (substr($type, -7) == '_fields') {
         $mapper = $this->mappers[$type];
         $ids = \Drupal::entityQuery('field_config')
+          ->accessCheck(FALSE)
           ->condition('id', array_keys($data))
           ->execute();
         $fields = FieldConfig::loadMultiple($ids);

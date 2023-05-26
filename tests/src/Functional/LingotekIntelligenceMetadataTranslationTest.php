@@ -19,7 +19,7 @@ class LingotekIntelligenceMetadataTranslationTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node'];
+  protected static $modules = ['block', 'node'];
 
   /**
    * @var \Drupal\node\NodeInterface
@@ -111,26 +111,26 @@ class LingotekIntelligenceMetadataTranslationTest extends LingotekTestBase {
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
     $this->assertTrue(isset($data['uid']));
     $this->assertFalse(isset($data['uid'][0]['_lingotek_metadata']['_intelligence']));
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
     $this->assertNull($data['uid'][0]['_lingotek_metadata']['_entity_revision']);
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
-    $this->assertEqual(4, count($data['_lingotek_metadata']));
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_revision'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_type_id'], 'node');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
+    $this->assertEquals(4, count($data['_lingotek_metadata']));
+    $this->assertSame($data['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_entity_revision'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_entity_type_id'], 'node');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
   }
 
   public function testUploadNodeWithDefaultSettings() {
@@ -157,43 +157,43 @@ class LingotekIntelligenceMetadataTranslationTest extends LingotekTestBase {
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
     $this->assertTrue(isset($data['uid']));
     $this->assertFalse(isset($data['uid'][0]['_lingotek_metadata']['_intelligence']));
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
     $this->assertNull($data['uid'][0]['_lingotek_metadata']['_entity_revision']);
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
-    $this->assertEqual(4, count($data['_lingotek_metadata']));
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_revision'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_type_id'], 'node');
+    $this->assertEquals(4, count($data['_lingotek_metadata']));
+    $this->assertSame($data['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_entity_revision'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_entity_type_id'], 'node');
 
-    $this->assertEqual(17, count($data['_lingotek_metadata']['_intelligence']));
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['domain'], $domain);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['reference_url'], $this->node->toUrl()->setAbsolute(TRUE)->toString());
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['author_name'], 'admin');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['author_email'], 'admin@example.com');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['business_unit'], NULL);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['business_division'], NULL);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['campaign_id'], NULL);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['campaign_rating'], 0);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['channel'], NULL);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['contact_name'], NULL);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['contact_email'], NULL);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['content_description'], NULL);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['external_style_id'], NULL);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['purchase_order'], NULL);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['region'], NULL);
+    $this->assertEquals(17, count($data['_lingotek_metadata']['_intelligence']));
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['domain'], $domain);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['reference_url'], $this->node->toUrl()->setAbsolute(TRUE)->toString());
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['author_name'], 'admin');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['author_email'], 'admin@example.com');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['business_unit'], NULL);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['business_division'], NULL);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['campaign_id'], NULL);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['campaign_rating'], 0);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['channel'], NULL);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['contact_name'], NULL);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['contact_email'], NULL);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['content_description'], NULL);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['external_style_id'], NULL);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['purchase_order'], NULL);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['region'], NULL);
   }
 
   /**
@@ -224,43 +224,43 @@ class LingotekIntelligenceMetadataTranslationTest extends LingotekTestBase {
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
     $this->assertTrue(isset($data['uid']));
     $this->assertFalse(isset($data['uid'][0]['_lingotek_metadata']['_intelligence']));
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
     $this->assertNull($data['uid'][0]['_lingotek_metadata']['_entity_revision']);
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
-    $this->assertEqual(4, count($data['_lingotek_metadata']));
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_revision'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_type_id'], 'node');
+    $this->assertEquals(4, count($data['_lingotek_metadata']));
+    $this->assertSame($data['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_entity_revision'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_entity_type_id'], 'node');
 
-    $this->assertEqual(17, count($data['_lingotek_metadata']['_intelligence']));
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['domain'], $domain);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['reference_url'], $this->node->toUrl()->setAbsolute(TRUE)->toString());
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['author_name'], 'admin');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['author_email'], 'admin@example.com');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['business_unit'], 'General Business Unit');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['business_division'], 'General Business Division');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['campaign_id'], 'General Campaign ID');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['campaign_rating'], 3);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['channel'], 'General Channel Test');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['contact_name'], 'General Test Contact Name');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['contact_email'], 'general@example.com');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['content_description'], 'General Content description');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['external_style_id'], 'general-my-style-id');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['purchase_order'], 'General PO32');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['region'], 'region2');
+    $this->assertEquals(17, count($data['_lingotek_metadata']['_intelligence']));
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['domain'], $domain);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['reference_url'], $this->node->toUrl()->setAbsolute(TRUE)->toString());
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['author_name'], 'admin');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['author_email'], 'admin@example.com');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['business_unit'], 'General Business Unit');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['business_division'], 'General Business Division');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['campaign_id'], 'General Campaign ID');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['campaign_rating'], 3);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['channel'], 'General Channel Test');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['contact_name'], 'General Test Contact Name');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['contact_email'], 'general@example.com');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['content_description'], 'General Content description');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['external_style_id'], 'general-my-style-id');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['purchase_order'], 'General PO32');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['region'], 'region2');
   }
 
   public function testUploadNodeWithContactEmailAsAuthorSetting() {
@@ -289,43 +289,43 @@ class LingotekIntelligenceMetadataTranslationTest extends LingotekTestBase {
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
     $this->assertTrue(isset($data['uid']));
     $this->assertFalse(isset($data['uid'][0]['_lingotek_metadata']['_intelligence']));
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
     $this->assertNull($data['uid'][0]['_lingotek_metadata']['_entity_revision']);
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
-    $this->assertEqual(4, count($data['_lingotek_metadata']));
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_revision'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_type_id'], 'node');
+    $this->assertEquals(4, count($data['_lingotek_metadata']));
+    $this->assertSame($data['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_entity_revision'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_entity_type_id'], 'node');
 
-    $this->assertEqual(17, count($data['_lingotek_metadata']['_intelligence']));
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['domain'], $domain);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['reference_url'], $this->node->toUrl()->setAbsolute(TRUE)->toString());
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['author_name'], 'admin');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['author_email'], 'general@example.com');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['business_unit'], 'General Business Unit');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['business_division'], 'General Business Division');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['campaign_id'], 'General Campaign ID');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['campaign_rating'], 3);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['channel'], 'General Channel Test');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['contact_name'], 'General Test Contact Name');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['contact_email'], 'general@example.com');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['content_description'], 'General Content description');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['external_style_id'], 'general-my-style-id');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['purchase_order'], 'General PO32');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['region'], 'region2');
+    $this->assertEquals(17, count($data['_lingotek_metadata']['_intelligence']));
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['domain'], $domain);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['reference_url'], $this->node->toUrl()->setAbsolute(TRUE)->toString());
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['author_name'], 'admin');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['author_email'], 'general@example.com');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['business_unit'], 'General Business Unit');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['business_division'], 'General Business Division');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['campaign_id'], 'General Campaign ID');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['campaign_rating'], 3);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['channel'], 'General Channel Test');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['contact_name'], 'General Test Contact Name');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['contact_email'], 'general@example.com');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['content_description'], 'General Content description');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['external_style_id'], 'general-my-style-id');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['purchase_order'], 'General PO32');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['region'], 'region2');
   }
 
   public function testUploadNodeWithProfileOverride() {
@@ -355,43 +355,43 @@ class LingotekIntelligenceMetadataTranslationTest extends LingotekTestBase {
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
     $this->assertTrue(isset($data['uid']));
     $this->assertFalse(isset($data['uid'][0]['_lingotek_metadata']['_intelligence']));
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
     $this->assertNull($data['uid'][0]['_lingotek_metadata']['_entity_revision']);
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('intelligent_profile', $used_profile, 'The Intelligent Profile profile was used.');
+    $this->assertSame('intelligent_profile', $used_profile, 'The Intelligent Profile profile was used.');
 
-    $this->assertEqual(4, count($data['_lingotek_metadata']));
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_revision'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_type_id'], 'node');
+    $this->assertEquals(4, count($data['_lingotek_metadata']));
+    $this->assertSame($data['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_entity_revision'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_entity_type_id'], 'node');
 
-    $this->assertEqual(17, count($data['_lingotek_metadata']['_intelligence']));
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['domain'], $domain);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['reference_url'], $this->node->toUrl()->setAbsolute(TRUE)->toString());
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['author_name'], 'admin');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['author_email'], 'admin@example.com');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['business_unit'], 'Profile Business Unit');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['business_division'], 'Profile Business Division');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['campaign_id'], 'Profile Campaign ID');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['campaign_rating'], 4);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['channel'], 'Profile Channel Test');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['contact_name'], 'Profile Test Contact Name');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['contact_email'], 'profile@example.com');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['content_description'], 'Profile Content description');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['external_style_id'], 'profile-my-style-id');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['purchase_order'], 'Profile PO42');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['region'], 'region2');
+    $this->assertEquals(17, count($data['_lingotek_metadata']['_intelligence']));
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['domain'], $domain);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['reference_url'], $this->node->toUrl()->setAbsolute(TRUE)->toString());
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['author_name'], 'admin');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['author_email'], 'admin@example.com');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['business_unit'], 'Profile Business Unit');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['business_division'], 'Profile Business Division');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['campaign_id'], 'Profile Campaign ID');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['campaign_rating'], 4);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['channel'], 'Profile Channel Test');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['contact_name'], 'Profile Test Contact Name');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['contact_email'], 'profile@example.com');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['content_description'], 'Profile Content description');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['external_style_id'], 'profile-my-style-id');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['purchase_order'], 'Profile PO42');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['region'], 'region2');
   }
 
   public function testUpdateNodeWithNoSettings() {
@@ -421,26 +421,26 @@ class LingotekIntelligenceMetadataTranslationTest extends LingotekTestBase {
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
     $this->assertTrue(isset($data['uid']));
     $this->assertFalse(isset($data['uid'][0]['_lingotek_metadata']['_intelligence']));
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
     $this->assertNull($data['uid'][0]['_lingotek_metadata']['_entity_revision']);
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
-    $this->assertEqual(4, count($data['_lingotek_metadata']));
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_revision'], '2');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_type_id'], 'node');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
+    $this->assertEquals(4, count($data['_lingotek_metadata']));
+    $this->assertSame($data['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_entity_revision'], '2');
+    $this->assertSame($data['_lingotek_metadata']['_entity_type_id'], 'node');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
   }
 
   public function testUpdateNodeWithDefaultSettings() {
@@ -467,43 +467,43 @@ class LingotekIntelligenceMetadataTranslationTest extends LingotekTestBase {
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
     $this->assertTrue(isset($data['uid']));
     $this->assertFalse(isset($data['uid'][0]['_lingotek_metadata']['_intelligence']));
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
     $this->assertNull($data['uid'][0]['_lingotek_metadata']['_entity_revision']);
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
-    $this->assertEqual(4, count($data['_lingotek_metadata']));
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_revision'], '2');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_type_id'], 'node');
+    $this->assertEquals(4, count($data['_lingotek_metadata']));
+    $this->assertSame($data['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_entity_revision'], '2');
+    $this->assertSame($data['_lingotek_metadata']['_entity_type_id'], 'node');
 
-    $this->assertEqual(17, count($data['_lingotek_metadata']['_intelligence']));
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['domain'], $domain);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['reference_url'], $this->node->toUrl()->setAbsolute(TRUE)->toString());
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['author_name'], 'admin');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['author_email'], 'admin@example.com');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['business_unit'], NULL);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['business_division'], NULL);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['campaign_id'], NULL);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['campaign_rating'], 0);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['channel'], NULL);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['contact_name'], NULL);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['contact_email'], NULL);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['content_description'], NULL);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['external_style_id'], NULL);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['purchase_order'], NULL);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['region'], NULL);
+    $this->assertEquals(17, count($data['_lingotek_metadata']['_intelligence']));
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['domain'], $domain);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['reference_url'], $this->node->toUrl()->setAbsolute(TRUE)->toString());
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['author_name'], 'admin');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['author_email'], 'admin@example.com');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['business_unit'], NULL);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['business_division'], NULL);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['campaign_id'], NULL);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['campaign_rating'], 0);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['channel'], NULL);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['contact_name'], NULL);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['contact_email'], NULL);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['content_description'], NULL);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['external_style_id'], NULL);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['purchase_order'], NULL);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['region'], NULL);
   }
 
   /**
@@ -537,43 +537,43 @@ class LingotekIntelligenceMetadataTranslationTest extends LingotekTestBase {
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
     $this->assertTrue(isset($data['uid']));
     $this->assertFalse(isset($data['uid'][0]['_lingotek_metadata']['_intelligence']));
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
     $this->assertNull($data['uid'][0]['_lingotek_metadata']['_entity_revision']);
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
-    $this->assertEqual(4, count($data['_lingotek_metadata']));
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_revision'], '2');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_type_id'], 'node');
+    $this->assertEquals(4, count($data['_lingotek_metadata']));
+    $this->assertSame($data['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_entity_revision'], '2');
+    $this->assertSame($data['_lingotek_metadata']['_entity_type_id'], 'node');
 
-    $this->assertEqual(17, count($data['_lingotek_metadata']['_intelligence']));
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['domain'], $domain);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['reference_url'], $this->node->toUrl()->setAbsolute(TRUE)->toString());
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['author_name'], 'admin');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['author_email'], 'admin@example.com');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['business_unit'], 'General Business Unit');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['business_division'], 'General Business Division');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['campaign_id'], 'General Campaign ID');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['campaign_rating'], 3);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['channel'], 'General Channel Test');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['contact_name'], 'General Test Contact Name');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['contact_email'], 'general@example.com');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['content_description'], 'General Content description');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['external_style_id'], 'general-my-style-id');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['purchase_order'], 'General PO32');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['region'], 'region2');
+    $this->assertEquals(17, count($data['_lingotek_metadata']['_intelligence']));
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['domain'], $domain);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['reference_url'], $this->node->toUrl()->setAbsolute(TRUE)->toString());
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['author_name'], 'admin');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['author_email'], 'admin@example.com');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['business_unit'], 'General Business Unit');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['business_division'], 'General Business Division');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['campaign_id'], 'General Campaign ID');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['campaign_rating'], 3);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['channel'], 'General Channel Test');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['contact_name'], 'General Test Contact Name');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['contact_email'], 'general@example.com');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['content_description'], 'General Content description');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['external_style_id'], 'general-my-style-id');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['purchase_order'], 'General PO32');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['region'], 'region2');
   }
 
   public function testUpdateNodeWithContactEmailAsAuthorSetting() {
@@ -603,43 +603,43 @@ class LingotekIntelligenceMetadataTranslationTest extends LingotekTestBase {
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
     $this->assertTrue(isset($data['uid']));
     $this->assertFalse(isset($data['uid'][0]['_lingotek_metadata']['_intelligence']));
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
     $this->assertNull($data['uid'][0]['_lingotek_metadata']['_entity_revision']);
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
-    $this->assertEqual(4, count($data['_lingotek_metadata']));
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_revision'], '2');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_type_id'], 'node');
+    $this->assertEquals(4, count($data['_lingotek_metadata']));
+    $this->assertSame($data['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_entity_revision'], '2');
+    $this->assertSame($data['_lingotek_metadata']['_entity_type_id'], 'node');
 
-    $this->assertEqual(17, count($data['_lingotek_metadata']['_intelligence']));
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['domain'], $domain);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['reference_url'], $this->node->toUrl()->setAbsolute(TRUE)->toString());
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['author_name'], 'admin');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['author_email'], 'general@example.com');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['business_unit'], 'General Business Unit');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['business_division'], 'General Business Division');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['campaign_id'], 'General Campaign ID');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['campaign_rating'], 3);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['channel'], 'General Channel Test');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['contact_name'], 'General Test Contact Name');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['contact_email'], 'general@example.com');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['content_description'], 'General Content description');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['external_style_id'], 'general-my-style-id');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['purchase_order'], 'General PO32');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['region'], 'region2');
+    $this->assertEquals(17, count($data['_lingotek_metadata']['_intelligence']));
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['domain'], $domain);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['reference_url'], $this->node->toUrl()->setAbsolute(TRUE)->toString());
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['author_name'], 'admin');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['author_email'], 'general@example.com');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['business_unit'], 'General Business Unit');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['business_division'], 'General Business Division');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['campaign_id'], 'General Campaign ID');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['campaign_rating'], 3);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['channel'], 'General Channel Test');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['contact_name'], 'General Test Contact Name');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['contact_email'], 'general@example.com');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['content_description'], 'General Content description');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['external_style_id'], 'general-my-style-id');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['purchase_order'], 'General PO32');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['region'], 'region2');
   }
 
   public function testUpdateNodeWithProfileOverride() {
@@ -673,43 +673,43 @@ class LingotekIntelligenceMetadataTranslationTest extends LingotekTestBase {
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
     $this->assertTrue(isset($data['uid']));
     $this->assertFalse(isset($data['uid'][0]['_lingotek_metadata']['_intelligence']));
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['uid'][0]['_lingotek_metadata']['_entity_type_id'], 'user');
     $this->assertNull($data['uid'][0]['_lingotek_metadata']['_entity_revision']);
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('intelligent_profile', $used_profile, 'The Intelligent Profile profile was used.');
+    $this->assertSame('intelligent_profile', $used_profile, 'The Intelligent Profile profile was used.');
 
-    $this->assertEqual(4, count($data['_lingotek_metadata']));
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_revision'], '2');
-    $this->assertIdentical($data['_lingotek_metadata']['_entity_type_id'], 'node');
+    $this->assertEquals(4, count($data['_lingotek_metadata']));
+    $this->assertSame($data['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_entity_revision'], '2');
+    $this->assertSame($data['_lingotek_metadata']['_entity_type_id'], 'node');
 
-    $this->assertEqual(17, count($data['_lingotek_metadata']['_intelligence']));
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['domain'], $domain);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['reference_url'], $this->node->toUrl()->setAbsolute(TRUE)->toString());
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['author_name'], 'admin');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['author_email'], 'admin@example.com');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['business_unit'], 'Profile Business Unit');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['business_division'], 'Profile Business Division');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['campaign_id'], 'Profile Campaign ID');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['campaign_rating'], 4);
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['channel'], 'Profile Channel Test');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['contact_name'], 'Profile Test Contact Name');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['contact_email'], 'profile@example.com');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['content_description'], 'Profile Content description');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['external_style_id'], 'profile-my-style-id');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['purchase_order'], 'Profile PO42');
-    $this->assertIdentical($data['_lingotek_metadata']['_intelligence']['region'], 'region2');
+    $this->assertEquals(17, count($data['_lingotek_metadata']['_intelligence']));
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['external_document_id'], '1');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['content_type'], 'node - article');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['domain'], $domain);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['reference_url'], $this->node->toUrl()->setAbsolute(TRUE)->toString());
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['author_name'], 'admin');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['author_email'], 'admin@example.com');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['business_unit'], 'Profile Business Unit');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['business_division'], 'Profile Business Division');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['campaign_id'], 'Profile Campaign ID');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['campaign_rating'], 4);
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['channel'], 'Profile Channel Test');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['contact_name'], 'Profile Test Contact Name');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['contact_email'], 'profile@example.com');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['content_description'], 'Profile Content description');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['external_style_id'], 'profile-my-style-id');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['purchase_order'], 'Profile PO42');
+    $this->assertSame($data['_lingotek_metadata']['_intelligence']['region'], 'region2');
   }
 
   protected function disableIntelligenceMetadata() {
@@ -732,7 +732,7 @@ class LingotekIntelligenceMetadataTranslationTest extends LingotekTestBase {
       'intelligence_metadata[use_base_domain]' => FALSE,
       'intelligence_metadata[use_reference_url]' => FALSE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save Lingotek Intelligence Metadata', [], 'lingotekintelligence-metadata-form');
+    $this->submitForm($edit, 'Save Lingotek Intelligence Metadata', 'lingotekintelligence-metadata-form');
   }
 
   protected function setupIntelligenceProfileSettings() {
@@ -774,7 +774,7 @@ class LingotekIntelligenceMetadataTranslationTest extends LingotekTestBase {
       'intelligence_metadata[purchase_order]' => 'Profile PO42',
       'intelligence_metadata[region]' => 'region2',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
 
   }
 
@@ -810,14 +810,14 @@ class LingotekIntelligenceMetadataTranslationTest extends LingotekTestBase {
       'intelligence_metadata[purchase_order]' => 'General PO32',
       'intelligence_metadata[region]' => 'region2',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save Lingotek Intelligence Metadata', [], 'lingotekintelligence-metadata-form');
+    $this->submitForm($edit, 'Save Lingotek Intelligence Metadata', 'lingotekintelligence-metadata-form');
   }
 
   protected function setupContactEmailForAuthorIntelligenceSettings() {
     $edit = [
       'intelligence_metadata[use_contact_email_for_author]' => TRUE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save Lingotek Intelligence Metadata', [], 'lingotekintelligence-metadata-form');
+    $this->submitForm($edit, 'Save Lingotek Intelligence Metadata', 'lingotekintelligence-metadata-form');
   }
 
   /**

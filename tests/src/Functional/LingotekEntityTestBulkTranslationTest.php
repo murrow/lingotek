@@ -17,7 +17,7 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'entity_test'];
+  protected static $modules = ['block', 'entity_test'];
 
   /**
    * {@inheritdoc}
@@ -77,7 +77,8 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
     $edit['field_test_text[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
-    $this->drupalPostForm('/entity_test_mul/add/entity_test_mul', $edit, t('Save'));
+    $this->drupalGet('/entity_test_mul/add/entity_test_mul');
+    $this->submitForm($edit, t('Save'));
 
     $this->goToContentBulkManagementForm('entity_test_mul');
 
@@ -86,33 +87,33 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
     // And we cannot request yet a translation.
     $this->assertNoLingotekRequestTranslationLink('es_MX', 'dummy-document-hash-id', 'entity_test_mul');
     $this->clickLink('EN');
-    $this->assertText('Entity_test_mul Llamas are cool has been uploaded.');
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSession()->pageTextContains('Entity_test_mul Llamas are cool has been uploaded.');
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // There is a link for checking status.
     $this->assertLingotekCheckSourceStatusLink('dummy-document-hash-id', 'entity_test_mul');
     // And we can already request a translation.
     $this->assertLingotekRequestTranslationLink('es_MX', 'dummy-document-hash-id', 'entity_test_mul');
     $this->clickLink('EN');
-    $this->assertText('The import for entity_test_mul Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for entity_test_mul Llamas are cool is complete.');
 
     // Request the Spanish translation.
     $this->assertLingotekRequestTranslationLink('es_MX', 'dummy-document-hash-id', 'entity_test_mul');
     $this->clickLink('ES');
-    $this->assertText("Locale 'es_MX' was added as a translation target for entity_test_mul Llamas are cool.");
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains("Locale 'es_MX' was added as a translation target for entity_test_mul Llamas are cool.");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $this->assertLingotekCheckTargetStatusLink('es_MX', 'dummy-document-hash-id', 'entity_test_mul');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText('The es_MX translation for entity_test_mul Llamas are cool is ready for download.');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains('The es_MX translation for entity_test_mul Llamas are cool is ready for download.');
 
     // Download the Spanish translation.
     $this->assertLingotekDownloadTargetLink('es_MX', 'dummy-document-hash-id', 'entity_test_mul');
     $this->clickLink('ES');
-    $this->assertText('The translation of entity_test_mul Llamas are cool into es_MX has been downloaded.');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->assertSession()->pageTextContains('The translation of entity_test_mul Llamas are cool into es_MX has been downloaded.');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
 
     // Now the link is to the workbench, and it opens in a new tab.
     $this->assertLingotekWorkbenchLink('es_MX', 'dummy-document-hash-id', 'ES');
@@ -131,7 +132,8 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
     $edit['field_test_text[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
-    $this->drupalPostForm('/entity_test_mul/add/entity_test_mul', $edit, t('Save'));
+    $this->drupalGet('/entity_test_mul/add/entity_test_mul');
+    $this->submitForm($edit, t('Save'));
 
     $this->goToContentBulkManagementForm('entity_test_mul');
 
@@ -142,8 +144,8 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('entity_test_mul'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // I can check current status.
     $this->assertLingotekCheckSourceStatusLink('dummy-document-hash-id', 'entity_test_mul');
@@ -152,7 +154,7 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckUpload('entity_test_mul'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Request the German (AT) translation.
     $this->assertLingotekRequestTranslationLink('de_AT', 'dummy-document-hash-id', 'entity_test_mul');
@@ -161,8 +163,8 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslation('de', 'entity_test_mul'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('de_AT', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('de_AT', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the German (AT) translation.
     $this->assertLingotekCheckTargetStatusLink('de_AT', 'dummy-document-hash-id', 'entity_test_mul');
@@ -171,8 +173,8 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => 'check_translation:de',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('de_AT', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('de_AT', \Drupal::state()->get('lingotek.checked_target_locale'));
 
     // Download the German (AT) translation.
     $this->assertLingotekDownloadTargetLink('de_AT', 'dummy-document-hash-id', 'entity_test_mul');
@@ -181,8 +183,8 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => 'download_translation:de',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('de_AT', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('de_AT', \Drupal::state()->get('lingotek.downloaded_locale'));
 
     // Now the link is to the workbench, and it opens in a new tab.
     $this->assertLingotekWorkbenchLink('de_AT', 'dummy-document-hash-id', 'DE');
@@ -203,7 +205,8 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
     $edit['field_test_text[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
-    $this->drupalPostForm('/entity_test_mul/add/entity_test_mul', $edit, t('Save'));
+    $this->drupalGet('/entity_test_mul/add/entity_test_mul');
+    $this->submitForm($edit, t('Save'));
 
     $this->goToContentBulkManagementForm('entity_test_mul');
 
@@ -214,8 +217,8 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('entity_test_mul'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // I can check current status.
     $this->assertLingotekCheckSourceStatusLink('dummy-document-hash-id', 'entity_test_mul');
@@ -224,7 +227,7 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckUpload('entity_test_mul'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Assert that I could request translations.
     $this->assertLingotekRequestTranslationLink('de_AT', 'dummy-document-hash-id', 'entity_test_mul');
@@ -235,7 +238,7 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckTranslations('entity_test_mul'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Now Drupal knows that there are translations ready.
     $this->assertLingotekDownloadTargetLink('de_AT', 'dummy-document-hash-id', 'entity_test_mul');
@@ -243,12 +246,12 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
 
     // Even if I just add a new language.
     ConfigurableLanguage::createFromLangcode('de')->setThirdPartySetting('lingotek', 'locale', 'de_DE')->save();
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $this->assertLingotekDownloadTargetLink('de_DE', 'dummy-document-hash-id', 'entity_test_mul');
 
     // Ensure locales are handled correctly by setting manual values.
     \Drupal::state()->set('lingotek.document_completion_statuses', ['de-AT' => 50, 'de-DE' => 100, 'es-MX' => 10]);
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Now Drupal knows which translations are ready.
     $this->assertNoLingotekDownloadTargetLink('de_AT', 'dummy-document-hash-id', 'entity_test_mul');
@@ -259,7 +262,7 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
 
     \Drupal::state()->set('lingotek.document_completion_statuses', ['it-IT' => 100, 'de-DE' => 50, 'es-MX' => 10]);
     // Check all statuses again.
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // All translations must be updated according exclusively with the
     // information from the TMS.
@@ -283,7 +286,8 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
     $edit['field_test_text[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
-    $this->drupalPostForm('/entity_test_mul/add/entity_test_mul', $edit, t('Save'));
+    $this->drupalGet('/entity_test_mul/add/entity_test_mul');
+    $this->submitForm($edit, t('Save'));
 
     $this->goToContentBulkManagementForm('entity_test_mul');
 
@@ -294,8 +298,8 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('entity_test_mul'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // I can check current status.
     $this->assertLingotekCheckSourceStatusLink('dummy-document-hash-id', 'entity_test_mul');
@@ -307,7 +311,7 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckUpload('entity_test_mul'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // I can check current status, because it wasn't imported but it's not marked
     // as an error.
@@ -320,7 +324,7 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckUpload('entity_test_mul'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Assert that targets can be requested.
     $this->assertLingotekRequestTranslationLink('es_MX', 'dummy-document-hash-id', 'entity_test_mul');
@@ -350,7 +354,8 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
     $edit['field_test_text[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
-    $this->drupalPostForm('/entity_test_mul/add/entity_test_mul', $edit, t('Save'));
+    $this->drupalGet('/entity_test_mul/add/entity_test_mul');
+    $this->submitForm($edit, t('Save'));
 
     $this->goToContentBulkManagementForm('entity_test_mul');
 
@@ -363,8 +368,8 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('entity_test_mul'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // I can check current status.
     $this->assertLingotekCheckSourceStatusLink('dummy-document-hash-id', 'entity_test_mul');
@@ -373,19 +378,19 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckUpload('entity_test_mul'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Request the Spanish translation.
     $this->assertLingotekRequestTranslationLink('es_MX', 'dummy-document-hash-id', 'entity_test_mul');
     $this->clickLink('ES');
-    $this->assertText("Locale 'es_MX' was added as a translation target for entity_test_mul Llamas are cool.");
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains("Locale 'es_MX' was added as a translation target for entity_test_mul Llamas are cool.");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $this->assertLingotekCheckTargetStatusLink('es_MX', 'dummy-document-hash-id', 'entity_test_mul');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText('The es_MX translation for entity_test_mul Llamas are cool is ready for download.');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains('The es_MX translation for entity_test_mul Llamas are cool is ready for download.');
 
     // Download all the translations.
     $this->assertLingotekDownloadTargetLink('es_MX', 'dummy-document-hash-id', 'entity_test_mul');
@@ -394,7 +399,7 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForDownloadTranslations('entity_test_mul'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // The translations not requested shouldn't change its status.
     $this->assertLingotekRequestTranslationLink('de_DE', 'dummy-document-hash-id', 'entity_test_mul');
@@ -422,7 +427,8 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
     $edit['field_test_text[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
-    $this->drupalPostForm('/entity_test_mul/add/entity_test_mul', $edit, t('Save'));
+    $this->drupalGet('/entity_test_mul/add/entity_test_mul');
+    $this->submitForm($edit, t('Save'));
 
     $this->goToContentBulkManagementForm('entity_test_mul');
 
@@ -433,8 +439,8 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('entity_test_mul'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -444,13 +450,13 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckUpload('entity_test_mul'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Request the Spanish translation.
     $this->assertLingotekRequestTranslationLink('es_MX', 'dummy-document-hash-id', 'entity_test_mul');
     $this->clickLink('ES');
-    $this->assertText("Locale 'es_MX' was added as a translation target for entity_test_mul Llamas are cool.");
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSession()->pageTextContains("Locale 'es_MX' was added as a translation target for entity_test_mul Llamas are cool.");
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.added_target_locale'));
 
     \Drupal::state()->resetCache();
@@ -458,23 +464,23 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
     // Request italian.
     $this->assertLingotekRequestTranslationLink('it_IT', 'dummy-document-hash-id', 'entity_test_mul');
     $this->clickLink('IT');
-    $this->assertText("Locale 'it_IT' was added as a translation target for entity_test_mul Llamas are cool.");
-    $this->assertIdentical('it_IT', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains("Locale 'it_IT' was added as a translation target for entity_test_mul Llamas are cool.");
+    $this->assertSame('it_IT', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $this->assertLingotekCheckTargetStatusLink('es_MX', 'dummy-document-hash-id', 'entity_test_mul');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.checked_target_locale'));
-    $this->assertText('The es_MX translation for entity_test_mul Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_MX translation for entity_test_mul Llamas are cool is ready for download.');
 
     \Drupal::state()->resetCache();
 
     // Check status of the Italian translation.
     $this->assertLingotekCheckTargetStatusLink('it_IT', 'dummy-document-hash-id', 'entity_test_mul');
     $this->clickLink('IT');
-    $this->assertIdentical('it_IT', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText('The it_IT translation for entity_test_mul Llamas are cool is ready for download.');
+    $this->assertSame('it_IT', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains('The it_IT translation for entity_test_mul Llamas are cool is ready for download.');
 
     // Download all the translations.
     $this->assertLingotekDownloadTargetLink('es_MX', 'dummy-document-hash-id', 'entity_test_mul');
@@ -483,7 +489,7 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForDownloadTranslations('entity_test_mul'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // They are marked with the right status.
     $this->assertTargetStatus('ES', 'current');
@@ -497,7 +503,7 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckTranslations('entity_test_mul'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // And statuses should remain the same.
     $this->assertTargetStatus('ES', 'current');
@@ -515,7 +521,7 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
     // Get the node form.
     $this->drupalGet('entity_test_mul/add/entity_test_mul');
     // Assert translation profile cannot be assigned.
-    $this->assertNoField('lingotek_translation_management[lingotek_translation_profile]');
+    $this->assertSession()->fieldNotExists('lingotek_translation_management[lingotek_translation_profile]');
 
     $translation_manager = $this->drupalCreateUser([
       'administer entity_test content',
@@ -527,7 +533,7 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
     // Get the node form.
     $this->drupalGet('entity_test_mul/add/entity_test_mul');
     // Assert translation profile can be assigned.
-    $this->assertField('lingotek_translation_management[lingotek_translation_profile]');
+    $this->assertSession()->fieldExists('lingotek_translation_management[lingotek_translation_profile]');
 
     // Create a entity_test_mul.
     $edit = [];
@@ -535,10 +541,11 @@ class LingotekEntityTestBulkTranslationTest extends LingotekTestBase {
     $edit['field_test_text[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
-    $this->drupalPostForm('/entity_test_mul/add/entity_test_mul', $edit, t('Save'));
+    $this->drupalGet('/entity_test_mul/add/entity_test_mul');
+    $this->submitForm($edit, t('Save'));
     $this->clickLink('Edit');
 
-    $this->assertFieldById('edit-lingotek-translation-management-lingotek-translation-profile', 'manual');
+    $this->assertSession()->fieldValueEquals('edit-lingotek-translation-management-lingotek-translation-profile', 'manual');
   }
 
 }

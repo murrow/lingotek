@@ -25,7 +25,7 @@ trait LingotekManagementTestTrait {
     if ($destination = $this->getDestination($destination_entity_type_id, $prefix)) {
       $href .= $destination;
     }
-    $this->assertLinkByHref($href);
+    $this->assertSession()->linkByHrefExists($href);
   }
 
   /**
@@ -46,7 +46,7 @@ trait LingotekManagementTestTrait {
     if ($destination = $this->getDestination($destination_entity_type_id, $prefix)) {
       $href .= $destination;
     }
-    $this->assertNoLinkByHref($href);
+    $this->assertSession()->linkByHrefNotExists($href);
   }
 
   /**
@@ -67,7 +67,7 @@ trait LingotekManagementTestTrait {
     if ($destination = $this->getDestination($destination_entity_type_id, $prefix)) {
       $href .= $destination;
     }
-    $this->assertLinkByHref($href);
+    $this->assertSession()->linkByHrefExists($href);
   }
 
   /**
@@ -88,7 +88,7 @@ trait LingotekManagementTestTrait {
     if ($destination = $this->getDestination($destination_entity_type_id, $prefix)) {
       $href .= $destination;
     }
-    $this->assertLinkByHref($href);
+    $this->assertSession()->linkByHrefExists($href);
   }
 
   /**
@@ -109,7 +109,7 @@ trait LingotekManagementTestTrait {
     if ($destination = $this->getDestination($destination_entity_type_id, $prefix)) {
       $href .= $destination;
     }
-    $this->assertNoLinkByHref($href);
+    $this->assertSession()->linkByHrefNotExists($href);
   }
 
   /**
@@ -132,7 +132,7 @@ trait LingotekManagementTestTrait {
     if ($destination = $this->getDestination($destination_entity_type_id, $prefix)) {
       $href .= $destination;
     }
-    $this->assertLinkByHref($href);
+    $this->assertSession()->linkByHrefExists($href);
   }
 
   /**
@@ -155,7 +155,7 @@ trait LingotekManagementTestTrait {
     if ($destination = $this->getDestination($destination_entity_type_id, $prefix)) {
       $href .= $destination;
     }
-    $this->assertNoLinkByHref($href);
+    $this->assertSession()->linkByHrefNotExists($href);
   }
 
   /**
@@ -178,7 +178,7 @@ trait LingotekManagementTestTrait {
     if ($destination = $this->getDestination($destination_entity_type_id, $prefix)) {
       $href .= $destination;
     }
-    $this->assertLinkByHref($href);
+    $this->assertSession()->linkByHrefExists($href);
   }
 
   /**
@@ -201,7 +201,7 @@ trait LingotekManagementTestTrait {
     if ($destination = $this->getDestination($destination_entity_type_id, $prefix)) {
       $href .= $destination;
     }
-    $this->assertNoLinkByHref($href);
+    $this->assertSession()->linkByHrefNotExists($href);
   }
 
   /**
@@ -224,7 +224,7 @@ trait LingotekManagementTestTrait {
     if ($destination = $this->getDestination($destination_entity_type_id, $prefix)) {
       $href .= $destination;
     }
-    $this->assertLinkByHref($href);
+    $this->assertSession()->linkByHrefExists($href);
   }
 
   /**
@@ -247,7 +247,7 @@ trait LingotekManagementTestTrait {
     if ($destination = $this->getDestination($destination_entity_type_id, $prefix)) {
       $href .= $destination;
     }
-    $this->assertNoLinkByHref($href);
+    $this->assertSession()->linkByHrefNotExists($href);
   }
 
   /**
@@ -260,12 +260,12 @@ trait LingotekManagementTestTrait {
    */
   protected function assertLingotekWorkbenchLink($locale, $document_id = 'dummy-document-hash-id', $text = NULL) {
     $basepath = \Drupal::request()->getBasePath();
-    $this->assertLinkByHref($basepath . '/admin/lingotek/workbench/' . $document_id . '/' . $locale);
+    $this->assertSession()->linkByHrefExists($basepath . '/admin/lingotek/workbench/' . $document_id . '/' . $locale);
     $workbench_link = $this->xpath("//a[@href='$basepath/admin/lingotek/workbench/$document_id/$locale' and @target='_blank']");
     if ($text !== NULL) {
       $workbench_link = $this->xpath("//a[@href='$basepath/admin/lingotek/workbench/$document_id/$locale' and @target='_blank' and text()='$text']");
     }
-    $this->assertEqual(count($workbench_link), 1, 'Workbench links open in a new tab.');
+    $this->assertEquals(count($workbench_link), 1, 'Workbench links open in a new tab.');
   }
 
   /**

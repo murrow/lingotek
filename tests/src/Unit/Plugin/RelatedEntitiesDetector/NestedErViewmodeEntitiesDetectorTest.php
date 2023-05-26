@@ -47,18 +47,25 @@ class NestedErViewmodeEntitiesDetectorTest extends UnitTestCase {
   protected $entityTypeManager;
 
   /**
-   * The mocked entity field manager
+   * The mocked entity field manager.
    *
    * @var \Drupal\Core\Entity\EntityFieldManagerInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $entityFieldManager;
 
   /**
-   * The lingotek configuartion service.
+   * The lingotek configuration service.
    *
    * @var \Drupal\lingotek\LingotekConfigurationServiceInterface
    */
   protected $lingotekConfiguration;
+
+  /**
+   * The mocked entity type.
+   *
+   * @var \Drupal\Core\Entity\ContentEntityTypeInterface|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $entityType;
 
   /**
    * {@inheritdoc}

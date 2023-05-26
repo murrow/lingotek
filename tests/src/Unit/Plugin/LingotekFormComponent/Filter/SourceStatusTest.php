@@ -33,7 +33,7 @@ class SourceStatusTest extends UnitTestCase {
   /**
    * The connection object on which to run queries.
    *
-   * @var \Drupal\Core\Database\Connection|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Database\Connection|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $connection;
 
@@ -85,9 +85,7 @@ class SourceStatusTest extends UnitTestCase {
   protected function setUp(): void {
     parent::setUp();
 
-    $this->connection = $this->getMockBuilder(Connection::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->connection = $this->createMock(Connection::class);
 
     $this->entityType = $this->createMock(ContentEntityTypeInterface::class);
     $this->entityType->expects($this->any())
@@ -176,7 +174,7 @@ class SourceStatusTest extends UnitTestCase {
       ->with('lingotek_content_metadata')
       ->willReturn($metadata);
 
-    $select = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $select = $this->createMock(PagerSelectExtender::class);
     $select->expects($this->at(0))
       ->method('innerJoin')
       ->with('metadata_content', 'metadata_source', "entity_table.entity_id= metadata_source.content_entity_id AND metadata_source.content_entity_type_id = 'my_entity_type_id'")
@@ -225,7 +223,7 @@ class SourceStatusTest extends UnitTestCase {
       ->with('lingotek_content_metadata')
       ->willReturn($metadata);
 
-    $select = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $select = $this->createMock(PagerSelectExtender::class);
     $select->expects($this->at(0))
       ->method('innerJoin')
       ->with('metadata_content', 'metadata_source', "entity_table.entity_id= metadata_source.content_entity_id AND metadata_source.content_entity_type_id = 'my_entity_type_id'")
@@ -239,7 +237,7 @@ class SourceStatusTest extends UnitTestCase {
       ->with('translation_status.translation_status_value', ['EDITED', 'REQUEST', 'CANCELLED', 'ERROR'], 'IN')
       ->willReturnSelf();
 
-    $no_metadata_query = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $no_metadata_query = $this->createMock(PagerSelectExtender::class);
     $this->connection->expects($this->at(0))
       ->method('select')
       ->with('metadata_content', 'mt')
@@ -253,7 +251,7 @@ class SourceStatusTest extends UnitTestCase {
       ->with('entity_table.entity_id = mt.content_entity_id')
       ->willReturnSelf();
 
-    $union1 = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $union1 = $this->createMock(PagerSelectExtender::class);
     $this->connection->expects($this->at(1))
       ->method('select')
       ->with('entity_datatable', 'entity_table')
@@ -271,7 +269,7 @@ class SourceStatusTest extends UnitTestCase {
       ->with($no_metadata_query)
       ->willReturnSelf();
 
-    $no_statuses_query = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $no_statuses_query = $this->createMock(PagerSelectExtender::class);
     $this->connection->expects($this->at(2))
       ->method('select')
       ->with('lingotek_content_metadata__translation_status', 'tst')
@@ -285,7 +283,7 @@ class SourceStatusTest extends UnitTestCase {
       ->with('mt2.metadata_id = tst.entity_id')
       ->willReturnSelf();
 
-    $union2 = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $union2 = $this->createMock(PagerSelectExtender::class);
     $this->connection->expects($this->at(3))
       ->method('select')
       ->with('entity_datatable', 'entity_table')

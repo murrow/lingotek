@@ -1,7 +1,7 @@
-(function ($, Drupal) {
+(function ($, once, Drupal) {
   Drupal.behaviors.lingotekLocalesTableFilterByText = {
     attach: function attach(context, settings) {
-      var $input = $('input.locales-filter-text').once('locales-filter-text');
+      var $input = $(once('locales-filter-text','input.locales-filter-text' ));
       var $table = $($input.attr('data-table'));
       var $rows;
 
@@ -28,4 +28,4 @@
       }
     }
   };
-})(jQuery, Drupal);
+})(jQuery, once, Drupal);

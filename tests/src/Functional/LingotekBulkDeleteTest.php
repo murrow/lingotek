@@ -20,7 +20,7 @@ class LingotekBulkDeleteTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['taxonomy', 'block', 'node'];
+  protected static $modules = ['taxonomy', 'block', 'node'];
 
   /**
    * @var \Drupal\node\NodeInterface
@@ -87,7 +87,7 @@ class LingotekBulkDeleteTest extends LingotekTestBase {
 
     // Ensure the delete operation is there.
     $delete_option = $this->xpath('//*[@id="edit-operation"]/option[text()="Delete content"]');
-    $this->assertIdentical(1, count($delete_option), 'Delete operation must be available');
+    $this->assertSame(1, count($delete_option), 'Delete operation must be available');
 
     // Three nodes must be there.
     $assert_session->linkExists('Llamas are cool 2');
@@ -101,20 +101,20 @@ class LingotekBulkDeleteTest extends LingotekTestBase {
       'table[3]' => FALSE,
       $this->getBulkOperationFormName() => 'delete_content',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Ensure the confirmation page is shown.
-    $this->assertText(t('Are you sure you want to delete these content items?'));
-    $this->assertText('Llamas are cool');
-    $this->assertText('Llamas are cool 2');
-    $this->drupalPostForm(NULL, [], t('Delete'));
+    $this->assertSession()->pageTextContains(t('Are you sure you want to delete these content items?'));
+    $this->assertSession()->pageTextContains('Llamas are cool');
+    $this->assertSession()->pageTextContains('Llamas are cool 2');
+    $this->submitForm([], t('Delete'));
 
     // Only one node remains and we are back to the manage page.
-    $this->assertText('Deleted 2 content items.');
+    $this->assertSession()->pageTextContains('Deleted 2 content items.');
     $assert_session->linkNotExists('Llamas are cool 2');
     $assert_session->linkNotExists('Llamas are cool');
     $assert_session->linkExists('Llamas should stay');
-    $this->assertUrl('admin/lingotek/manage/node');
+    $this->assertSession()->addressEquals('admin/lingotek/manage/node');
   }
 
   /**
@@ -141,14 +141,15 @@ class LingotekBulkDeleteTest extends LingotekTestBase {
       "taxonomy_term[$bundle][fields][name]" => 1,
       "taxonomy_term[$bundle][fields][description]" => 1,
     ];
+    $this->drupalGet('admin/lingotek/settings', []);
 
-    $this->drupalPostForm('admin/lingotek/settings', $edit, 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
 
     $this->goToContentBulkManagementForm('taxonomy_term');
 
     // Ensure the delete operation is not there.
     $delete_option = $this->xpath('//*[@id="edit-operation"]/option[text()="Delete content"]');
-    $this->assertIdentical(0, count($delete_option), 'Delete operation should not be available');
+    $this->assertSame(0, count($delete_option), 'Delete operation should not be available');
   }
 
 }

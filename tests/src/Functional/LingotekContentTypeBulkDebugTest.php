@@ -14,7 +14,7 @@ class LingotekContentTypeBulkDebugTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node'];
+  protected static $modules = ['block', 'node'];
 
   /**
    * {@inheritdoc}
@@ -51,7 +51,7 @@ class LingotekContentTypeBulkDebugTest extends LingotekTestBase {
 
     // Enable the debug operations.
     $this->drupalGet('admin/lingotek/settings');
-    $this->drupalPostForm(NULL, [], t('Enable debug operations'));
+    $this->submitForm([], t('Enable debug operations'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -66,7 +66,7 @@ class LingotekContentTypeBulkDebugTest extends LingotekTestBase {
 
     // Enable the debug operations.
     $this->drupalGet('admin/lingotek/settings');
-    $this->drupalPostForm(NULL, [], t('Enable debug operations'));
+    $this->submitForm([], t('Enable debug operations'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm('node_type');
@@ -75,19 +75,19 @@ class LingotekContentTypeBulkDebugTest extends LingotekTestBase {
       'table[article]' => TRUE,
       $this->getBulkOperationFormName() => 'debug_export',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertText('Exports available');
+    $this->assertSession()->pageTextContains('Exports available');
     // Download the file.
     $this->clickLink('config.node_type.json');
 
     $response = json_decode($this->getSession()->getPage()->getContent(), TRUE);
-    $this->assertIdentical('Article', $response['node.type.article']['name']);
-    $this->assertIdentical(NULL, $response['node.type.article']['description']);
-    $this->assertIdentical(NULL, $response['node.type.article']['help']);
-    $this->assertIdentical('node_type (config): Article content type', $response['_debug']['title']);
-    $this->assertIdentical('automatic', $response['_debug']['profile']);
-    $this->assertIdentical('en_US', $response['_debug']['source_locale']);
+    $this->assertSame('Article', $response['node.type.article']['name']);
+    $this->assertSame(NULL, $response['node.type.article']['description']);
+    $this->assertSame(NULL, $response['node.type.article']['help']);
+    $this->assertSame('node_type (config): Article content type', $response['_debug']['title']);
+    $this->assertSame('automatic', $response['_debug']['profile']);
+    $this->assertSame('en_US', $response['_debug']['source_locale']);
   }
 
 }

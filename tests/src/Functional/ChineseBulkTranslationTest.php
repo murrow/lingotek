@@ -17,7 +17,7 @@ class ChineseBulkTranslationTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'comment'];
+  protected static $modules = ['node', 'comment'];
 
   protected function setUp(): void {
     parent::setUp();

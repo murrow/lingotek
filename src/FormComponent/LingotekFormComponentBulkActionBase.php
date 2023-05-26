@@ -15,6 +15,13 @@ use Psr\Log\LoggerAwareTrait;
  */
 abstract class LingotekFormComponentBulkActionBase extends LingotekFormComponentBase implements LingotekFormComponentBulkActionInterface {
 
+  /**
+   * The tempstore factory.
+   *
+   * @var \Drupal\Core\TempStore\PrivateTempStoreFactory
+   */
+  protected $tempStoreFactory;
+
   use LoggerAwareTrait;
   use DependencySerializationTrait;
 

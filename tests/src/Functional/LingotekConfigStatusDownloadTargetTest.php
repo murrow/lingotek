@@ -16,7 +16,7 @@ class LingotekConfigStatusDownloadTargetTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'node', 'field_ui'];
+  protected static $modules = ['block', 'node', 'field_ui'];
 
   protected function setUp(): void {
     parent::setUp();
@@ -61,8 +61,8 @@ class LingotekConfigStatusDownloadTargetTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // There is a link for checking status.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_upload/system.site_information_settings/system.site_information_settings?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -72,20 +72,20 @@ class LingotekConfigStatusDownloadTargetTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // Request the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertText('Translation to es_MX requested successfully');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains('Translation to es_MX requested successfully');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_download/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText('Translation to es_MX checked successfully');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains('Translation to es_MX checked successfully');
 
     // Edit the object
     $config = \Drupal::service('config.factory')->getEditable('system.site');
@@ -105,11 +105,11 @@ class LingotekConfigStatusDownloadTargetTest extends LingotekTestBase {
        'table[system.site_information_settings]' => TRUE,
        $this->getBulkOperationFormName() => $this->getBulkOperationNameForDownloadTranslations('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check the status is edited for Spanish.
     $source_edited = $this->xpath("//a[contains(@class,'language-icon') and contains(@class, 'source-edited') and contains(@title, 'Re-upload (content has changed since last upload)')]");
-    $this->assertEqual(count($source_edited), 1, 'Edited source is shown.');
+    $this->assertEquals(count($source_edited), 1, 'Edited source is shown.');
     $this->assertTargetStatus('ES', 'edited');
   }
 

@@ -29,7 +29,7 @@ class LingotekJobManagementContentEntitiesForm extends LingotekManagementFormBas
     $metadataStorage = $this->entityTypeManager->getStorage('lingotek_content_metadata');
     $entity_query = $metadataStorage->getQuery();
     $entity_query->condition('job_id', $this->jobId);
-    $ids = $entity_query->execute();
+    $ids = $entity_query->accessCheck(FALSE)->execute();
 
     $metadatas = $metadataStorage->loadMultiple($ids);
     $entities = [];

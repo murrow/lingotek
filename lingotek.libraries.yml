@@ -51,7 +51,7 @@ lingotek.job:
     'js/lingotek.job.js': {}
   dependencies:
     - core/jquery
-    - core/jquery.once
+    - core/once
     - core/drupal
     - core/drupalSettings
     - core/drupal.form
@@ -63,7 +63,7 @@ lingotek.locales_listing:
   dependencies:
     - core/jquery
     - core/drupal
-    - core/jquery.once
+    - core/once
 
 lingotek.target_actions:
   css:
@@ -73,7 +73,7 @@ lingotek.target_actions:
     js/lingotek.actions.js: {}
   dependencies:
     - core/drupalSettings
-    - core/jquery.once
+    - core/once
     - core/jquery
     - core/jquery.form
     - core/drupal.ajax

@@ -22,7 +22,7 @@ class LingotekNotificationControllerTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'page_cache', 'dynamic_page_cache', 'big_pipe'];
+  protected static $modules = ['block', 'node', 'page_cache', 'dynamic_page_cache', 'big_pipe'];
 
   /**
    * {@inheritdoc}
@@ -106,7 +106,7 @@ class LingotekNotificationControllerTest extends LingotekTestBase {
     $this->assertStringContainsString('max-age=0', $cache_control_header[0]);
 
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
     $this->assertSame(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
 
     // Simulate again the notification of content successfully uploaded.
@@ -121,7 +121,7 @@ class LingotekNotificationControllerTest extends LingotekTestBase {
     $this->assertStringContainsString('max-age=0', $cache_control_header[0]);
 
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
     $this->assertSame(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
   }
 

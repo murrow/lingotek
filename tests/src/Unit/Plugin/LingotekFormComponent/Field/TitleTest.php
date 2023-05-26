@@ -43,6 +43,13 @@ class TitleTest extends UnitTestCase {
   protected $languageManager;
 
   /**
+   * The mocked entity field manager
+   *
+   * @var \Drupal\Core\Entity\EntityFieldManagerInterface|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $entityFieldManager;
+
+  /**
    * The mocked entity type.
    *
    * @var \Drupal\Core\Entity\ContentEntityTypeInterface|\PHPUnit\Framework\MockObject\MockObject

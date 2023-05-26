@@ -32,7 +32,7 @@ class LingotekFilterManagerUnitTest extends UnitTestCase {
   /**
    * The config object.
    *
-   * @var \Drupal\Core\Config\Config|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Config\Config|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $config;
 
@@ -40,12 +40,8 @@ class LingotekFilterManagerUnitTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    $this->accountConfig = $this->getMockBuilder(Config::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-    $this->config = $this->getMockBuilder(Config::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->accountConfig = $this->createMock(Config::class);
+    $this->config = $this->createMock(Config::class);
     $configFactory = $this->createMock(ConfigFactoryInterface::class);
     $configFactory->expects($this->any())
       ->method('get')
@@ -68,7 +64,7 @@ class LingotekFilterManagerUnitTest extends UnitTestCase {
 
     $filters = $this->filterManager->getLocallyAvailableFilters();
     $this->assertNotEmpty($filters);
-    $this->assertArrayEquals($filters, ['project_default' => 'Project Default', 'drupal_default' => 'Drupal Default']);
+    $this->assertEquals($filters, ['project_default' => 'Project Default', 'drupal_default' => 'Drupal Default']);
 
     // Test with some filters.
     $this->accountConfig->expects($this->at(0))

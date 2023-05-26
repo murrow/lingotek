@@ -16,10 +16,10 @@ class LingotekSystemSiteBulkDebugTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'node'];
+  protected static $modules = ['block', 'node'];
 
   /**
-   * @var \Drupal\node\Entity\NodeInterface
+   * @var \Drupal\node\NodeInterface
    */
   protected $node;
 
@@ -45,7 +45,7 @@ class LingotekSystemSiteBulkDebugTest extends LingotekTestBase {
 
     // Enable the debug operations.
     $this->drupalGet('admin/lingotek/settings');
-    $this->drupalPostForm(NULL, [], t('Enable debug operations'));
+    $this->submitForm([], t('Enable debug operations'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -61,7 +61,7 @@ class LingotekSystemSiteBulkDebugTest extends LingotekTestBase {
 
     // Enable the debug operations.
     $this->drupalGet('admin/lingotek/settings');
-    $this->drupalPostForm(NULL, [], t('Enable debug operations'));
+    $this->submitForm([], t('Enable debug operations'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -70,18 +70,18 @@ class LingotekSystemSiteBulkDebugTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'debug_export',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertText('Exports available');
+    $this->assertSession()->pageTextContains('Exports available');
     // Download the file.
     $this->clickLink('config.system.site_information_settings.json');
 
     $response = json_decode($this->getSession()->getPage()->getContent(), TRUE);
-    $this->assertIdentical('Drupal', $response['system.site']['name']);
-    $this->assertIdentical('', $response['system.site']['slogan']);
-    $this->assertIdentical('system.site_information_settings (config): System information', $response['_debug']['title']);
-    $this->assertIdentical('manual', $response['_debug']['profile']);
-    $this->assertIdentical('en_US', $response['_debug']['source_locale']);
+    $this->assertSame('Drupal', $response['system.site']['name']);
+    $this->assertSame('', $response['system.site']['slogan']);
+    $this->assertSame('system.site_information_settings (config): System information', $response['_debug']['title']);
+    $this->assertSame('manual', $response['_debug']['profile']);
+    $this->assertSame('en_US', $response['_debug']['source_locale']);
   }
 
 }

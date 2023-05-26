@@ -19,7 +19,7 @@ class LingotekNodeWithTablefieldTranslationTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'dblog', 'tablefield'];
+  protected static $modules = ['block', 'node', 'dblog', 'tablefield'];
 
   /**
    * @var \Drupal\node\NodeInterface
@@ -139,18 +139,18 @@ class LingotekNodeWithTablefieldTranslationTest extends LingotekTestBase {
     // Because we cannot do ajax requests in this test, we submit and edit later.
     $this->saveAndPublishNodeForm($edit);
 
-    $this->assertText('Llamas are cool sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Llamas are cool sent to Lingotek successfully.');
 
-    $this->assertText('Table caption');
-    $this->assertText('Header 1');
-    $this->assertText('Header 2');
-    $this->assertText('Header 3');
-    $this->assertText('Row 1-1');
-    $this->assertText('Row 1-2');
-    $this->assertText('Row 1-3');
-    $this->assertText('Row 2-1');
-    $this->assertText('Row 2-2');
-    $this->assertText('Row 2-3');
+    $this->assertSession()->pageTextContains('Table caption');
+    $this->assertSession()->pageTextContains('Header 1');
+    $this->assertSession()->pageTextContains('Header 2');
+    $this->assertSession()->pageTextContains('Header 3');
+    $this->assertSession()->pageTextContains('Row 1-1');
+    $this->assertSession()->pageTextContains('Row 1-2');
+    $this->assertSession()->pageTextContains('Row 1-3');
+    $this->assertSession()->pageTextContains('Row 2-1');
+    $this->assertSession()->pageTextContains('Row 2-2');
+    $this->assertSession()->pageTextContains('Row 2-3');
 
     $this->node = Node::load(1);
 
@@ -158,13 +158,13 @@ class LingotekNodeWithTablefieldTranslationTest extends LingotekTestBase {
     // block settings stored in the field.
     $data = json_decode(\Drupal::state()
       ->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->verbose(var_export($data, TRUE));
+    dump(var_export($data, TRUE));
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
-    $this->assertEqual(6, count($data['field_table'][0]));
-    $this->assertEqual($data['field_table'][0]['caption'], 'Table caption');
+    $this->assertEquals(6, count($data['field_table'][0]));
+    $this->assertEquals($data['field_table'][0]['caption'], 'Table caption');
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -173,38 +173,38 @@ class LingotekNodeWithTablefieldTranslationTest extends LingotekTestBase {
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $link = $this->xpath('//a[normalize-space()="Request translation" and contains(@href,"es_AR")]');
     $link[0]->click();
-    $this->assertText("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_AR translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
     $this->assertLingotekWorkbenchLink('es_AR');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Llamas are cool into es_AR has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_AR has been downloaded.');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
-    $this->assertText('Texto de la leyenda de la tabla');
-    $this->assertText('Cabecera 1');
-    $this->assertText('Cabecera 2');
-    $this->assertText('Cabecera 3');
-    $this->assertText('Texto celda 1 1');
-    $this->assertText('Texto celda 1 2');
-    $this->assertText('Texto celda 1 3');
-    $this->assertText('Texto celda 2 1');
-    $this->assertText('Texto celda 2 2');
-    $this->assertText('Texto celda 2 3');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Texto de la leyenda de la tabla');
+    $this->assertSession()->pageTextContains('Cabecera 1');
+    $this->assertSession()->pageTextContains('Cabecera 2');
+    $this->assertSession()->pageTextContains('Cabecera 3');
+    $this->assertSession()->pageTextContains('Texto celda 1 1');
+    $this->assertSession()->pageTextContains('Texto celda 1 2');
+    $this->assertSession()->pageTextContains('Texto celda 1 3');
+    $this->assertSession()->pageTextContains('Texto celda 2 1');
+    $this->assertSession()->pageTextContains('Texto celda 2 2');
+    $this->assertSession()->pageTextContains('Texto celda 2 3');
   }
 
 }

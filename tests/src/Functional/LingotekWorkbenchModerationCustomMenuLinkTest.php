@@ -15,7 +15,7 @@ class LingotekWorkbenchModerationCustomMenuLinkTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'menu_ui', 'menu_link_content', 'workbench_moderation'];
+  protected static $modules = ['block', 'node', 'menu_ui', 'menu_link_content', 'workbench_moderation'];
 
   /**
    * {@inheritdoc}
@@ -68,10 +68,11 @@ class LingotekWorkbenchModerationCustomMenuLinkTest extends LingotekTestBase {
     $edit['link[0][uri]'] = '<front>';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
-    $this->drupalPostForm('/admin/structure/menu/manage/main/add', $edit, t('Save'));
+    $this->drupalGet('/admin/structure/menu/manage/main/add');
+    $this->submitForm($edit, t('Save'));
 
-    $this->assertText('The menu link has been saved.');
-    $this->assertText('Llamas are cool sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('The menu link has been saved.');
+    $this->assertSession()->pageTextContains('Llamas are cool sent to Lingotek successfully.');
   }
 
 }

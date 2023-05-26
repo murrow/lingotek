@@ -356,7 +356,7 @@ class LingotekIntelligenceMetadataForm extends FormBase {
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The current state of the form.
    *
-   * @return LingotekIntelligenceMetadataInterface
+   * @return \Drupal\lingotek\LingotekIntelligenceMetadataInterface
    *   Returns the Lingotek intelligence metadata this form applies to.
    */
   protected function getIntelligenceMetadata(FormStateInterface $form_state) {

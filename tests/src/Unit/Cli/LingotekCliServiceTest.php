@@ -23,35 +23,35 @@ class LingotekCliServiceTest extends UnitTestCase {
   /**
    * The entity type manager.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $entityTypeManager;
 
   /**
    * The Lingotek content translation service.
    *
-   * @var \Drupal\lingotek\LingotekContentTranslationServiceInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\lingotek\LingotekContentTranslationServiceInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $translationService;
 
   /**
    * The language-locale mapper.
    *
-   * @var \Drupal\lingotek\LanguageLocaleMapperInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\lingotek\LanguageLocaleMapperInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $languageLocaleMapper;
 
   /**
    * The output.
    *
-   * @var \Symfony\Component\Console\Output\OutputInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Symfony\Component\Console\Output\OutputInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $output;
 
   /**
    * The logger channel.
    *
-   * @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Psr\Log\LoggerInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $logger;
 
@@ -68,9 +68,7 @@ class LingotekCliServiceTest extends UnitTestCase {
   protected function setUp(): void {
     parent::setUp();
 
-    $this->entityTypeManager = $this->getMockBuilder(EntityTypeManager::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->entityTypeManager = $this->createMock(EntityTypeManager::class);
     $this->languageLocaleMapper = $this->createMock(LanguageLocaleMapperInterface::class);
     $this->translationService = $this->createMock(LingotekContentTranslationServiceInterface::class);
     $this->output = $this->createMock(OutputInterface::class);
@@ -376,12 +374,12 @@ class LingotekCliServiceTest extends UnitTestCase {
   }
 
   public function testCheckTranslationsStatuses() {
-    /** @var \Drupal\Core\Language\LanguageInterface|\PHPUnit_Framework_MockObject_MockObject $language */
+    /** @var \Drupal\Core\Language\LanguageInterface|\PHPUnit\Framework\MockObject\MockObject $language */
     $language = $this->createMock(LanguageInterface::class);
     $language->expects($this->once())
       ->method('getId')
       ->willReturn('en');
-    /** @var \Drupal\Core\Entity\EntityInterface|\PHPUnit_Framework_MockObject_MockObject $entity */
+    /** @var \Drupal\Core\Entity\EntityInterface|\PHPUnit\Framework\MockObject\MockObject $entity */
     $entity = $this->createMock(ContentEntityInterface::class);
     $entity->expects($this->once())
       ->method('getUntranslated')
@@ -423,12 +421,12 @@ class LingotekCliServiceTest extends UnitTestCase {
   }
 
   public function testCheckTranslationsStatusesAll() {
-    /** @var \Drupal\Core\Language\LanguageInterface|\PHPUnit_Framework_MockObject_MockObject $language */
+    /** @var \Drupal\Core\Language\LanguageInterface|\PHPUnit\Framework\MockObject\MockObject $language */
     $language = $this->createMock(LanguageInterface::class);
     $language->expects($this->once())
       ->method('getId')
       ->willReturn('en');
-    /** @var \Drupal\Core\Entity\EntityInterface|\PHPUnit_Framework_MockObject_MockObject $entity */
+    /** @var \Drupal\Core\Entity\EntityInterface|\PHPUnit\Framework\MockObject\MockObject $entity */
     $entity = $this->createMock(ContentEntityInterface::class);
     $entity->expects($this->once())
       ->method('getUntranslated')
@@ -470,12 +468,12 @@ class LingotekCliServiceTest extends UnitTestCase {
   }
 
   public function testCheckTranslationsStatusesSome() {
-    /** @var \Drupal\Core\Language\LanguageInterface|\PHPUnit_Framework_MockObject_MockObject $language */
+    /** @var \Drupal\Core\Language\LanguageInterface|\PHPUnit\Framework\MockObject\MockObject $language */
     $language = $this->createMock(LanguageInterface::class);
     $language->expects($this->once())
       ->method('getId')
       ->willReturn('en');
-    /** @var \Drupal\Core\Entity\EntityInterface|\PHPUnit_Framework_MockObject_MockObject $entity */
+    /** @var \Drupal\Core\Entity\EntityInterface|\PHPUnit\Framework\MockObject\MockObject $entity */
     $entity = $this->createMock(ContentEntityInterface::class);
     $entity->expects($this->once())
       ->method('getUntranslated')
@@ -516,12 +514,12 @@ class LingotekCliServiceTest extends UnitTestCase {
   }
 
   public function testCheckTranslationsStatusesUnexistingLanguage() {
-    /** @var \Drupal\Core\Language\LanguageInterface|\PHPUnit_Framework_MockObject_MockObject $language */
+    /** @var \Drupal\Core\Language\LanguageInterface|\PHPUnit\Framework\MockObject\MockObject $language */
     $language = $this->createMock(LanguageInterface::class);
     $language->expects($this->once())
       ->method('getId')
       ->willReturn('en');
-    /** @var \Drupal\Core\Entity\EntityInterface|\PHPUnit_Framework_MockObject_MockObject $entity */
+    /** @var \Drupal\Core\Entity\EntityInterface|\PHPUnit\Framework\MockObject\MockObject $entity */
     $entity = $this->createMock(ContentEntityInterface::class);
     $entity->expects($this->once())
       ->method('getUntranslated')
@@ -589,7 +587,7 @@ class LingotekCliServiceTest extends UnitTestCase {
   }
 
   public function testDownloadTranslationsAll() {
-    /** @var \Drupal\Core\Entity\EntityInterface|\PHPUnit_Framework_MockObject_MockObject $entity */
+    /** @var \Drupal\Core\Entity\EntityInterface|\PHPUnit\Framework\MockObject\MockObject $entity */
     $entity = $this->createMock(ContentEntityInterface::class);
     $entityStorage = $this->createMock(EntityStorageInterface::class);
     $entityStorage->expects($this->once())
@@ -612,7 +610,7 @@ class LingotekCliServiceTest extends UnitTestCase {
   }
 
   public function testDownloadTranslationsSome() {
-    /** @var \Drupal\Core\Entity\EntityInterface|\PHPUnit_Framework_MockObject_MockObject $entity */
+    /** @var \Drupal\Core\Entity\EntityInterface|\PHPUnit\Framework\MockObject\MockObject $entity */
     $entity = $this->createMock(ContentEntityInterface::class);
     $entityStorage = $this->createMock(EntityStorageInterface::class);
     $entityStorage->expects($this->once())
@@ -646,7 +644,7 @@ class LingotekCliServiceTest extends UnitTestCase {
   }
 
   public function testDownloadTranslationsUnexistingLanguage() {
-    /** @var \Drupal\Core\Entity\EntityInterface|\PHPUnit_Framework_MockObject_MockObject $entity */
+    /** @var \Drupal\Core\Entity\EntityInterface|\PHPUnit\Framework\MockObject\MockObject $entity */
     $entity = $this->createMock(ContentEntityInterface::class);
     $entityStorage = $this->createMock(EntityStorageInterface::class);
     $entityStorage->expects($this->once())

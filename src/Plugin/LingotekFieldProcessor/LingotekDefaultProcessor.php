@@ -69,7 +69,7 @@ class LingotekDefaultProcessor extends PluginBase implements LingotekFieldProces
   public function extract(ContentEntityInterface &$entity, string $field_name, FieldDefinitionInterface $field_definition, array &$data, array &$visited = [], string $revision_mode = LingotekContentTranslationEntityRevisionResolver::RESOLVE_LATEST_TRANSLATION_AFFECTED) {
     // If there is only one relevant attribute, upload it.
     // Get the column translatability configuration.
-    module_load_include('inc', 'content_translation', 'content_translation.admin');
+    \Drupal::moduleHandler()->loadInclude('inc', 'content_translation', 'content_translation.admin');
     $column_element = content_translation_field_sync_widget($field_definition);
     $field = $entity->get($field_name);
     $field_type = $field_definition->getType();

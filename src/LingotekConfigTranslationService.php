@@ -27,6 +27,13 @@ use Drupal\lingotek\Exception\LingotekProcessedWordsLimitException;
 class LingotekConfigTranslationService implements LingotekConfigTranslationServiceInterface {
 
   /**
+   * The configuration mapper manager.
+   *
+   * @var \Drupal\config_translation\ConfigMapperManagerInterface
+   */
+  protected $configMapperManager;
+
+  /**
    * @var \Drupal\lingotek\LingotekInterface
    */
   protected $lingotek;
@@ -1825,6 +1832,7 @@ class LingotekConfigTranslationService implements LingotekConfigTranslationServi
           $mapper_id = 'field_config';
         }
         $id = $this->entityTypeManager->getStorage('lingotek_config_metadata')->getQuery()
+          ->accessCheck(FALSE)
           ->condition('document_id', $document_id)
           ->execute();
         if (!empty($id)) {

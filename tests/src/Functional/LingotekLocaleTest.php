@@ -21,23 +21,23 @@ class LingotekLocaleTest extends BrowserTestBase {
 
   public function testConvertDrupal2Lingotek() {
     // ToDo: Improve testing coverage.
-    $this->assertIdentical('zh-hans', LingotekLocale::convertLingotek2Drupal('zh_CN'));
+    $this->assertSame('zh-hans', LingotekLocale::convertLingotek2Drupal('zh_CN'));
   }
 
   public function testConvertLingotek2Drupal() {
     // ToDo: Improve testing coverage.
-    $this->assertIdentical('zh_CN', LingotekLocale::convertDrupal2Lingotek('zh-hans'));
+    $this->assertSame('zh_CN', LingotekLocale::convertDrupal2Lingotek('zh-hans'));
   }
 
   public function testGenerateLingotek2Drupal() {
     $language = LingotekLocale::generateLingotek2Drupal('es_ES');
-    $this->assertEqual('es', $language);
+    $this->assertEquals('es', $language);
 
     $language = LingotekLocale::generateLingotek2Drupal('de-AT');
-    $this->assertEqual('de', $language);
+    $this->assertEquals('de', $language);
 
     $language = LingotekLocale::generateLingotek2Drupal('ar');
-    $this->assertEqual('ar', $language);
+    $this->assertEquals('ar', $language);
   }
 
 }

@@ -27,22 +27,22 @@ class LingotekHttpUnitTest extends UnitTestCase {
   /**
    * The HTTP client to interact with the Lingotek service.
    *
-   * @var \GuzzleHttp\ClientInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \GuzzleHttp\ClientInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $httpClient;
 
   /**
-   * @var \Drupal\Core\Config\Config|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Config\Config|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $config;
 
   /**
-   * @var \Drupal\Core\Config\Config|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Config\Config|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $accountConfig;
 
   /**
-   * @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $configFactory;
 
@@ -55,12 +55,8 @@ class LingotekHttpUnitTest extends UnitTestCase {
       ->addMethods(['get', 'post', 'patch', 'delete'])
       ->getMockForAbstractClass();
 
-    $this->config = $this->getMockBuilder(Config::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-    $this->accountConfig = $this->getMockBuilder(Config::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->config = $this->createMock(Config::class);
+    $this->accountConfig = $this->createMock(Config::class);
 
     $this->accountConfig->expects($this->any())
       ->method('get')
@@ -79,9 +75,7 @@ class LingotekHttpUnitTest extends UnitTestCase {
    * @covers ::get
    */
   public function testGet() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $this->httpClient->expects($this->at(0))
       ->method('get')
       ->with('http://example.com/test', [
@@ -103,9 +97,7 @@ class LingotekHttpUnitTest extends UnitTestCase {
    * @covers ::post
    */
   public function testPost() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $this->httpClient->expects($this->at(0))
       ->method('post')
       ->with('http://example.com/test', [
@@ -153,9 +145,7 @@ class LingotekHttpUnitTest extends UnitTestCase {
    * @covers ::patch
    */
   public function testPatch() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $this->httpClient->expects($this->at(0))
       ->method('patch')
       ->with('http://example.com/test', [
@@ -205,9 +195,7 @@ class LingotekHttpUnitTest extends UnitTestCase {
    * @covers ::delete
    */
   public function testDelete() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $this->httpClient->expects($this->at(0))
       ->method('delete')
       ->with('http://example.com/test', [

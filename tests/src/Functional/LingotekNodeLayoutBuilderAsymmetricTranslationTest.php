@@ -22,7 +22,7 @@ class LingotekNodeLayoutBuilderAsymmetricTranslationTest extends LingotekTestBas
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'block',
     'block_content',
     'node',
@@ -87,7 +87,8 @@ class LingotekNodeLayoutBuilderAsymmetricTranslationTest extends LingotekTestBas
       ->setEnabled('block_content', 'custom_content_block', TRUE);
 
     $edit['settings[node][article][fields][layout_builder__layout]'] = 1;
-    $this->drupalPostForm('/admin/config/regional/content-language', $edit, 'Save configuration');
+    $this->drupalGet('/admin/config/regional/content-language');
+    $this->submitForm($edit, 'Save configuration');
     $this->assertSession()->responseContains('Settings successfully updated.');
 
     drupal_static_reset();
@@ -138,7 +139,7 @@ class LingotekNodeLayoutBuilderAsymmetricTranslationTest extends LingotekTestBas
 
     $edit['langcode[0][value]'] = 'en';
 
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
 
     // Add a block with a custom label.
     $page->clickLink('Layout');
@@ -201,12 +202,12 @@ class LingotekNodeLayoutBuilderAsymmetricTranslationTest extends LingotekTestBas
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(\Drupal::request()
+    $this->assertSame(\Drupal::request()
       ->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('manual', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('manual', $used_profile, 'The automatic profile was used.');
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -268,7 +269,7 @@ class LingotekNodeLayoutBuilderAsymmetricTranslationTest extends LingotekTestBas
 
     $edit['langcode[0][value]'] = 'en';
 
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
 
     // Add a block with a custom label.
     $page->clickLink('Layout');
@@ -328,12 +329,12 @@ class LingotekNodeLayoutBuilderAsymmetricTranslationTest extends LingotekTestBas
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(\Drupal::request()
+    $this->assertSame(\Drupal::request()
       ->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('manual', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('manual', $used_profile, 'The automatic profile was used.');
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -385,8 +386,8 @@ class LingotekNodeLayoutBuilderAsymmetricTranslationTest extends LingotekTestBas
     // From the manage display page, go to manage the layout.
     foreach ($nodeTypes as $nodeType) {
       $this->drupalGet("admin/structure/types/manage/$nodeType/display/default");
-      $this->drupalPostForm(NULL, ['layout[enabled]' => TRUE], 'Save');
-      $this->drupalPostForm(NULL, ['layout[allow_custom]' => TRUE], 'Save');
+      $this->submitForm(['layout[enabled]' => TRUE], 'Save');
+      $this->submitForm(['layout[allow_custom]' => TRUE], 'Save');
     }
   }
 

@@ -3,7 +3,7 @@
  * Lingotek target actions JS code for lingotek target actions button.
  */
 
-(function ($, Drupal) {
+(function ($, once, Drupal) {
 
   'use strict';
 
@@ -17,7 +17,7 @@
    */
   Drupal.behaviors.lingotekTargetActions = {
     attach: function (context, settings) {
-      var $actionsElement = $(context).find('.lingotek-target-dropdown,.lingotek-source-dropdown').once('lingotek-target-dropdown');
+      var $actionsElement = $(once('lingotek-target-dropdown', '.lingotek-target-dropdown,.lingotek-source-dropdown', context));
       // Attach event handlers to toggle button.
       $actionsElement.each(function () {
         var $this = $(this);
@@ -40,4 +40,4 @@
     }
   };
 
-})(jQuery, Drupal);
+})(jQuery, once, Drupal);

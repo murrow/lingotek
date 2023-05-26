@@ -18,7 +18,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'field_ui', 'dblog'];
+  protected static $modules = ['block', 'node', 'field_ui', 'dblog'];
 
   /**
    * {@inheritdoc}
@@ -62,7 +62,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = \Drupal::entityTypeManager()->getStorage('field_config')->load('node.article.body');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
 
     // Simulate the notification of content successfully uploaded.
     $url = Url::fromRoute('lingotek.notify', [], [
@@ -83,8 +83,8 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
-    $this->assertIdentical(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
+    dump($request);
+    $this->assertSame(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -96,9 +96,9 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = $field_storage->load('node.article.body');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
 
     $this->goToConfigBulkManagementForm();
 
@@ -134,7 +134,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = $field_storage->load('node.article.body');
 
     // Assert the target is ready.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -169,7 +169,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = \Drupal::entityTypeManager()->getStorage('field_config')->load('node.article.body');
 
     // Assert the content is edited, but not auto-uploaded.
-    $this->assertIdentical(Lingotek::STATUS_EDITED, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_EDITED, $config_translation_service->getSourceStatus($entity));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm('node_fields');
@@ -198,7 +198,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $response = json_decode($request->getBody(), TRUE);
 
     // Translations are not requested.
-    $this->assertIdentical([], $response['result']['request_translations'], 'No translations has been requested after notification automatically.');
+    $this->assertSame([], $response['result']['request_translations'], 'No translations has been requested after notification automatically.');
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -210,9 +210,9 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = $field_storage->load('node.article.body');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is ready to be requested.
-    $this->assertIdentical(Lingotek::STATUS_REQUEST, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_REQUEST, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -252,7 +252,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = $field_storage->load('node.article.body');
 
     // Assert the target is ready.
-    $this->assertIdentical(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -265,7 +265,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = $field_storage->load('node.article.body');
 
     // Assert the target is current.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
   }
 
   /**
@@ -326,7 +326,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = \Drupal::entityTypeManager()->getStorage('field_config')->load('node.article.body');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm('node_fields');
@@ -350,7 +350,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical(['de', 'it'], $response['result']['request_translations'], 'German and Italian languages has been requested after notification automatically.');
+    $this->assertSame(['de', 'it'], $response['result']['request_translations'], 'German and Italian languages has been requested after notification automatically.');
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -360,10 +360,10 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = $field_storage->load('node.article.body');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_REQUEST, $config_translation_service->getTargetStatus($entity, 'es'));
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'de'));
+    $this->assertSame(Lingotek::STATUS_REQUEST, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'de'));
     // We assert for the UI, as the status is not really stored.
     // TODO: This should actually be stored.
     $this->assertTargetStatus('ca', Lingotek::STATUS_DISABLED);
@@ -453,8 +453,8 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = $field_storage->load('node.article.body');
 
     // Assert the target is ready.
-    $this->assertIdentical(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'es'));
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'de'));
+    $this->assertSame(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'de'));
     // We assert for the UI, as the status is not really stored.
     // TODO: This should actually be stored.
     $this->assertTargetStatus('ca', Lingotek::STATUS_DISABLED);
@@ -468,8 +468,8 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $field_storage->resetCache();
     $entity = $field_storage->load('node.article.body');
     // Assert the target is current.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'de'));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'de'));
   }
 
   /**
@@ -526,7 +526,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = \Drupal::entityTypeManager()->getStorage('field_config')->load('node.article.body');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm('node_fields');
@@ -550,7 +550,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
+    $this->assertSame(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -560,10 +560,10 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = $field_storage->load('node.article.body');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
-    $this->assertIdentical(Lingotek::STATUS_REQUEST, $config_translation_service->getTargetStatus($entity, 'de'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_REQUEST, $config_translation_service->getTargetStatus($entity, 'de'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -625,8 +625,8 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = $field_storage->load('node.article.body');
 
     // Assert the target is ready.
-    $this->assertIdentical(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'es'));
-    $this->assertIdentical(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'de'));
+    $this->assertSame(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'de'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -637,8 +637,8 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $field_storage->resetCache();
     $entity = $field_storage->load('node.article.body');
     // Assert the target is current.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
-    $this->assertIdentical(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'de'));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'de'));
   }
 
   /**
@@ -675,7 +675,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     // The node cache needs to be reset before reload.
     $field_storage->resetCache();
     $entity = $field_storage->load('node.article.body');
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm('node_fields');
@@ -699,7 +699,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical(['it', 'es'], $response['result']['request_translations'], 'Spanish and Italian languages have been requested after notification automatically.');
+    $this->assertSame(['it', 'es'], $response['result']['request_translations'], 'Spanish and Italian languages have been requested after notification automatically.');
 
     /** @var \Drupal\lingotek\LingotekConfigurationServiceInterface $lingotek_config */
     $lingotek_config = \Drupal::service('lingotek.configuration');
@@ -731,7 +731,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical(['es'], $response['result']['request_translations'], 'Italian language has not been requested after notification automatically because it is disabled.');
+    $this->assertSame(['es'], $response['result']['request_translations'], 'Italian language has not been requested after notification automatically because it is disabled.');
   }
 
   /**
@@ -795,7 +795,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
     $this->assertTrue($response['result']['download'], 'Spanish language has been downloaded after notification automatically.');
     $this->assertEquals('Document downloaded.', $response['messages'][0]);
 
@@ -821,7 +821,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
     $this->assertTrue($response['result']['download'], 'Italian language has been downloaded after notification automatically.');
     $this->assertEquals('Document downloaded.', $response['messages'][0]);
 
@@ -830,7 +830,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
 
     // All the links are current.
     $current_links = $this->xpath("//a[contains(@class,'language-icon') and contains(@class, 'target-current')]");
-    $this->assertEqual(count($current_links), 2, 'Translation "es_ES" and "it_IT" are current.');
+    $this->assertEquals(count($current_links), 2, 'Translation "es_ES" and "it_IT" are current.');
 
     // Simulate the notification of target deleted.
     $url = Url::fromRoute('lingotek.notify', [], [
@@ -934,7 +934,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
     $this->assertTrue($response['result']['download'], 'Spanish language has been downloaded after notification automatically.');
     $this->assertEquals('Document downloaded.', $response['messages'][0]);
 
@@ -960,7 +960,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
     $this->assertTrue($response['result']['download'], 'Italian language has been downloaded after notification automatically.');
     $this->assertEquals('Document downloaded.', $response['messages'][0]);
 
@@ -1046,8 +1046,8 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $config_translation_service = \Drupal::service('lingotek.config_translation');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
-    $this->assertIdentical($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
 
     $this->goToConfigBulkManagementForm('node_fields');
 
@@ -1068,8 +1068,8 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
-    $this->assertIdentical($response['messages'][0], 'Document import for entity Body failed. Reverting dummy-document-hash-id to previous id (NULL)');
+    dump($request);
+    $this->assertSame($response['messages'][0], 'Document import for entity Body failed. Reverting dummy-document-hash-id to previous id (NULL)');
 
     $this->goToConfigBulkManagementForm('node_fields');
 
@@ -1078,7 +1078,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = $field_storage->load('node.article.body');
 
     $this->assertNull($config_translation_service->getDocumentId($entity));
-    $this->assertIdentical(Lingotek::STATUS_ERROR, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_ERROR, $config_translation_service->getSourceStatus($entity));
   }
 
   /**
@@ -1112,8 +1112,8 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $config_translation_service = \Drupal::service('lingotek.config_translation');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
-    $this->assertIdentical($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
 
     $this->goToConfigBulkManagementForm('node_fields');
 
@@ -1136,8 +1136,8 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
-    $this->assertIdentical(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
+    dump($request);
+    $this->assertSame(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
 
     $this->goToConfigBulkManagementForm('node_fields');
 
@@ -1146,13 +1146,14 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = $field_storage->load('node.article.body');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Edit the field.
     $edit = ['label' => 'Body EDITED'];
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/node.article.body', $edit, t('Save settings'));
+    $this->drupalGet('/admin/structure/types/manage/article/fields/node.article.body');
+    $this->submitForm($edit, t('Save settings'));
 
     $this->goToConfigBulkManagementForm('node_fields');
 
@@ -1161,11 +1162,11 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = $field_storage->load('node.article.body');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
     // Assert the document id changed.
-    $this->assertIdentical($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id-1');
+    $this->assertSame($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id-1');
 
     // Simulate the notification of failed import document.
     $url = Url::fromRoute('lingotek.notify', [], [
@@ -1185,9 +1186,9 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
 
-    $this->assertIdentical($response['messages'][0], 'Document import for entity Body EDITED failed. Reverting dummy-document-hash-id-1 to previous id dummy-document-hash-id');
+    $this->assertSame($response['messages'][0], 'Document import for entity Body EDITED failed. Reverting dummy-document-hash-id-1 to previous id dummy-document-hash-id');
 
     $this->goToConfigBulkManagementForm('node_fields');
 
@@ -1197,7 +1198,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
 
     // Assert the document id was restored.
     $this->assertEquals($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
-    $this->assertIdentical(Lingotek::STATUS_ERROR, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_ERROR, $config_translation_service->getSourceStatus($entity));
   }
 
   /**
@@ -1231,8 +1232,8 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $config_translation_service = \Drupal::service('lingotek.config_translation');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
-    $this->assertIdentical($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
 
     $this->goToConfigBulkManagementForm('node_fields');
 
@@ -1255,8 +1256,8 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
-    $this->assertIdentical(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
+    dump($request);
+    $this->assertSame(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
 
     $this->goToConfigBulkManagementForm('node_fields');
 
@@ -1265,13 +1266,14 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = $field_storage->load('node.article.body');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Edit the field.
     $edit = ['label' => 'Body EDITED'];
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/node.article.body', $edit, t('Save settings'));
+    $this->drupalGet('/admin/structure/types/manage/article/fields/node.article.body');
+    $this->submitForm($edit, t('Save settings'));
 
     $this->goToConfigBulkManagementForm('node_fields');
 
@@ -1280,11 +1282,11 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = $field_storage->load('node.article.body');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
     // Assert the document id changed.
-    $this->assertIdentical($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id-1');
+    $this->assertSame($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id-1');
 
     // Simulate the notification of content successfully updated.
     $url = Url::fromRoute('lingotek.notify', [], [
@@ -1305,7 +1307,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
 
     $this->goToConfigBulkManagementForm('node_fields');
 
@@ -1315,7 +1317,7 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
 
     // Assert the document id and the CURRENT status.
     $this->assertEquals($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id-1');
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
   }
 
   /**
@@ -1349,8 +1351,8 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $config_translation_service = \Drupal::service('lingotek.config_translation');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
-    $this->assertIdentical($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
 
     $this->goToConfigBulkManagementForm('node_fields');
 
@@ -1373,8 +1375,8 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
-    $this->assertIdentical(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
+    dump($request);
+    $this->assertSame(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
 
     $this->goToConfigBulkManagementForm('node_fields');
 
@@ -1383,9 +1385,9 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = $field_storage->load('node.article.body');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Simulate the notification of document_cancelled document.
     $url = Url::fromRoute('lingotek.notify', [], [
@@ -1404,9 +1406,9 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
 
-    $this->assertIdentical($response['messages'][0], 'Document Body cancelled in TMS.');
+    $this->assertSame($response['messages'][0], 'Document Body cancelled in TMS.');
 
     $this->goToConfigBulkManagementForm('node_fields');
 
@@ -1415,8 +1417,8 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = $field_storage->load('node.article.body');
 
     $this->assertNull($config_translation_service->getDocumentId($entity));
-    $this->assertIdentical(Lingotek::STATUS_CANCELLED, $config_translation_service->getSourceStatus($entity));
-    $this->assertIdentical(Lingotek::STATUS_CANCELLED, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_CANCELLED, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CANCELLED, $config_translation_service->getTargetStatus($entity, 'es'));
   }
 
   /**
@@ -1450,8 +1452,8 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $config_translation_service = \Drupal::service('lingotek.config_translation');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
-    $this->assertIdentical($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
 
     $this->goToConfigBulkManagementForm('node_fields');
 
@@ -1474,8 +1476,8 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
-    $this->assertIdentical(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
+    dump($request);
+    $this->assertSame(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
 
     $this->goToConfigBulkManagementForm('node_fields');
 
@@ -1484,9 +1486,9 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $entity = $field_storage->load('node.article.body');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Simulate the notification of document_cancelled document.
     $url = Url::fromRoute('lingotek.notify', [], [
@@ -1506,9 +1508,9 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
 
-    $this->assertIdentical($response['messages'][0], 'Document Body target es_ES cancelled in TMS.');
+    $this->assertSame($response['messages'][0], 'Document Body target es_ES cancelled in TMS.');
 
     $this->goToConfigBulkManagementForm('node_fields');
 
@@ -1516,9 +1518,9 @@ class LingotekFieldBodyNotificationCallbackTest extends LingotekTestBase {
     $field_storage->resetCache();
     $entity = $field_storage->load('node.article.body');
 
-    $this->assertIdentical('dummy-document-hash-id', $config_translation_service->getDocumentId($entity));
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
-    $this->assertIdentical(Lingotek::STATUS_CANCELLED, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame('dummy-document-hash-id', $config_translation_service->getDocumentId($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CANCELLED, $config_translation_service->getTargetStatus($entity, 'es'));
   }
 
 }

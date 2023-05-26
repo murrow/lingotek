@@ -171,8 +171,8 @@ class LingotekLayoutBuilderSTProcessor extends PluginBase implements LingotekFie
       $data[$field_name] = ['components' => []];
       $layoutField = $entity->get(OverridesSectionStorage::FIELD_NAME);
       $layout = $layoutField->getValue();
-      /** @var \Drupal\layout_builder\Section $sectionObject */
       foreach ($layout as $sectionIndex => $section) {
+        /** @var \Drupal\layout_builder\Section $sectionObject */
         $sectionObject = $section['section'];
         $components = $sectionObject->getComponents();
         /** @var \Drupal\layout_builder\SectionComponent $component */
@@ -225,7 +225,6 @@ class LingotekLayoutBuilderSTProcessor extends PluginBase implements LingotekFie
     foreach ($field_data['components'] as $componentUuid => $componentData) {
       /** @var \Drupal\layout_builder\SectionComponent $originalComponent */
       $originalComponent = NULL;
-      /** @var \Drupal\layout_builder\Section $section */
       foreach ($layout as $sectionInfo) {
         $sectionComponents = $sectionInfo['section']->getComponents();
         if (isset($sectionComponents[$componentUuid])) {

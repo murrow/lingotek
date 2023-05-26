@@ -17,7 +17,7 @@ class LingotekNodeBulkDisabledTargetOverrideTranslationTest extends LingotekTest
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node'];
+  protected static $modules = ['block', 'node'];
 
   /**
    * A node.
@@ -95,8 +95,8 @@ class LingotekNodeBulkDisabledTargetOverrideTranslationTest extends LingotekTest
     $this->assertNoLingotekRequestTranslationLink('es_MX');
 
     $this->clickLink('EN');
-    $this->assertText('Node Llamas are cool has been uploaded.');
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSession()->pageTextContains('Node Llamas are cool has been uploaded.');
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // There is a link for checking status.
@@ -106,7 +106,7 @@ class LingotekNodeBulkDisabledTargetOverrideTranslationTest extends LingotekTest
     $this->assertLingotekRequestTranslationLink('es_MX');
 
     $this->clickLink('EN');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     $this->assertNoLingotekRequestTranslationLink('ca_ES');
     $this->assertLingotekRequestTranslationLink('es_MX');
@@ -136,8 +136,8 @@ class LingotekNodeBulkDisabledTargetOverrideTranslationTest extends LingotekTest
     $this->assertNoLingotekRequestTranslationLink('es_MX');
 
     $this->clickLink('EN');
-    $this->assertText('Node Llamas are cool has been uploaded.');
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSession()->pageTextContains('Node Llamas are cool has been uploaded.');
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // There is a link for checking status.
@@ -147,11 +147,11 @@ class LingotekNodeBulkDisabledTargetOverrideTranslationTest extends LingotekTest
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckUpload('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
-    $this->assertText('Operations completed.');
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     $this->assertNoLingotekRequestTranslationLink('ca_ES');
     $this->assertLingotekRequestTranslationLink('es_MX');
@@ -165,13 +165,13 @@ class LingotekNodeBulkDisabledTargetOverrideTranslationTest extends LingotekTest
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslation('ca', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical(NULL, \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame(NULL, \Drupal::state()
       ->get('lingotek.added_target_locale'));
-    $this->assertIdentical(NULL, \Drupal::state()
+    $this->assertSame(NULL, \Drupal::state()
       ->get('lingotek.requested_locales'));
 
-    $this->assertText('Operations completed.');
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     $this->assertTargetStatus('es', Lingotek::STATUS_REQUEST);
     $this->assertTargetStatus('ca', Lingotek::STATUS_DISABLED);
@@ -183,8 +183,8 @@ class LingotekNodeBulkDisabledTargetOverrideTranslationTest extends LingotekTest
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckTranslation('ca', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical(NULL, \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame(NULL, \Drupal::state()
       ->get('lingotek.checked_target_locale'));
 
     $this->assertTargetStatus('es', Lingotek::STATUS_REQUEST);
@@ -197,8 +197,8 @@ class LingotekNodeBulkDisabledTargetOverrideTranslationTest extends LingotekTest
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForDownloadTranslation('ca', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical(NULL, \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame(NULL, \Drupal::state()
       ->get('lingotek.downloaded_locale'));
 
     $this->assertTargetStatus('es', Lingotek::STATUS_REQUEST);
@@ -230,11 +230,11 @@ class LingotekNodeBulkDisabledTargetOverrideTranslationTest extends LingotekTest
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
-    $this->assertText('Operations completed.');
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     // There is a link for checking status.
     $this->assertLingotekCheckSourceStatusLink();
@@ -243,11 +243,11 @@ class LingotekNodeBulkDisabledTargetOverrideTranslationTest extends LingotekTest
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckUpload('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
-    $this->assertText('Operations completed.');
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     $this->assertNoLingotekRequestTranslationLink('ca_ES');
     $this->assertLingotekRequestTranslationLink('es_MX');
@@ -261,11 +261,11 @@ class LingotekNodeBulkDisabledTargetOverrideTranslationTest extends LingotekTest
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslations('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical(['dummy-document-hash-id' => ['es_MX']], \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame(['dummy-document-hash-id' => ['es_MX']], \Drupal::state()
       ->get('lingotek.requested_locales'));
 
-    $this->assertText('Operations completed.');
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     $this->assertTargetStatus('es', Lingotek::STATUS_PENDING);
     $this->assertTargetStatus('ca', Lingotek::STATUS_DISABLED);
@@ -277,8 +277,8 @@ class LingotekNodeBulkDisabledTargetOverrideTranslationTest extends LingotekTest
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckTranslations('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical(NULL, \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame(NULL, \Drupal::state()
       ->get('lingotek.checked_target_locale'));
 
     $this->assertTargetStatus('es', Lingotek::STATUS_READY);
@@ -291,8 +291,8 @@ class LingotekNodeBulkDisabledTargetOverrideTranslationTest extends LingotekTest
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForDownloadTranslations('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.downloaded_locale'));
 
     $this->assertTargetStatus('es', Lingotek::STATUS_CURRENT);

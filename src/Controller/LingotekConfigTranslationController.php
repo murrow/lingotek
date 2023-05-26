@@ -134,7 +134,7 @@ class LingotekConfigTranslationController extends ConfigTranslationController {
       ]);
     }
     if ($mapper instanceof ConfigEntityMapper) {
-      /** @var $mapper ConfigEntityMapper */
+      /** @var \Drupal\config_translation\ConfigEntityMapper $mapper */
       $entity = $mapper->getEntity();
       $entity_id = $entity->id();
     }

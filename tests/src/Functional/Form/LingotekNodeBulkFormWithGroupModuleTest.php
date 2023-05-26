@@ -20,7 +20,7 @@ class LingotekNodeBulkFormWithGroupModuleTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'block',
     'node',
     'group',
@@ -128,7 +128,7 @@ class LingotekNodeBulkFormWithGroupModuleTest extends LingotekTestBase {
     $this->goToContentBulkManagementForm();
 
     // Assert there is a select for group.
-    $this->assertField('filters[wrapper][group]', 'There is a filter for group');
+    $this->assertSession()->fieldExists('filters[wrapper][group]', 'There is a filter for group');
   }
 
   /**
@@ -142,7 +142,7 @@ class LingotekNodeBulkFormWithGroupModuleTest extends LingotekTestBase {
     $this->goToContentBulkManagementForm();
 
     // Assert there is a select for group.
-    $this->assertNoField('filters[wrapper][group]', 'There is not a filter for group');
+    $this->assertSession()->fieldNotExists('filters[wrapper][group]', 'There is not a filter for group');
   }
 
   /**
@@ -153,7 +153,7 @@ class LingotekNodeBulkFormWithGroupModuleTest extends LingotekTestBase {
     $this->goToContentBulkManagementForm('user');
 
     // Assert there is not a select for group.
-    $this->assertNoField('filters[wrapper][group]', 'There is not a filter for group');
+    $this->assertSession()->fieldNotExists('filters[wrapper][group]', 'There is not a filter for group');
   }
 
   /**
@@ -180,7 +180,8 @@ class LingotekNodeBulkFormWithGroupModuleTest extends LingotekTestBase {
       'user[user][profiles]' => 'automatic',
       'user[user][fields][changed]' => 1,
     ];
-    $this->drupalPostForm('admin/lingotek/settings', $edit, 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->drupalGet('admin/lingotek/settings', []);
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
   }
 
   /**
@@ -222,7 +223,7 @@ class LingotekNodeBulkFormWithGroupModuleTest extends LingotekTestBase {
     $edit = [
       'filters[wrapper][group]' => '1',
     ];
-    $this->drupalPostForm(NULL, $edit, 'edit-filters-actions-submit');
+    $this->submitForm($edit, 'edit-filters-actions-submit');
     foreach ([1, 5, 7, 11, 13] as $j) {
       $assert_session->linkExists('Llamas are cool ' . $j . ' at Group My Product 1.0');
     }
@@ -234,7 +235,7 @@ class LingotekNodeBulkFormWithGroupModuleTest extends LingotekTestBase {
     $edit = [
       'filters[wrapper][group]' => '2',
     ];
-    $this->drupalPostForm(NULL, $edit, 'edit-filters-actions-submit');
+    $this->submitForm($edit, 'edit-filters-actions-submit');
     foreach ([2, 4, 6, 8, 10, 12, 14] as $j) {
       $assert_session->linkExists('Llamas are cool ' . $j . ' at Group My Product 2.0');
     }
@@ -246,7 +247,7 @@ class LingotekNodeBulkFormWithGroupModuleTest extends LingotekTestBase {
     $edit = [
       'filters[wrapper][group]' => '3',
     ];
-    $this->drupalPostForm(NULL, $edit, 'edit-filters-actions-submit');
+    $this->submitForm($edit, 'edit-filters-actions-submit');
     foreach ([3, 9] as $j) {
       $assert_session->linkExists('Llamas are cool ' . $j . ' at Group My Product 2.4');
     }
@@ -254,7 +255,7 @@ class LingotekNodeBulkFormWithGroupModuleTest extends LingotekTestBase {
     $assert_session->linkNotExists('Llamas are cool 5 at Group My Product 1.0');
 
     // After we reset, we get back to having a pager and all the content.
-    $this->drupalPostForm(NULL, [], 'Reset');
+    $this->submitForm([], 'Reset');
     foreach ([1, 5, 7] as $j) {
       $assert_session->linkExists('Llamas are cool ' . $j . ' at Group My Product 1.0');
     }
@@ -292,8 +293,8 @@ class LingotekNodeBulkFormWithGroupModuleTest extends LingotekTestBase {
     $this->clickLink('Add group');
 
     $edit = ['label[0][value]' => $label];
-    $this->drupalPostForm(NULL, $edit, new FormattableMarkup('Create @group and complete your membership', ['@group' => $group_label]));
-    $this->drupalPostForm(NULL, [], 'Save group and membership');
+    $this->submitForm($edit, new FormattableMarkup('Create @group and complete your membership', ['@group' => $group_label]));
+    $this->submitForm([], 'Save group and membership');
     return $label;
   }
 
@@ -310,7 +311,7 @@ class LingotekNodeBulkFormWithGroupModuleTest extends LingotekTestBase {
   protected function relateNodeToGroup($nid, $gid, $title) {
     $this->drupalGet('/group/' . $gid . '/content/add/group_node%3Aarticle');
     $edit = ['entity_id[0][target_id]' => $title . ' (' . $nid . ')'];
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
     $this->assertSession()->titleEquals($title . ' | Drupal');
   }
 

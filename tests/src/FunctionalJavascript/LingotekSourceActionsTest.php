@@ -14,7 +14,7 @@ class LingotekSourceActionsTest extends LingotekFunctionalJavascriptTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['system', 'block', 'node', 'lingotek_form_test'];
+  protected static $modules = ['system', 'block', 'node', 'lingotek_form_test'];
 
   /**
    * {@inheritdoc}
@@ -52,7 +52,7 @@ class LingotekSourceActionsTest extends LingotekFunctionalJavascriptTestBase {
     $edit['title[0][value]'] = 'Llamas are cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['body[0][value]'] = 'Llamas are very cool';
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
 
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translationService = \Drupal::service('lingotek.content_translation');

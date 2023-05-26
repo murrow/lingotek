@@ -22,7 +22,7 @@ abstract class LingotekFunctionalJavascriptTestBase extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['lingotek', 'lingotek_test'];
+  protected static $modules = ['lingotek', 'lingotek_test'];
 
   /**
    * {@inheritdoc}
@@ -41,8 +41,8 @@ abstract class LingotekFunctionalJavascriptTestBase extends WebDriverTestBase {
   protected function connectToLingotek() {
     $this->drupalGet('admin/lingotek/setup/account');
     $this->clickLink('Connect Lingotek Account');
-    $this->drupalPostForm(NULL, ['community' => 'test_community'], 'Next');
-    $this->drupalPostForm(NULL, [
+    $this->submitForm(['community' => 'test_community'], 'Next');
+    $this->submitForm([
       'project' => 'test_project',
       'vault' => 'test_vault',
     ], 'Save configuration');
@@ -297,7 +297,7 @@ abstract class LingotekFunctionalJavascriptTestBase extends WebDriverTestBase {
         }
       }
     }
-    $this->drupalPostForm(NULL, [], 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->submitForm([], 'Save', 'lingoteksettings-tab-content-form');
   }
 
   /**

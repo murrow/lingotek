@@ -15,7 +15,7 @@ class LingotekNodeTabsThemeTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node'];
+  protected static $modules = ['block', 'node'];
 
   /**
    * {@inheritdoc}
@@ -33,7 +33,8 @@ class LingotekNodeTabsThemeTest extends LingotekTestBase {
     $edit = [];
     $edit['admin_theme'] = 'seven';
     $edit['use_admin_theme'] = TRUE;
-    $this->drupalPostForm('admin/appearance', $edit, t('Save configuration'));
+    $this->drupalGet('admin/appearance');
+    $this->submitForm($edit, t('Save configuration'));
 
     // Place the blocks.
     foreach (['bartik', 'seven'] as $theme) {
@@ -94,25 +95,26 @@ class LingotekNodeTabsThemeTest extends LingotekTestBase {
     $edit['langcode[0][value]'] = 'en';
 
     $this->saveAndPublishNodeForm($edit);
-    $this->assertText('Current theme: bartik');
+    $this->assertSession()->pageTextContains('Current theme: bartik');
 
     $this->clickLink('Edit');
-    $this->assertText('Current theme: seven');
+    $this->assertSession()->pageTextContains('Current theme: seven');
 
     $this->clickLink('Manage Translations');
-    $this->assertText('Current theme: seven');
+    $this->assertSession()->pageTextContains('Current theme: seven');
 
     $edit = ['use_admin_theme' => FALSE];
-    $this->drupalPostForm('admin/appearance', $edit, t('Save configuration'));
+    $this->drupalGet('admin/appearance');
+    $this->submitForm($edit, t('Save configuration'));
 
     $this->drupalGet('node/1');
-    $this->assertText('Current theme: bartik');
+    $this->assertSession()->pageTextContains('Current theme: bartik');
 
     $this->clickLink('Edit');
-    $this->assertText('Current theme: bartik');
+    $this->assertSession()->pageTextContains('Current theme: bartik');
 
     $this->clickLink('Manage Translations');
-    $this->assertText('Current theme: bartik');
+    $this->assertSession()->pageTextContains('Current theme: bartik');
   }
 
   /**
@@ -124,30 +126,32 @@ class LingotekNodeTabsThemeTest extends LingotekTestBase {
     $edit['title[0][value]'] = 'Llamas are cool';
     $edit['body[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
+    $this->drupalGet('admin/lingotek/settings');
 
     // Enable debug operations.
-    $this->drupalPostForm('admin/lingotek/settings', [], 'Enable debug operations');
+    $this->submitForm([], 'Enable debug operations');
 
     $this->saveAndPublishNodeForm($edit);
-    $this->assertText('Current theme: bartik');
+    $this->assertSession()->pageTextContains('Current theme: bartik');
 
     $this->clickLink('Edit');
-    $this->assertText('Current theme: seven');
+    $this->assertSession()->pageTextContains('Current theme: seven');
 
     $this->clickLink('Lingotek Metadata');
-    $this->assertText('Current theme: seven');
+    $this->assertSession()->pageTextContains('Current theme: seven');
 
     $edit = ['use_admin_theme' => FALSE];
-    $this->drupalPostForm('admin/appearance', $edit, t('Save configuration'));
+    $this->drupalGet('admin/appearance');
+    $this->submitForm($edit, t('Save configuration'));
 
     $this->drupalGet('node/1');
-    $this->assertText('Current theme: bartik');
+    $this->assertSession()->pageTextContains('Current theme: bartik');
 
     $this->clickLink('Edit');
-    $this->assertText('Current theme: bartik');
+    $this->assertSession()->pageTextContains('Current theme: bartik');
 
     $this->clickLink('Lingotek Metadata');
-    $this->assertText('Current theme: bartik');
+    $this->assertSession()->pageTextContains('Current theme: bartik');
   }
 
 }

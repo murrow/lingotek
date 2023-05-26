@@ -25,7 +25,7 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'taxonomy'];
+  protected static $modules = ['block', 'node', 'taxonomy'];
 
   /**
    * @var \Drupal\taxonomy\VocabularyInterface
@@ -156,66 +156,66 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
     $this->drupalGet('node/1');
     $this->clickLink('Manage Translations');
 
-    $this->assertText('Llamas are cool');
-    $this->assertText('Camelid');
-    $this->assertText('Herbivorous');
+    $this->assertSession()->pageTextContains('Llamas are cool');
+    $this->assertSession()->pageTextContains('Camelid');
+    $this->assertSession()->pageTextContains('Herbivorous');
     // Assert second level is not included.
-    $this->assertNoText('Hominid');
+    $this->assertSession()->pageTextNotContains('Hominid');
     // Assert third level is not included.
-    $this->assertNoText('Ruminant');
+    $this->assertSession()->pageTextNotContains('Ruminant');
 
-    $this->drupalPostForm(NULL, ['depth' => 2], 'Apply');
+    $this->submitForm(['depth' => 2], 'Apply');
 
-    $this->assertText('Llamas are cool');
-    $this->assertText('Camelid');
-    $this->assertText('Herbivorous');
+    $this->assertSession()->pageTextContains('Llamas are cool');
+    $this->assertSession()->pageTextContains('Camelid');
+    $this->assertSession()->pageTextContains('Herbivorous');
     // Assert second level is included.
-    $this->assertText('Hominid');
+    $this->assertSession()->pageTextContains('Hominid');
     // Assert third level is not included.
-    $this->assertNoText('Ruminant');
+    $this->assertSession()->pageTextNotContains('Ruminant');
 
-    $this->drupalPostForm(NULL, ['depth' => 3], 'Apply');
+    $this->submitForm(['depth' => 3], 'Apply');
 
-    $this->assertText('Llamas are cool');
-    $this->assertText('Camelid');
-    $this->assertText('Herbivorous');
+    $this->assertSession()->pageTextContains('Llamas are cool');
+    $this->assertSession()->pageTextContains('Camelid');
+    $this->assertSession()->pageTextContains('Herbivorous');
     // Assert second level is included.
-    $this->assertText('Hominid');
+    $this->assertSession()->pageTextContains('Hominid');
     // Assert third level is also included.
-    $this->assertText('Ruminant');
+    $this->assertSession()->pageTextContains('Ruminant');
 
     // Clicking English must init the upload of content.
     $this->assertLingotekUploadLink();
     // And we cannot request yet a translation.
     $this->assertNoLingotekRequestTranslationLink('es_MX');
     $this->clickLink('EN');
-    $this->assertText('Node Llamas are cool has been uploaded.');
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSession()->pageTextContains('Node Llamas are cool has been uploaded.');
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // There is a link for checking status.
     $this->assertLingotekCheckSourceStatusLink();
     // And we can already request a translation.
     $this->assertLingotekRequestTranslationLink('es_MX');
     $this->clickLink('EN');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request the Spanish translation.
     $this->assertLingotekRequestTranslationLink('es_MX');
     $this->clickLink('ES');
-    $this->assertText("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $this->assertLingotekCheckTargetStatusLink('es_MX');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText('The es_MX translation for node Llamas are cool is ready for download.');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains('The es_MX translation for node Llamas are cool is ready for download.');
 
     // Download the Spanish translation.
     $this->assertLingotekDownloadTargetLink('es_MX');
     $this->clickLink('ES');
-    $this->assertText('The translation of node Llamas are cool into es_MX has been downloaded.');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_MX has been downloaded.');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
 
     // Now the link is to the workbench, and it opens in a new tab.
     $this->assertLingotekWorkbenchLink('es_MX', 'dummy-document-hash-id', 'ES');
@@ -234,7 +234,8 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
     $edit = [];
     $edit['title[0][value]'] = 'Pages are cool';
     $edit['body[0][value]'] = 'Pages are very cool';
-    $this->drupalPostForm('node/add/page', $edit, t('Save'));
+    $this->drupalGet('node/add/page');
+    $this->submitForm($edit, t('Save'));
 
     // Check that the manage translations tab is in the node.
     $this->drupalGet('node/1');
@@ -248,9 +249,9 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       'table[node:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertIdentical(NULL, \Drupal::state()
+    $this->assertSame(NULL, \Drupal::state()
       ->get('lingotek.uploaded_locale'));
     $assert_session->pageTextContains('Cannot upload Page Pages are cool. That Content type is not enabled for translation.');
   }
@@ -276,7 +277,8 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
     $edit['title[0][value]'] = 'Pages are cool';
     $edit['body[0][value]'] = 'Pages are very cool';
     $edit['langcode[0][value]'] = 'en';
-    $this->drupalPostForm('node/add/page', $edit, t('Save'));
+    $this->drupalGet('node/add/page');
+    $this->submitForm($edit, t('Save'));
 
     // Check that the manage translations tab is in the node.
     $this->drupalGet('node/1');
@@ -290,9 +292,9 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       'table[node:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertIdentical(NULL, \Drupal::state()
+    $this->assertSame(NULL, \Drupal::state()
       ->get('lingotek.uploaded_locale'));
     $assert_session->pageTextContains('Cannot upload Page Pages are cool. That Content type is not enabled for Lingotek translation.');
   }
@@ -325,13 +327,13 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
     $this->drupalGet('node/1');
     $this->clickLink('Manage Translations');
 
-    $this->assertText('Llamas are cool');
-    $this->assertText('Camelid');
-    $this->assertText('Herbivorous');
+    $this->assertSession()->pageTextContains('Llamas are cool');
+    $this->assertSession()->pageTextContains('Camelid');
+    $this->assertSession()->pageTextContains('Herbivorous');
     // Assert second level is not included.
-    $this->assertNoText('Hominid');
+    $this->assertSession()->pageTextNotContains('Hominid');
     // Assert third level is not included.
-    $this->assertNoText('Ruminant');
+    $this->assertSession()->pageTextNotContains('Ruminant');
 
     // I can init the upload of content.
     $this->assertLingotekUploadLink();
@@ -339,8 +341,8 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       'table[node:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // I can check current status.
     $this->assertLingotekCheckSourceStatusLink();
@@ -348,7 +350,7 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       'table[node:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckUpload('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Request the German (AT) translation.
     $this->assertLingotekRequestTranslationLink('de_AT');
@@ -356,8 +358,8 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       'table[node:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslation('de', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('de_AT', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('de_AT', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the German (AT) translation.
     $this->assertLingotekCheckTargetStatusLink('de_AT');
@@ -365,8 +367,8 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       'table[node:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckTranslation('de', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('de_AT', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('de_AT', \Drupal::state()->get('lingotek.checked_target_locale'));
 
     // Download the German (AT) translation.
     $this->assertLingotekDownloadTargetLink('de_AT');
@@ -374,8 +376,8 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       'table[node:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForDownloadTranslation('de', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('de_AT', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('de_AT', \Drupal::state()->get('lingotek.downloaded_locale'));
 
     // Now the link is to the workbench, and it opens in a new tab.
     $this->assertLingotekWorkbenchLink('de_AT', 'dummy-document-hash-id', 'DE');
@@ -404,13 +406,13 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('node'),
     ];
 
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
-    $this->assertIdentical('my_custom_job_id', \Drupal::state()->get('lingotek.uploaded_job_id'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSame('my_custom_job_id', \Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The column for Job ID exists and there are values.
-    $this->assertText('Job ID');
-    $this->assertText('my_custom_job_id');
+    $this->assertSession()->pageTextContains('Job ID');
+    $this->assertSession()->pageTextContains('my_custom_job_id');
   }
 
   /**
@@ -437,27 +439,27 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       'table[taxonomy_term:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // There is no upload.
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_title'));
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The job id is displayed.
-    $this->assertText('my_custom_job_id');
+    $this->assertSession()->pageTextContains('my_custom_job_id');
 
     // And the job id is used on upload.
     $this->clickLink('EN');
 
-    $this->assertText('Node Llamas are cool has been uploaded.');
+    $this->assertSession()->pageTextContains('Node Llamas are cool has been uploaded.');
     // Check that the job id used was the right one.
     \Drupal::state()->resetCache();
-    $this->assertIdentical(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
+    $this->assertSame(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
 
     // If we update the job ID without notification to the TMS, no update happens.
     $edit = [
@@ -465,12 +467,12 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       'table[taxonomy_term:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'other_job_id',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // There is no upload.
     \Drupal::state()->resetCache();
@@ -503,13 +505,13 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       'table[taxonomy_term:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // There is no update, because there are no document ids.
     \Drupal::state()->resetCache();
@@ -518,15 +520,15 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The job id is displayed.
-    $this->assertText('my_custom_job_id');
+    $this->assertSession()->pageTextContains('my_custom_job_id');
 
     // And the job id is used on upload.
     $this->clickLink('EN');
 
-    $this->assertText('Node Llamas are cool has been uploaded.');
+    $this->assertSession()->pageTextContains('Node Llamas are cool has been uploaded.');
     // Check that the job id used was the right one.
     \Drupal::state()->resetCache();
-    $this->assertIdentical(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
+    $this->assertSame(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
 
     // If we update the job ID with notification to the TMS, an update happens.
     $edit = [
@@ -534,18 +536,18 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       'table[taxonomy_term:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'other_job_id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // There is an update.
     \Drupal::state()->resetCache();
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_title'));
-    $this->assertIdentical(\Drupal::state()->get('lingotek.uploaded_job_id'), 'other_job_id');
+    $this->assertSame(\Drupal::state()->get('lingotek.uploaded_job_id'), 'other_job_id');
   }
 
   /**
@@ -573,14 +575,14 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       'table[taxonomy_term:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $edit = [
       'job_id' => 'my\invalid\id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('The job ID name cannot contain invalid chars as "/" or "\".');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('The job ID name cannot contain invalid chars as "/" or "\".');
 
     // There is no update, because it's not valid.
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_job_id'));
@@ -589,8 +591,8 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       'job_id' => 'my/invalid/id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('The job ID name cannot contain invalid chars as "/" or "\".');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('The job ID name cannot contain invalid chars as "/" or "\".');
 
     // There is no update, because it's not valid.
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_job_id'));
@@ -620,20 +622,20 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       'table[taxonomy_term:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertText('Camelid');
-    $this->assertNoText('Llamas are cool');
-    $this->drupalPostForm(NULL, [], 'Cancel');
+    $this->assertSession()->pageTextContains('Camelid');
+    $this->assertSession()->pageTextNotContains('Llamas are cool');
+    $this->submitForm([], 'Cancel');
 
     $edit = [
       'table[node:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertNoText('Camelid');
-    $this->assertText('Llamas are cool');
+    $this->assertSession()->pageTextNotContains('Camelid');
+    $this->assertSession()->pageTextContains('Llamas are cool');
   }
 
   /**
@@ -660,10 +662,10 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       'table[taxonomy_term:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertText('Camelid');
-    $this->assertNoText('Llamas are cool');
+    $this->assertSession()->pageTextContains('Camelid');
+    $this->assertSession()->pageTextNotContains('Llamas are cool');
 
     $this->goToContentBulkManagementForm();
 
@@ -671,10 +673,10 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       'table[node:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertNoText('Camelid');
-    $this->assertText('Llamas are cool');
+    $this->assertSession()->pageTextNotContains('Camelid');
+    $this->assertSession()->pageTextContains('Llamas are cool');
   }
 
   /**
@@ -702,47 +704,47 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       'table[node:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id_1',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     $edit = [
       'table[taxonomy_term:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id_2',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // The job id is displayed.
-    $this->assertText('my_custom_job_id_1');
-    $this->assertText('my_custom_job_id_2');
+    $this->assertSession()->pageTextContains('my_custom_job_id_1');
+    $this->assertSession()->pageTextContains('my_custom_job_id_2');
 
     $edit = [
       'table[node:1]' => TRUE,
       'table[taxonomy_term:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForClearJobId('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->drupalPostForm(NULL, [], 'Clear Job ID');
-    $this->assertText('Job ID was cleared successfully.');
+    $this->submitForm([], 'Clear Job ID');
+    $this->assertSession()->pageTextContains('Job ID was cleared successfully.');
 
     // There is no upload.
     \Drupal::state()->resetCache();
     $this->assertEquals('my_custom_job_id_1', \Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The job id is gone.
-    $this->assertNoText('my_custom_job_id_1');
-    $this->assertNoText('my_custom_job_id_2');
+    $this->assertSession()->pageTextNotContains('my_custom_job_id_1');
+    $this->assertSession()->pageTextNotContains('my_custom_job_id_2');
   }
 
   /**
@@ -770,47 +772,47 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
       'table[node:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id_1',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     $edit = [
       'table[taxonomy_term:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id_2',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // The job id is displayed.
-    $this->assertText('my_custom_job_id_1');
-    $this->assertText('my_custom_job_id_2');
+    $this->assertSession()->pageTextContains('my_custom_job_id_1');
+    $this->assertSession()->pageTextContains('my_custom_job_id_2');
 
     $edit = [
       'table[node:1]' => TRUE,
       'table[taxonomy_term:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForClearJobId('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->drupalPostForm(NULL, ['update_tms' => 1], 'Clear Job ID');
-    $this->assertText('Job ID was cleared successfully.');
+    $this->submitForm(['update_tms' => 1], 'Clear Job ID');
+    $this->assertSession()->pageTextContains('Job ID was cleared successfully.');
 
     // There is an update with empty job id.
     \Drupal::state()->resetCache();
     $this->assertEquals('', \Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The job id is gone.
-    $this->assertNoText('my_custom_job_id_1');
-    $this->assertNoText('my_custom_job_id_2');
+    $this->assertSession()->pageTextNotContains('my_custom_job_id_1');
+    $this->assertSession()->pageTextNotContains('my_custom_job_id_2');
   }
 
   public function testCorrectTargetsInNonSourceLanguage() {
@@ -864,7 +866,7 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
     // Assert third level is not included.
     $assert_session->elementNotContains('css', 'table#edit-table', 'Ruminant');
 
-    $this->drupalPostForm(NULL, ['depth' => 2], 'Apply');
+    $this->submitForm(['depth' => 2], 'Apply');
 
     $assert_session->elementContains('css', 'table#edit-table', 'Llamas are cool');
     // Assert first level is included.
@@ -875,7 +877,7 @@ class LingotekNodeManageTranslationTabTest extends LingotekTestBase {
     // Assert third level is not included.
     $assert_session->elementNotContains('css', 'table#edit-table', 'Ruminant');
 
-    $this->drupalPostForm(NULL, ['depth' => 3], 'Apply');
+    $this->submitForm(['depth' => 3], 'Apply');
 
     $assert_session->elementContains('css', 'table#edit-table', 'Llamas are cool');
     // Assert first level is included.

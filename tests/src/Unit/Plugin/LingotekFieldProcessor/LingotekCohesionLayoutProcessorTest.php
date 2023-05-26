@@ -34,6 +34,13 @@ use Psr\Log\LoggerInterface;
 class LingotekCohesionLayoutProcessorTest extends UnitTestCase {
 
   /**
+   * The block manager.
+   *
+   * @var \Drupal\Core\Block\BlockManagerInterface
+   */
+  protected $blockManager;
+
+  /**
    * The class instance under test.
    *
    * @var \Drupal\lingotek\Plugin\LingotekFieldProcessor\LingotekCohesionLayoutProcessor

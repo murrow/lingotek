@@ -20,7 +20,7 @@ class LingotekQueueWorkerTest extends UnitTestCase {
   /**
    * LingotekDownloaderQueueWorker.
    *
-   * @var Drupal\lingotek\Plugin\QueueWorker\LingotekDownloaderQueueWorker
+   * @var \Drupal\lingotek\Plugin\QueueWorker\LingotekDownloaderQueueWorker
    */
   private $lingotekDownloaderQueueWorker;
 
@@ -30,10 +30,8 @@ class LingotekQueueWorkerTest extends UnitTestCase {
   protected function setUp(): void {
     parent::setUp();
     $this->lingotekDownloaderQueueWorker = new LingotekDownloaderQueueWorker([], 'lingotek_downloader_queue_worker', []);
-    $entity_type_manager = $this->getMockBuilder(EntityTypeManager::class)->disableOriginalConstructor()
-      ->getMock();
-    $node_storage = $this->getMockBuilder(NodeStorage::class)->disableOriginalConstructor()
-      ->getMock();
+    $entity_type_manager = $this->createMock(EntityTypeManager::class);
+    $node_storage = $this->createMock(NodeStorage::class);
     $node_storage->expects($this->any())
       ->method('load')
       ->with('random')
@@ -42,11 +40,10 @@ class LingotekQueueWorkerTest extends UnitTestCase {
       ->method('getStorage')
       ->with('random')
       ->willReturn($node_storage);
-    $logger_factory = $this->getMockBuilder(LoggerChannelFactory::class)->disableOriginalConstructor()
-      ->getMock();
+    $logger_factory = $this->createMock(LoggerChannelFactory::class);
     $logger_factory->expects($this->any())
       ->method('get')
-      ->willReturn($this->getMockBuilder(LoggerInterface::class)->disableOriginalConstructor()->getMock());
+      ->willReturn($this->createMock(LoggerInterface::class));
     $container = new ContainerBuilder();
     $container->set('entity_type.manager', $entity_type_manager);
     $container->set('logger.factory', $logger_factory);

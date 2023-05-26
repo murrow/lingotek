@@ -108,7 +108,7 @@ class LingotekWorkbenchModerationSettingsForm implements LingotekModerationSetti
     $status = $this->moderationConfiguration->getUploadStatus($entity_type_id, $bundle);
 
     if (!$status) {
-      $published_statuses = $this->entityTypeManager->getStorage('moderation_state')->getQuery()->condition('published', TRUE)->execute();
+      $published_statuses = $this->entityTypeManager->getStorage('moderation_state')->getQuery()->accessCheck(FALSE)->condition('published', TRUE)->execute();
       if (count($published_statuses) > 0) {
         $status = reset($published_statuses);
       }
@@ -139,6 +139,7 @@ class LingotekWorkbenchModerationSettingsForm implements LingotekModerationSetti
 
     if (!$transition) {
       $transitions = $this->entityTypeManager->getStorage('moderation_state_transition')->getQuery()
+        ->accessCheck(FALSE)
         ->condition('stateFrom', $this->getDefaultModerationUploadStatus($entity_type_id, $bundle))
         ->execute();
       if (count($transitions) > 0) {

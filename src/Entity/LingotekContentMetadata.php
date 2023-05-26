@@ -105,7 +105,7 @@ class LingotekContentMetadata extends ContentEntityBase {
       return NULL;
     }
     $entity_query = \Drupal::entityQuery('lingotek_content_metadata');
-    $entity_query->condition('content_entity_type_id', $target_entity_type_id)
+    $entity_query->accessCheck(FALSE)->condition('content_entity_type_id', $target_entity_type_id)
       ->condition('content_entity_id', $target_id);
     $result = $entity_query->execute();
     if (!empty($result)) {
@@ -132,6 +132,7 @@ class LingotekContentMetadata extends ContentEntityBase {
     $metadata = NULL;
     if ($document_id !== NULL) {
       $entity_query = \Drupal::entityQuery('lingotek_content_metadata');
+      $entity_query->accessCheck(FALSE);
       $entity_query->condition('document_id', $document_id);
       $result = $entity_query->execute();
       if (!empty($result)) {

@@ -34,6 +34,11 @@ class LingotekManagementRelatedEntitiesForm extends LingotekManagementFormBase {
   protected $node;
 
   /**
+   * @var array
+   */
+  protected $related;
+
+  /**
    * Constructs a new LingotekManagementRelatedEntitiesForm object.
    *
    * @param \Drupal\Core\Database\Connection $connection

@@ -91,14 +91,14 @@ class LingotekLongTextFieldImportTest extends LingotekTestBase {
     // And we cannot request yet a translation.
     $this->assertNoLingotekRequestTranslationLink('es_MX');
     $this->clickLink('EN');
-    $this->assertText('Node Llamas are cool has been uploaded.');
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSession()->pageTextContains('Node Llamas are cool has been uploaded.');
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // Check that only the configured fields have been uploaded.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
 
     // There is a link for checking status.
@@ -107,25 +107,25 @@ class LingotekLongTextFieldImportTest extends LingotekTestBase {
     // And we can already request a translation.
     $this->assertLingotekRequestTranslationLink('es_MX');
     $this->clickLink('EN');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request the Spanish translation.
     $this->assertLingotekRequestTranslationLink('es_MX');
     $this->clickLink('ES');
-    $this->assertText("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $this->assertLingotekCheckTargetStatusLink('es_MX');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText('The es_MX translation for node Llamas are cool is ready for download.');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains('The es_MX translation for node Llamas are cool is ready for download.');
 
     // Download the Spanish translation.
     $this->assertLingotekDownloadTargetLink('es_MX');
     $this->clickLink('ES');
-    $this->assertText('The translation of node Llamas are cool into es_MX has been downloaded.');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_MX has been downloaded.');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
 
     // Now the link is to the workbench, and it opens in a new tab.
     $this->assertLingotekWorkbenchLink('es_MX', 'dummy-document-hash-id', 'ES');
@@ -134,7 +134,7 @@ class LingotekLongTextFieldImportTest extends LingotekTestBase {
     $this->clickLink('Llamas are cool');
     $this->clickLink('Translate');
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
 
     // This is a hack for avoiding writing different lingotek endpoint mocks.
     \Drupal::state()->set('lingotek.uploaded_content_type', 'node+long_text');
@@ -155,11 +155,11 @@ class LingotekLongTextFieldImportTest extends LingotekTestBase {
 
     $this->drupalGet('es/node/1');
     $result = \Drupal::database()->query('SELECT * FROM {node__long_text}')->fetchAll();
-    $this->assertEqual(count($result),2);
+    $this->assertEquals(count($result),2);
     $sourceResult = json_decode(json_encode($result[0]), true);
     $targetResult = json_decode(json_encode($result[1]), true);
-    $this->assertEqual($sourceResult['long_text_format'],'plain_text');
-    $this->assertEqual($targetResult['long_text_format'],'plain_text');
+    $this->assertEquals($sourceResult['long_text_format'],'plain_text');
+    $this->assertEquals($targetResult['long_text_format'],'plain_text');
 
   }
 

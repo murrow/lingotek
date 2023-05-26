@@ -24,7 +24,7 @@ class LingotekConfigImportTest extends KernelTestBase {
    *
    * @var array
    */
-  public static $modules = ['config_test', 'system', 'user', 'entity_test', 'language', 'locale', 'content_translation', 'config_translation', 'lingotek'];
+  protected static $modules = ['config_test', 'system', 'user', 'entity_test', 'language', 'locale', 'content_translation', 'config_translation', 'lingotek'];
 
   /**
    * {@inheritdoc}

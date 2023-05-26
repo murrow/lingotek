@@ -42,6 +42,13 @@ class DeleteTranslationTest extends UnitTestCase {
   protected $languageManager;
 
   /**
+   * The entity type bundle info.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeBundleInfoInterface
+   */
+  protected $entityTypeBundleInfo;
+
+  /**
    * The mocked entity type manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -65,14 +72,14 @@ class DeleteTranslationTest extends UnitTestCase {
   /**
    * The tempstore factory.
    *
-   * @var \Drupal\Core\TempStore\PrivateTempStoreFactory|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\TempStore\PrivateTempStoreFactory|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $tempStoreFactory;
 
   /**
    * The user currently logged in.
    *
-   * @var \Drupal\Core\Session\AccountInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Session\AccountInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $currentUser;
 

@@ -19,7 +19,7 @@ class LingotekContentTranslationDocumentUploadHookTest extends LingotekTestBase 
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'image'];
+  protected static $modules = ['block', 'node', 'image'];
 
   /**
    * @var \Drupal\node\NodeInterface
@@ -87,8 +87,9 @@ class LingotekContentTranslationDocumentUploadHookTest extends LingotekTestBase 
     $edit['body[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['files[field_image_0]'] = \Drupal::service('file_system')->realpath($test_image->uri);
+    $this->drupalGet('node/add/animal');
 
-    $this->drupalPostForm('node/add/animal', $edit, t('Preview'));
+    $this->submitForm($edit, t('Preview'));
 
     unset($edit['files[field_image_0]']);
     $edit['field_image[0][alt]'] = 'Llamas are cool';
@@ -101,23 +102,23 @@ class LingotekContentTranslationDocumentUploadHookTest extends LingotekTestBase 
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 4);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
-    $this->assertEqual(1, count($data['field_image'][0]));
+    $this->assertEquals(1, count($data['field_image'][0]));
     $this->assertTrue(isset($data['field_image'][0]['alt']));
     $this->assertTrue(isset($data['animal_date']));
-    $this->assertEqual('2016-05-01', $data['animal_date']);
+    $this->assertEquals('2016-05-01', $data['animal_date']);
 
     // Assert the locale used was correct.
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(\Drupal::request()->getBasePath() . '/animal/2016/llamas-are-cool', $uploaded_url, 'The altered url was used.');
+    $this->assertSame(\Drupal::request()->getBasePath() . '/animal/2016/llamas-are-cool', $uploaded_url, 'The altered url was used.');
   }
 
 }

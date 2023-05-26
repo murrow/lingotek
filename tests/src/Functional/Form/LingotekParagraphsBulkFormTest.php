@@ -18,7 +18,7 @@ class LingotekParagraphsBulkFormTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'block',
     'node',
     'image',
@@ -86,12 +86,12 @@ class LingotekParagraphsBulkFormTest extends LingotekTestBase {
     $this->addDemoContent();
 
     $edit = ['contrib[paragraphs][enable_bulk_management]' => 1];
-    $this->drupalPostForm(NULL, $edit, 'Save settings', [], 'lingoteksettings-integrations-form');
-    $this->assertText('The configuration options have been saved.');
+    $this->submitForm($edit, 'Save settings', 'lingoteksettings-integrations-form');
+    $this->assertSession()->pageTextContains('The configuration options have been saved.');
 
     $this->goToContentBulkManagementForm('paragraph');
 
-    $this->assertText('Parent');
+    $this->assertSession()->pageTextContains('Parent');
     $assert_session->linkExists('Welcome to the Paragraphs Demo module!', 4);
     $assert_session->linkExists('Library item');
   }

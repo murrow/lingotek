@@ -33,10 +33,8 @@ class LingotekApiUnitTest extends UnitTestCase {
    * {@inheritdoc}
    */
   protected function setUp(): void {
-    $this->client = $this->getMockBuilder(LingotekHttpInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-    $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+    $this->client = $this->createMock(LingotekHttpInterface::class);
+    $logger = $this->createMock(LoggerInterface::class);
 
     $this->lingotek_api = new LingotekApi($this->client, $logger);
   }
@@ -46,9 +44,7 @@ class LingotekApiUnitTest extends UnitTestCase {
    */
   public function testAddTranslation() {
     // Ensure that the workflow is set when it's need to be.
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $this->client->expects($this->at(0))
       ->method('post')
       ->with('/api/document/fancy-document-id/translation', ['locale_code' => 'es_ES', 'workflow_id' => 'my_workflow'])
@@ -74,12 +70,8 @@ class LingotekApiUnitTest extends UnitTestCase {
    */
   public function testAddTranslationWithException() {
     // Ensure that the workflow is set when it's need to be.
-    $request = $this->getMockBuilder(RequestInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $request = $this->createMock(RequestInterface::class);
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_BAD_REQUEST);
@@ -104,9 +96,7 @@ class LingotekApiUnitTest extends UnitTestCase {
    * @covers ::cancelDocument
    */
   public function testCancelDocument() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_NO_CONTENT);
@@ -172,9 +162,7 @@ class LingotekApiUnitTest extends UnitTestCase {
    * @covers ::cancelDocumentTarget
    */
   public function testCancelDocumentTarget() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_NO_CONTENT);
@@ -247,9 +235,7 @@ class LingotekApiUnitTest extends UnitTestCase {
    */
   public function testGetCommunities() {
     // Ensure that the limit is set.
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $this->client->expects($this->once())
       ->method('get')
       ->with('/api/community', ['limit' => 100])
@@ -263,9 +249,7 @@ class LingotekApiUnitTest extends UnitTestCase {
    */
   public function testGetProjects() {
     // Ensure that the limit and the community_id are set.
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $this->client->expects($this->once())
       ->method('get')
       ->with('/api/project', ['community_id' => 'my_community_id', 'limit' => 1000])
@@ -279,9 +263,7 @@ class LingotekApiUnitTest extends UnitTestCase {
    */
   public function testGetVaults() {
     // Ensure that the limit is set and the community_id is ignored.
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $this->client->expects($this->once())
       ->method('get')
       ->with('/api/vault', ['limit' => 100, 'is_owned' => 'TRUE'])
@@ -296,9 +278,7 @@ class LingotekApiUnitTest extends UnitTestCase {
   public function testGetWorkflows() {
     $community_id = 'my_community_id';
     // Ensure that the limit is set.
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $this->client->expects($this->once())
       ->method('get')
       ->with('/api/workflow', ['community_id' => $community_id, 'limit' => 1000])
@@ -309,9 +289,7 @@ class LingotekApiUnitTest extends UnitTestCase {
 
   public function testGetTranslation() {
     // Ensure that the useSource is set when it needs to be.
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
 
     $this->client->expects($this->at(0))
       ->method('get')
@@ -339,9 +317,7 @@ class LingotekApiUnitTest extends UnitTestCase {
   public function testGetProcess() {
     $process_id = 'my-process-id';
     // Ensure that the limit is set.
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $this->client->expects($this->once())
       ->method('get')
       ->with('/api/process/my-process-id')

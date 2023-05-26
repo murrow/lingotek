@@ -11,6 +11,13 @@ use Drupal\Core\Form\FormStateInterface;
  */
 class LingotekSettingsTabPreferencesForm extends LingotekConfigFormBase {
 
+  /**
+   * The Entity Type Manager service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
   protected $lang_switcher_value = 0;
   protected $top_level_value = 0;
   protected $lang_switcher;
@@ -190,6 +197,7 @@ class LingotekSettingsTabPreferencesForm extends LingotekConfigFormBase {
       $theme_default = $this->config('system.theme')->get('default');
       $this->lang_regions = system_region_list($theme_default, BlockRepositoryInterface::REGIONS_VISIBLE);
       $ids = \Drupal::entityQuery('block')
+        ->accessCheck(FALSE)
         ->condition('plugin', 'language_block:language_interface')
         ->condition('theme', $theme_default)
         ->execute();

@@ -34,7 +34,7 @@ class SourceLanguageTest extends UnitTestCase {
   /**
    * The connection object on which to run queries.
    *
-   * @var \Drupal\Core\Database\Connection|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Database\Connection|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $connection;
 
@@ -86,9 +86,7 @@ class SourceLanguageTest extends UnitTestCase {
   protected function setUp(): void {
     parent::setUp();
 
-    $this->connection = $this->getMockBuilder(Connection::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->connection = $this->createMock(Connection::class);
 
     $this->entityType = $this->createMock(ContentEntityTypeInterface::class);
     $this->entityType->expects($this->any())
@@ -188,9 +186,9 @@ class SourceLanguageTest extends UnitTestCase {
       ->with('my_entity_type_id')
       ->willReturn($entity_type);
 
-    $unionQuery = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $unionQuery = $this->createMock(PagerSelectExtender::class);
 
-    $select = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $select = $this->createMock(PagerSelectExtender::class);
     $select->expects($this->at(0))
       ->method('innerJoin')
       ->with('entity_data_table', 'entity_data', "entity_table.entity_id= entity_data.entity_id")

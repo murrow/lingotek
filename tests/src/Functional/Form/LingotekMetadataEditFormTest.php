@@ -21,7 +21,7 @@ class LingotekMetadataEditFormTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'node', 'frozenintime'];
+  protected static $modules = ['block', 'node', 'frozenintime'];
 
   protected function setUp(): void {
     parent::setUp();
@@ -68,7 +68,7 @@ class LingotekMetadataEditFormTest extends LingotekTestBase {
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
     $this->saveAndPublishNodeForm($edit);
-    $this->assertUrl('/node/1', [], 'Node has been created.');
+    $this->assertSession()->addressEquals('/node/1', [], 'Node has been created.');
 
     // The metadata local task should not be visible.
     $assert_session->linkNotExists(t('Lingotek Metadata'));
@@ -79,9 +79,10 @@ class LingotekMetadataEditFormTest extends LingotekTestBase {
    */
   public function testMetadataLocalTaskAvailable() {
     $assert_session = $this->assertSession();
+    $this->drupalGet('admin/lingotek/settings');
 
     // Enable debug operations.
-    $this->drupalPostForm('admin/lingotek/settings', [], 'Enable debug operations');
+    $this->submitForm([], 'Enable debug operations');
 
     // Create a node.
     $edit = [];
@@ -90,7 +91,7 @@ class LingotekMetadataEditFormTest extends LingotekTestBase {
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
     $this->saveAndPublishNodeForm($edit);
-    $this->assertUrl('/node/1', [], 'Node has been created.');
+    $this->assertSession()->addressEquals('/node/1', [], 'Node has been created.');
 
     // The metadata local task should be visible.
     $this->drupalGet('/node/1');
@@ -102,9 +103,10 @@ class LingotekMetadataEditFormTest extends LingotekTestBase {
    */
   public function testMetadataEditForm() {
     $assert_session = $this->assertSession();
+    $this->drupalGet('admin/lingotek/settings');
 
     // Enable debug operations.
-    $this->drupalPostForm('admin/lingotek/settings', [], 'Enable debug operations');
+    $this->submitForm([], 'Enable debug operations');
 
     // Create a node.
     $edit = [];
@@ -117,14 +119,14 @@ class LingotekMetadataEditFormTest extends LingotekTestBase {
     // The metadata local task should be visible.
     $this->drupalGet('/node/1');
     $this->clickLink(t('Lingotek Metadata'));
-    $this->assertUrl('/node/1/metadata', [], 'Metadata local task enables the metadata form.');
+    $this->assertSession()->addressEquals('/node/1/metadata', [], 'Metadata local task enables the metadata form.');
 
     // Assert that the values are correct.
-    $this->assertFieldById('edit-lingotek-document-id', 'dummy-document-hash-id');
+    $this->assertSession()->fieldValueEquals('edit-lingotek-document-id', 'dummy-document-hash-id');
     $assert_session->optionExists('edit-lingotek-source-status', Lingotek::STATUS_IMPORTING);
     $assert_session->optionExists('edit-en', Lingotek::STATUS_IMPORTING);
     $assert_session->optionExists('edit-es', Lingotek::STATUS_REQUEST);
-    $this->assertFieldById('edit-lingotek-job-id', '');
+    $this->assertSession()->fieldValueEquals('edit-lingotek-job-id', '');
     $timestamp = \Drupal::time()->getRequestTime();
     $this->assertSession()->fieldValueEquals('verbatim_area[verbatim]', <<<JSON
 {
@@ -179,7 +181,7 @@ class LingotekMetadataEditFormTest extends LingotekTestBase {
 }
 JSON
     );
-    $this->assertFieldByName('lingotek_translation_management[lingotek_translation_profile]', 'automatic');
+    $this->assertSession()->fieldValueEquals('lingotek_translation_management[lingotek_translation_profile]', 'automatic');
 
     $edit = [
       'lingotek_document_id' => 'another-id',
@@ -189,16 +191,16 @@ JSON
       'lingotek_job_id' => 'a new edited job id',
       'lingotek_translation_management[lingotek_translation_profile]' => 'manual',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save metadata');
+    $this->submitForm($edit, 'Save metadata');
 
     // Assert that the values are correct.
-    $this->assertFieldById('edit-lingotek-document-id', 'another-id');
+    $this->assertSession()->fieldValueEquals('edit-lingotek-document-id', 'another-id');
     // ToDo: We should avoid that an upload is triggered, even if using automatic profile.
     // $assert_session->optionExists('edit-lingotek-source-status', Lingotek::STATUS_CURRENT);
     $assert_session->optionExists('edit-lingotek-source-status', Lingotek::STATUS_UNTRACKED);
     $assert_session->optionExists('edit-en', Lingotek::STATUS_UNTRACKED);
     $assert_session->optionExists('edit-es', Lingotek::STATUS_READY);
-    $this->assertFieldById('edit-lingotek-job-id', 'a new edited job id');
+    $this->assertSession()->fieldValueEquals('edit-lingotek-job-id', 'a new edited job id');
     $this->assertSession()->fieldValueEquals('verbatim_area[verbatim]', <<<JSON
 {
     "id": [
@@ -256,7 +258,7 @@ JSON
 }
 JSON
     );
-    $this->assertFieldByName('lingotek_translation_management[lingotek_translation_profile]', 'manual');
+    $this->assertSession()->fieldValueEquals('lingotek_translation_management[lingotek_translation_profile]', 'manual');
 
     /** @var \Drupal\lingotek\LingotekConfigurationServiceInterface $configuration_service */
     $configuration_service = \Drupal::service('lingotek.configuration');
@@ -264,16 +266,16 @@ JSON
     $content_translation_service = \Drupal::service('lingotek.content_translation');
     $node = Node::load(1);
     // Assert that the values are correct in the service.
-    $this->assertIdentical('another-id', $content_translation_service->getDocumentId($node));
-    $this->assertIdentical('manual', $configuration_service->getEntityProfile($node, FALSE)->id());
+    $this->assertSame('another-id', $content_translation_service->getDocumentId($node));
+    $this->assertSame('manual', $configuration_service->getEntityProfile($node, FALSE)->id());
     // ToDo: We should avoid that an upload is triggered, even if using automatic profile.
-    // $this->assertIdentical(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($node));
-    $this->assertIdentical(Lingotek::STATUS_UNTRACKED, $content_translation_service->getSourceStatus($node));
-    $this->assertIdentical(Lingotek::STATUS_UNTRACKED, $content_translation_service->getTargetStatus($node, 'en'));
-    $this->assertIdentical(Lingotek::STATUS_READY, $content_translation_service->getTargetStatus($node, 'es'));
+    // $this->assertSame(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($node));
+    $this->assertSame(Lingotek::STATUS_UNTRACKED, $content_translation_service->getSourceStatus($node));
+    $this->assertSame(Lingotek::STATUS_UNTRACKED, $content_translation_service->getTargetStatus($node, 'en'));
+    $this->assertSame(Lingotek::STATUS_READY, $content_translation_service->getTargetStatus($node, 'es'));
 
     $metadata = LingotekContentMetadata::load(1);
-    $this->assertIdentical('a new edited job id', $metadata->getJobId(), 'Lingotek metadata job id was saved correctly.');
+    $this->assertSame('a new edited job id', $metadata->getJobId(), 'Lingotek metadata job id was saved correctly.');
   }
 
   /**
@@ -281,9 +283,10 @@ JSON
    */
   public function testMetadataEditFormWithoutEnablingBundle() {
     $assert_session = $this->assertSession();
+    $this->drupalGet('admin/lingotek/settings');
 
     // Enable debug operations.
-    $this->drupalPostForm('admin/lingotek/settings', [], 'Enable debug operations');
+    $this->submitForm([], 'Enable debug operations');
 
     // Create a node.
     $edit = [];
@@ -295,15 +298,15 @@ JSON
     // The metadata local task should be visible.
     $this->drupalGet('/node/1');
     $this->clickLink(t('Lingotek Metadata'));
-    $this->assertUrl('/node/1/metadata', [], 'Metadata local task enables the metadata form.');
+    $this->assertSession()->addressEquals('/node/1/metadata', [], 'Metadata local task enables the metadata form.');
 
     // Assert that the values are defaults.
-    $this->assertFieldById('edit-lingotek-document-id', '');
+    $this->assertSession()->fieldValueEquals('edit-lingotek-document-id', '');
     $assert_session->optionExists('edit-lingotek-source-status', Lingotek::STATUS_UNTRACKED);
     $assert_session->optionExists('edit-en', Lingotek::STATUS_UNTRACKED);
     $assert_session->optionExists('edit-es', Lingotek::STATUS_UNTRACKED);
-    $this->assertFieldById('edit-lingotek-job-id', '');
-    $this->assertFieldByName('verbatim_area[verbatim]', 'NULL');
+    $this->assertSession()->fieldValueEquals('edit-lingotek-job-id', '');
+    $this->assertSession()->fieldValueEquals('verbatim_area[verbatim]', 'NULL');
 
     $edit = [
       'lingotek_document_id' => 'another-id',
@@ -312,7 +315,7 @@ JSON
       'es' => Lingotek::STATUS_READY,
       'lingotek_job_id' => 'a new edited job id',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save metadata');
+    $this->submitForm($edit, 'Save metadata');
 
     $assert_session->pageTextNotContains('Metadata saved successfully');
     $assert_session->pageTextContains('This entity cannot be managed in Lingotek. Please check your configuration.');
@@ -320,9 +323,10 @@ JSON
 
   public function testMetadataEditFormWithoutExistingMetadata() {
     $assert_session = $this->assertSession();
+    $this->drupalGet('admin/lingotek/settings');
 
     // Enable debug operations.
-    $this->drupalPostForm('admin/lingotek/settings', [], 'Enable debug operations');
+    $this->submitForm([], 'Enable debug operations');
 
     // Create a node.
     $edit = [];
@@ -337,15 +341,15 @@ JSON
     // The metadata local task should be visible.
     $this->drupalGet('/node/1');
     $this->clickLink(t('Lingotek Metadata'));
-    $this->assertUrl('/node/1/metadata', [], 'Metadata local task enables the metadata form.');
+    $this->assertSession()->addressEquals('/node/1/metadata', [], 'Metadata local task enables the metadata form.');
 
     // Assert that the values are defaults.
-    $this->assertFieldById('edit-lingotek-document-id', '');
+    $this->assertSession()->fieldValueEquals('edit-lingotek-document-id', '');
     $assert_session->optionExists('edit-lingotek-source-status', Lingotek::STATUS_UNTRACKED);
     $assert_session->optionExists('edit-en', Lingotek::STATUS_UNTRACKED);
     $assert_session->optionExists('edit-es', Lingotek::STATUS_UNTRACKED);
-    $this->assertFieldById('edit-lingotek-job-id', '');
-    $this->assertFieldByName('verbatim_area[verbatim]', 'NULL');
+    $this->assertSession()->fieldValueEquals('edit-lingotek-job-id', '');
+    $this->assertSession()->fieldValueEquals('verbatim_area[verbatim]', 'NULL');
 
     $edit = [
       'lingotek_document_id' => 'another-id',
@@ -354,18 +358,18 @@ JSON
       'es' => Lingotek::STATUS_READY,
       'lingotek_job_id' => 'a new edited job id',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save metadata');
+    $this->submitForm($edit, 'Save metadata');
 
     $assert_session->pageTextContains('Metadata saved successfully');
 
     // Assert that the values are correct.
-    $this->assertFieldById('edit-lingotek-document-id', 'another-id');
+    $this->assertSession()->fieldValueEquals('edit-lingotek-document-id', 'another-id');
     // ToDo: We should avoid that an upload is triggered, even if using automatic profile.
     // $assert_session->optionExists('edit-lingotek-source-status', Lingotek::STATUS_CURRENT);
     $assert_session->optionExists('edit-lingotek-source-status', Lingotek::STATUS_UNTRACKED);
     $assert_session->optionExists('edit-en', Lingotek::STATUS_UNTRACKED);
     $assert_session->optionExists('edit-es', Lingotek::STATUS_READY);
-    $this->assertFieldById('edit-lingotek-job-id', 'a new edited job id');
+    $this->assertSession()->fieldValueEquals('edit-lingotek-job-id', 'a new edited job id');
     $this->assertSession()->fieldValueEquals('verbatim_area[verbatim]', <<<JSON
 {
     "id": [
@@ -424,15 +428,15 @@ JSON
     $content_translation_service = \Drupal::service('lingotek.content_translation');
     $node = Node::load(1);
     // Assert that the values are correct in the service.
-    $this->assertIdentical('another-id', $content_translation_service->getDocumentId($node));
+    $this->assertSame('another-id', $content_translation_service->getDocumentId($node));
     // ToDo: We should avoid that an upload is triggered, even if using automatic profile.
-    // $this->assertIdentical(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($node));
-    $this->assertIdentical(Lingotek::STATUS_UNTRACKED, $content_translation_service->getSourceStatus($node));
-    $this->assertIdentical(Lingotek::STATUS_UNTRACKED, $content_translation_service->getTargetStatus($node, 'en'));
-    $this->assertIdentical(Lingotek::STATUS_READY, $content_translation_service->getTargetStatus($node, 'es'));
+    // $this->assertSame(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($node));
+    $this->assertSame(Lingotek::STATUS_UNTRACKED, $content_translation_service->getSourceStatus($node));
+    $this->assertSame(Lingotek::STATUS_UNTRACKED, $content_translation_service->getTargetStatus($node, 'en'));
+    $this->assertSame(Lingotek::STATUS_READY, $content_translation_service->getTargetStatus($node, 'es'));
 
     $metadata = LingotekContentMetadata::load(1);
-    $this->assertIdentical('a new edited job id', $metadata->getJobId(), 'Lingotek metadata job id was saved correctly.');
+    $this->assertSame('a new edited job id', $metadata->getJobId(), 'Lingotek metadata job id was saved correctly.');
   }
 
 }

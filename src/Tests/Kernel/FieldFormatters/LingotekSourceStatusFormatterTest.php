@@ -20,7 +20,7 @@ class LingotekSourceStatusFormatterTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['system', 'field', 'text', 'locale', 'language', 'config_translation', 'content_translation', 'lingotek', 'user', 'entity_test'];
+  protected static $modules = ['system', 'field', 'text', 'locale', 'language', 'config_translation', 'content_translation', 'lingotek', 'user', 'entity_test'];
 
   /**
    * @var string
@@ -125,7 +125,7 @@ class LingotekSourceStatusFormatterTest extends KernelTestBase {
     $entity->{$this->fieldName}->value = $english;
 
     $this->renderEntityFields($entity, $this->display);
-    $this->assertRaw($expected);
+    $this->assertSession()->responseContains($expected);
   }
 
 }

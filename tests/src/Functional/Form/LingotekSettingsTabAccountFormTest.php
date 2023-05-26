@@ -17,7 +17,7 @@ class LingotekSettingsTabAccountFormTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'image'];
+  protected static $modules = ['node', 'image'];
 
   /**
    * {@inheritdoc}
@@ -57,7 +57,7 @@ class LingotekSettingsTabAccountFormTest extends LingotekTestBase {
       'filter' => 'test_filter2',
       'subfilter' => 'test_filter3',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save configuration');
+    $this->submitForm($edit, 'Save configuration');
 
     $this->assertTableValue('status', 'Active');
     $this->assertTableValue('plan', 'No');
@@ -80,7 +80,7 @@ class LingotekSettingsTabAccountFormTest extends LingotekTestBase {
     $this->drupalGet('admin/lingotek/settings');
     $this->clickLink('Edit defaults');
     $edit = ['workflow' => 'project_default'];
-    $this->drupalPostForm(NULL, $edit, 'Save configuration');
+    $this->submitForm($edit, 'Save configuration');
     $this->assertTableValue('workflow', 'Project Default (project_default)');
   }
 
@@ -113,7 +113,7 @@ class LingotekSettingsTabAccountFormTest extends LingotekTestBase {
   protected function assertTableValue($field, $expected, $message = '') {
     $xpathValue = $this->xpath('//tr[@data-drupal-selector="edit-account-table-' . $field . '-row"]//td[2]');
     $value = $xpathValue[0]->getText();
-    return $this->assertEquals($expected, $value, $message);
+    $this->assertEquals($expected, $value, $message);
   }
 
   /**

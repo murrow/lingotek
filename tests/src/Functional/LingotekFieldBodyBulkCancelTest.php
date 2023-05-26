@@ -15,7 +15,7 @@ class LingotekFieldBodyBulkCancelTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'field_ui'];
+  protected static $modules = ['block', 'node', 'field_ui'];
 
   /**
    * {@inheritdoc}
@@ -59,7 +59,7 @@ class LingotekFieldBodyBulkCancelTest extends LingotekTestBase {
       'table[node.article.body]' => 'node.article.body',
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCancel('node_fields'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $config_translation_service */
     $config_translation_service = \Drupal::service('lingotek.config_translation');
@@ -68,11 +68,11 @@ class LingotekFieldBodyBulkCancelTest extends LingotekTestBase {
 
     // Assert that The document has been cancelled remotely.
     $cancelled_docs = \Drupal::state()->get('lingotek.cancelled_docs', []);
-    $this->assertEqual(1, count($cancelled_docs), 'The document has been cancelled remotely.');
+    $this->assertEquals(1, count($cancelled_docs), 'The document has been cancelled remotely.');
 
     // Assert that no document has been deleted remotely.
     $deleted_docs = \Drupal::state()->get('lingotek.deleted_docs', []);
-    $this->assertEqual(0, count($deleted_docs), 'No document has been deleted remotely.');
+    $this->assertEquals(0, count($deleted_docs), 'No document has been deleted remotely.');
 
     $this->assertNull($config_translation_service->getDocumentId($entity));
 
@@ -82,8 +82,8 @@ class LingotekFieldBodyBulkCancelTest extends LingotekTestBase {
     \Drupal::entityTypeManager()->getStorage('field_config')->resetCache();
     $entity = \Drupal::entityTypeManager()->getStorage('field_config')->load('node.article.body');
 
-    $this->assertIdentical(Lingotek::STATUS_CANCELLED, $config_translation_service->getSourceStatus($entity));
-    $this->assertIdentical(Lingotek::STATUS_CANCELLED, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_CANCELLED, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CANCELLED, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // We cannot request again.
     $basepath = \Drupal::request()->getBasePath();
@@ -110,7 +110,7 @@ class LingotekFieldBodyBulkCancelTest extends LingotekTestBase {
       'table[node.article.body]' => 'node.article.body',
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCancelTarget('es', 'node_fields'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $config_translation_service */
     $config_translation_service = \Drupal::service('lingotek.config_translation');
@@ -127,8 +127,8 @@ class LingotekFieldBodyBulkCancelTest extends LingotekTestBase {
     $this->assertSourceStatus('EN', Lingotek::STATUS_CURRENT);
     $this->assertTargetStatus('ES', Lingotek::STATUS_CANCELLED);
 
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
-    $this->assertIdentical(Lingotek::STATUS_CANCELLED, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CANCELLED, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // We cannot request again.
     $basepath = \Drupal::request()->getBasePath();
@@ -153,7 +153,7 @@ class LingotekFieldBodyBulkCancelTest extends LingotekTestBase {
       'table[node.article.body]' => 'node.article.body',
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCancelTarget('es', 'node_fields'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $config_translation_service */
     $config_translation_service = \Drupal::service('lingotek.config_translation');
@@ -170,10 +170,10 @@ class LingotekFieldBodyBulkCancelTest extends LingotekTestBase {
     $this->assertSourceStatus('EN', Lingotek::STATUS_CURRENT);
     $this->assertTargetStatus('ES', Lingotek::STATUS_CURRENT);
 
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
 
-    $this->assertText('Target es for Body was already completed in the TMS and cannot be cancelled unless the entire document is cancelled.');
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSession()->pageTextContains('Target es for Body was already completed in the TMS and cannot be cancelled unless the entire document is cancelled.');
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
   }
 
   protected function createAndTranslateFieldWithLinks() {
@@ -187,25 +187,25 @@ class LingotekFieldBodyBulkCancelTest extends LingotekTestBase {
 
     // Clicking English must init the upload of content.
     $this->clickLink('EN');
-    $this->assertText(t('Body uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('Body uploaded successfully'));
 
     // There is a link for checking status.
     $this->clickLink('EN');
-    $this->assertText('Body status checked successfully');
+    $this->assertSession()->pageTextContains('Body status checked successfully');
 
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/field_config/node.article.body/es_ES?destination=' . $basepath . '/admin/lingotek/config/manage');
 
     // Request the Spanish translation.
     $this->clickLink('ES');
-    $this->assertText("Translation to es_ES requested successfully");
+    $this->assertSession()->pageTextContains("Translation to es_ES requested successfully");
 
     // Check status of the Spanish translation.
     $this->clickLink('ES');
-    $this->assertText("Translation to es_ES status checked successfully");
+    $this->assertSession()->pageTextContains("Translation to es_ES status checked successfully");
 
     // Download the Spanish translation.
     $this->clickLink('ES');
-    $this->assertText('Translation to es_ES downloaded successfully');
+    $this->assertSession()->pageTextContains('Translation to es_ES downloaded successfully');
   }
 
 }

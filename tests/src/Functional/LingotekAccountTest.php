@@ -21,7 +21,7 @@ class LingotekAccountTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['lingotek', 'lingotek_test'];
+  protected static $modules = ['lingotek', 'lingotek_test'];
 
   /**
    * Tests that the dashboard cannot be accessed without a valid user.
@@ -39,19 +39,19 @@ class LingotekAccountTest extends BrowserTestBase {
     $this->clickLink('Connect Lingotek Account');
     // Our fake backend generates a token, returns to the site, completes the
     // handshake and return some fake data.
-    $this->assertText('Your account settings have been saved.');
+    $this->assertSession()->pageTextContains('Your account settings have been saved.');
     // Then we can select the defaults for the different fields.
-    $this->drupalPostForm(NULL, ['community' => 'test_community'], 'Next');
-    $this->assertText('The configuration options have been saved.');
-    $this->drupalPostForm(NULL, [
+    $this->submitForm(['community' => 'test_community'], 'Next');
+    $this->assertSession()->pageTextContains('The configuration options have been saved.');
+    $this->submitForm([
       'project' => 'test_project',
       'vault' => 'test_vault',
       'workflow' => 'test_workflow',
     ], 'Save configuration');
-    $this->assertText('The configuration options have been saved.');
+    $this->assertSession()->pageTextContains('The configuration options have been saved.');
     // We are done with the defaults, we should be redirected to the dashboard.
-    $this->assertText('Dashboard');
-    $this->assertUrl('admin/lingotek');
+    $this->assertSession()->pageTextContains('Dashboard');
+    $this->assertSession()->addressEquals('admin/lingotek');
   }
 
   /**
@@ -67,7 +67,7 @@ class LingotekAccountTest extends BrowserTestBase {
 
     // Try to navigate to the Dashboard page, and assert we are redirected.
     $this->drupalGet('admin/lingotek');
-    $this->assertUrl('admin/lingotek/setup/account');
+    $this->assertSession()->addressEquals('admin/lingotek/setup/account');
     $assert_session->linkExists('Connect Lingotek Account');
   }
 

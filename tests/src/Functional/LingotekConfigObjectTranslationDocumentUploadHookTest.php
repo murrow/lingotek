@@ -14,7 +14,7 @@ class LingotekConfigObjectTranslationDocumentUploadHookTest extends LingotekTest
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['node', 'user', 'lingotek_test_config_object'];
+  protected static $modules = ['node', 'user', 'lingotek_test_config_object'];
 
   /**
    * {@inheritdoc}
@@ -61,10 +61,10 @@ class LingotekConfigObjectTranslationDocumentUploadHookTest extends LingotekTest
     // Only the proper translatable typed properties are being uploaded.
     $this->assertFalse(isset($data['lingotek_test_config_object.settings']['property_1']));
     $this->assertFalse(isset($data['lingotek_test_config_object.settings']['property_2']));
-    $this->assertEqual($data['lingotek_test_config_object.settings']['property_3'], 'Cats feed description');
-    $this->assertEqual($data['lingotek_test_config_object.settings']['property_4'], 'Llamas feed description');
-    $this->assertEqual($data['lingotek_test_config_object.settings']['property_5'], 'Cats feed description');
-    $this->assertEqual($data['lingotek_test_config_object.settings']['property_6'], 'Llamas feed description');
+    $this->assertEquals($data['lingotek_test_config_object.settings']['property_3'], 'Cats feed description');
+    $this->assertEquals($data['lingotek_test_config_object.settings']['property_4'], 'Llamas feed description');
+    $this->assertEquals($data['lingotek_test_config_object.settings']['property_5'], 'Cats feed description');
+    $this->assertEquals($data['lingotek_test_config_object.settings']['property_6'], 'Llamas feed description');
   }
 
 }

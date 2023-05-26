@@ -19,7 +19,7 @@ class LingotekNodeParagraphsTranslationTest extends LingotekFunctionalJavascript
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'content_moderation', 'workflows', 'node', 'image', 'comment', 'paragraphs', 'lingotek_paragraphs_test'];
+  protected static $modules = ['block', 'content_moderation', 'workflows', 'node', 'image', 'comment', 'paragraphs', 'lingotek_paragraphs_test'];
 
   /**
    * {@inheritdoc}
@@ -100,20 +100,20 @@ class LingotekNodeParagraphsTranslationTest extends LingotekFunctionalJavascript
     $edit['langcode[0][value]'] = 'en';
     $edit['field_paragraphs_demo[0][subform][field_text_demo][0][value]'] = 'Llamas are very cool';
     $edit['moderation_state[0][state]'] = 'published';
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
 
     // Check that only the configured fields have been uploaded, including metatags.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->assertEqual($data['title'][0]['value'], 'Llamas are cool');
-    $this->assertEqual($data['field_paragraphs_demo'][0]['field_text_demo'][0]['value'], 'Llamas are very cool');
+    $this->assertEquals($data['title'][0]['value'], 'Llamas are cool');
+    $this->assertEquals($data['field_paragraphs_demo'][0]['field_text_demo'][0]['value'], 'Llamas are very cool');
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
+    $this->assertSame(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -201,22 +201,22 @@ class LingotekNodeParagraphsTranslationTest extends LingotekFunctionalJavascript
     $edit['field_paragraphs_demo[2][subform][field_text_demo][0][value]'] = 'Llamas are very cool for the third time';
     $edit['moderation_state[0][state]'] = 'published';
 
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
 
     // Check that only the configured fields have been uploaded, including metatags.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->assertEqual($data['title'][0]['value'], 'Llamas are cool');
-    $this->assertEqual($data['field_paragraphs_demo'][0]['field_text_demo'][0]['value'], 'Llamas are very cool for the first time');
-    $this->assertEqual($data['field_paragraphs_demo'][1]['field_text_demo'][0]['value'], 'Llamas are very cool for the second time');
-    $this->assertEqual($data['field_paragraphs_demo'][2]['field_text_demo'][0]['value'], 'Llamas are very cool for the third time');
+    $this->assertEquals($data['title'][0]['value'], 'Llamas are cool');
+    $this->assertEquals($data['field_paragraphs_demo'][0]['field_text_demo'][0]['value'], 'Llamas are very cool for the first time');
+    $this->assertEquals($data['field_paragraphs_demo'][1]['field_text_demo'][0]['value'], 'Llamas are very cool for the second time');
+    $this->assertEquals($data['field_paragraphs_demo'][2]['field_text_demo'][0]['value'], 'Llamas are very cool for the third time');
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
+    $this->assertSame(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -290,7 +290,7 @@ class LingotekNodeParagraphsTranslationTest extends LingotekFunctionalJavascript
     $edit['langcode[0][value]'] = 'en';
     $edit['field_paragraphs_demo[0][subform][field_text_demo][0][value]'] = 'Llamas are very cool for the first time EDITED';
     $edit['field_paragraphs_demo[2][subform][field_text_demo][0][value]'] = 'Llamas are very cool for the third time EDITED';
-    $this->drupalPostForm(NULL, $edit, t('Save (this translation)'));
+    $this->submitForm($edit, t('Save (this translation)'));
 
     $assert_session->pageTextContains('Llamas are cool EDITED');
     $assert_session->pageTextContains('Llamas are very cool for the first time EDITED');
@@ -360,12 +360,12 @@ class LingotekNodeParagraphsTranslationTest extends LingotekFunctionalJavascript
     $this->drupalGet('node/1/edit');
     $assert_session->fieldValueEquals('field_paragraphs_demo[0][subform][field_text_demo][0][value]', 'Llamas are very cool');
 
-    $this->drupalPostForm(NULL, NULL, 'Remove');
+    $this->submitForm(NULL, 'Remove');
     $assert_session->waitForElementVisible('css', 'field_paragraphs_demo_0_confirm_remove', 1000);
-    $this->drupalPostForm(NULL, NULL, 'Confirm removal');
+    $this->submitForm(NULL, 'Confirm removal');
     $assert_session->waitForElementRemoved('css', 'field_paragraphs_demo_0_confirm_remove', 1000);
 
-    $this->drupalPostForm(NULL, NULL, 'Save (this translation)');
+    $this->submitForm(NULL, 'Save (this translation)');
     $assert_session->waitForElementVisible('css', $messages_locator);
     $assert_session->pageTextContains('Paragraphed article Llamas are cool has been updated.');
   }
@@ -374,7 +374,8 @@ class LingotekNodeParagraphsTranslationTest extends LingotekFunctionalJavascript
     $edit = [];
     $edit['settings[node][paragraphed_content_demo][fields][field_paragraphs_demo]'] = 1;
     $edit['settings[paragraph][image_text][fields][field_text_demo]'] = 1;
-    $this->drupalPostForm('/admin/config/regional/content-language', $edit, 'Save configuration');
+    $this->drupalGet('/admin/config/regional/content-language');
+    $this->submitForm($edit, 'Save configuration');
     $this->assertSession()->responseContains('Settings successfully updated.');
   }
 

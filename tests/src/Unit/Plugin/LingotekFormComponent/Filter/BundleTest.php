@@ -34,7 +34,7 @@ class BundleTest extends UnitTestCase {
   /**
    * The connection object on which to run queries.
    *
-   * @var \Drupal\Core\Database\Connection|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Database\Connection|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $connection;
 
@@ -86,9 +86,7 @@ class BundleTest extends UnitTestCase {
   protected function setUp(): void {
     parent::setUp();
 
-    $this->connection = $this->getMockBuilder(Connection::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->connection = $this->createMock(Connection::class);
 
     $this->entityType = $this->createMock(ContentEntityTypeInterface::class);
     $this->entityType->expects($this->any())
@@ -209,7 +207,7 @@ class BundleTest extends UnitTestCase {
       ->with('my_entity_type_id')
       ->willReturn($entity_type);
 
-    $select = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $select = $this->createMock(PagerSelectExtender::class);
     // Assert that condition is called filtering by the undefined language.
     $select->expects($this->never())
       ->method('condition')
@@ -236,8 +234,8 @@ class BundleTest extends UnitTestCase {
       ->with('my_entity_type_id')
       ->willReturn($entity_type);
 
-    $select = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
-    $unionQuery = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $select = $this->createMock(PagerSelectExtender::class);
+    $unionQuery = $this->createMock(PagerSelectExtender::class);
     // Assert that condition is called filtering by the undefined language.
     $select->expects($this->any())
       ->method('condition')

@@ -44,14 +44,14 @@ class LingotekModuleUninstallationTest extends BrowserTestBase {
 
     // Post the form uninstalling the lingotek module.
     $edit = ['uninstall[lingotek]' => '1'];
-    $this->drupalPostForm(NULL, $edit, 'Uninstall');
+    $this->submitForm($edit, 'Uninstall');
 
     // We get an advice and we can confirm.
-    $this->assertText('The following modules will be completely uninstalled from your site, and all data from these modules will be lost!');
+    $this->assertSession()->pageTextContains('The following modules will be completely uninstalled from your site, and all data from these modules will be lost!');
     $this->assertSession()->responseContains('The listed configuration will be deleted.');
     $this->assertSession()->responseContains('Lingotek Profile');
 
-    $this->drupalPostForm(NULL, [], 'Uninstall');
+    $this->submitForm([], 'Uninstall');
 
     $this->assertSession()->responseContains('The selected modules have been uninstalled.');
   }

@@ -18,7 +18,7 @@ class LingotekNodeLayoutBuilderWithRevisionableBlockAsymmetricTranslationTest ex
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'block',
     'block_content',
     'content_moderation',

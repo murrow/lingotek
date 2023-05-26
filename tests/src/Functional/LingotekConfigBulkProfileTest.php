@@ -17,7 +17,7 @@ class LingotekConfigBulkProfileTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'node'];
+  protected static $modules = ['block', 'node'];
 
   protected function setUp(): void {
     parent::setUp();
@@ -45,22 +45,22 @@ class LingotekConfigBulkProfileTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'change_profile:automatic',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check that there are three nodes with the Automatic Profile
     $automatic_profile = $this->xpath("//td[contains(text(), 'Automatic')]");
-    $this->assertEqual(count($automatic_profile), 1, 'Automatic Profile set');
+    $this->assertEquals(count($automatic_profile), 1, 'Automatic Profile set');
 
     $edit = [
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'change_profile:manual',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check that there is one node with the Manual Profile
     // Check that there are two nodes with the Automatic Profile
     $manual_profile = $this->xpath("//td[contains(text(), 'Manual')]");
-    $this->assertEqual(count($manual_profile), 1, 'Manual Profile set');
+    $this->assertEquals(count($manual_profile), 1, 'Manual Profile set');
 
     $this->clickLink('EN', 1);
 
@@ -68,11 +68,11 @@ class LingotekConfigBulkProfileTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'change_profile:disabled',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check that there are three nodes with the Disabled Profile
     $disabled_profile = $this->xpath("//td[contains(text(), 'Disabled')]");
-    $this->assertEqual(count($disabled_profile), 1, 'Disabled Profile set');
+    $this->assertEquals(count($disabled_profile), 1, 'Disabled Profile set');
 
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $config_translation_service */
     $config_translation_service = \Drupal::service('lingotek.config_translation');
@@ -90,63 +90,63 @@ class LingotekConfigBulkProfileTest extends LingotekTestBase {
     // that hold a list of languages.
     $this->rebuildContainer();
 
-    $this->assertIdentical(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigSourceStatus($mapper));
-    $this->assertIdentical(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigTargetStatus($mapper, 'es'));
+    $this->assertSame(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigSourceStatus($mapper));
+    $this->assertSame(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigTargetStatus($mapper, 'es'));
 
     $edit = [
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertIdentical(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigSourceStatus($mapper));
-    $this->assertIdentical(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigTargetStatus($mapper, 'es'));
+    $this->assertSame(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigSourceStatus($mapper));
+    $this->assertSame(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigTargetStatus($mapper, 'es'));
 
     $edit = [
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'check_upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertIdentical(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigSourceStatus($mapper));
-    $this->assertIdentical(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigTargetStatus($mapper, 'es'));
+    $this->assertSame(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigSourceStatus($mapper));
+    $this->assertSame(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigTargetStatus($mapper, 'es'));
 
     $edit = [
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'request_translations',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertIdentical(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigSourceStatus($mapper));
-    $this->assertIdentical(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigTargetStatus($mapper, 'es'));
+    $this->assertSame(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigSourceStatus($mapper));
+    $this->assertSame(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigTargetStatus($mapper, 'es'));
 
     $edit = [
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'check_translations',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertIdentical(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigSourceStatus($mapper));
-    $this->assertIdentical(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigTargetStatus($mapper, 'es'));
+    $this->assertSame(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigSourceStatus($mapper));
+    $this->assertSame(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigTargetStatus($mapper, 'es'));
 
     $edit = [
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'download_translation:es',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertIdentical(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigSourceStatus($mapper));
-    $this->assertIdentical(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigTargetStatus($mapper, 'es'));
+    $this->assertSame(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigSourceStatus($mapper));
+    $this->assertSame(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigTargetStatus($mapper, 'es'));
 
     $edit = [
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'change_profile:automatic',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check that there are three nodes with the Automatic Profile
     $automatic_profile = $this->xpath("//td[contains(text(), 'Automatic')]");
-    $this->assertEqual(count($automatic_profile), 1, 'Automatic Profile set');
+    $this->assertEquals(count($automatic_profile), 1, 'Automatic Profile set');
   }
 
   /**
@@ -168,47 +168,47 @@ class LingotekConfigBulkProfileTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'change_profile:automatic',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check that there are three nodes with the Automatic Profile
     $automatic_profile = $this->xpath("//td[contains(text(), 'Automatic')]");
-    $this->assertEqual(count($automatic_profile), 1, 'Automatic Profile set');
+    $this->assertEquals(count($automatic_profile), 1, 'Automatic Profile set');
 
     $edit = [
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $edit = [
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'check_upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $edit = [
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'request_translations',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $edit = [
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'check_translations',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $edit = [
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'download_translations',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $edit = [
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'cancel_document',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $this->assertSourceStatus('EN', Lingotek::STATUS_CANCELLED);
     $this->assertTargetStatus('ES', Lingotek::STATUS_CANCELLED);
@@ -217,7 +217,7 @@ class LingotekConfigBulkProfileTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $this->assertSourceStatus('EN', Lingotek::STATUS_IMPORTING);
     $this->assertTargetStatus('ES', Lingotek::STATUS_UNTRACKED);
@@ -226,7 +226,7 @@ class LingotekConfigBulkProfileTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'change_profile:disabled',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     drupal_static_reset();
     \Drupal::entityTypeManager()->clearCachedDefinitions();
@@ -241,8 +241,8 @@ class LingotekConfigBulkProfileTest extends LingotekTestBase {
       ->getMappers();
     $mapper = $mappers['system.site_information_settings'];
 
-    $this->assertIdentical(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigSourceStatus($mapper));
-    $this->assertIdentical(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigTargetStatus($mapper, 'es'));
+    $this->assertSame(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigSourceStatus($mapper));
+    $this->assertSame(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigTargetStatus($mapper, 'es'));
 
     $this->drupalGet('admin/config/system/site-information/translate');
 
@@ -251,7 +251,7 @@ class LingotekConfigBulkProfileTest extends LingotekTestBase {
     $edit = [
       'site_name' => 'llamas are cool',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save configuration'));
+    $this->submitForm($edit, t('Save configuration'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -263,8 +263,8 @@ class LingotekConfigBulkProfileTest extends LingotekTestBase {
     // that hold a list of languages.
     $this->rebuildContainer();
 
-    $this->assertIdentical(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigSourceStatus($mapper));
-    $this->assertIdentical(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigTargetStatus($mapper, 'es'));
+    $this->assertSame(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigSourceStatus($mapper));
+    $this->assertSame(Lingotek::STATUS_DISABLED, $config_translation_service->getConfigTargetStatus($mapper, 'es'));
   }
 
 }

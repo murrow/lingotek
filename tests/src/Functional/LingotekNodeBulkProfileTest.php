@@ -19,10 +19,10 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'node'];
+  protected static $modules = ['block', 'node'];
 
   /**
-   * @var \Drupal\node\Entity\NodeInterface
+   * @var \Drupal\node\NodeInterface
    */
   protected $node;
 
@@ -82,8 +82,8 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
       'table[3]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // I can check current status.
     $this->assertLingotekCheckSourceStatusLink();
@@ -94,11 +94,11 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
       'table[3]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckUpload('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check that there are three nodes with the Manual Profile
     $manual_profile = $this->xpath("//td[contains(text(), 'Manual')]");
-    $this->assertEqual(count($manual_profile), 3, 'There are three nodes with the Manual Profile set.');
+    $this->assertEquals(count($manual_profile), 3, 'There are three nodes with the Manual Profile set.');
 
     $key = $this->getBulkSelectionKey('en', 1);
     $edit = [
@@ -107,24 +107,24 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
       'table[3]' => TRUE,
       $this->getBulkOperationFormName() => 'change_profile:automatic',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check that there are three nodes with the Automatic Profile
     $automatic_profile = $this->xpath("//td[contains(text(), 'Automatic')]");
-    $this->assertEqual(count($automatic_profile), 3, 'There are three nodes with the Automatic Profile set.');
+    $this->assertEquals(count($automatic_profile), 3, 'There are three nodes with the Automatic Profile set.');
 
     $edit = [
       'table[2]' => TRUE,
       $this->getBulkOperationFormName() => 'change_profile:manual',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check that there is one node with the Manual Profile
     // Check that there are two nodes with the Automatic Profile
     $manual_profile = $this->xpath("//td[contains(text(), 'Manual')]");
-    $this->assertEqual(count($manual_profile), 1, 'There is one node with the Manual Profile set.');
+    $this->assertEquals(count($manual_profile), 1, 'There is one node with the Manual Profile set.');
     $automatic_profile = $this->xpath("//td[contains(text(), 'Automatic')]");
-    $this->assertEqual(count($automatic_profile), 2, 'There are two nodes with the Automatic Profile set.');
+    $this->assertEquals(count($automatic_profile), 2, 'There are two nodes with the Automatic Profile set.');
 
     $key = $this->getBulkSelectionKey('en', 1);
     $edit = [
@@ -133,11 +133,11 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
       'table[3]' => TRUE,
       $this->getBulkOperationFormName() => 'change_profile:disabled',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check that there are three nodes with the Disabled Profile
     $disabled_profile = $this->xpath("//td[contains(text(), 'Disabled')]");
-    $this->assertEqual(count($disabled_profile), 3, 'There are three nodes with the Disabled Profile set.');
+    $this->assertEquals(count($disabled_profile), 3, 'There are three nodes with the Disabled Profile set.');
 
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $content_translation_service */
     $content_translation_service = \Drupal::service('lingotek.content_translation');
@@ -145,9 +145,9 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
     $this->goToContentBulkManagementForm();
     for ($i = 1; $i < 4; $i++) {
       $node = Node::load($i);
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getSourceStatus($node));
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'en'));
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'es'));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getSourceStatus($node));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'en'));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'es'));
     }
     $key = $this->getBulkSelectionKey('en', 1);
     $edit = [
@@ -156,13 +156,13 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
       'table[3]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     for ($i = 1; $i < 4; $i++) {
       $node = Node::load($i);
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getSourceStatus($node));
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'en'));
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'es'));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getSourceStatus($node));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'en'));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'es'));
     }
 
     $key = $this->getBulkSelectionKey('en', 1);
@@ -172,13 +172,13 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
       'table[3]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckUpload('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     for ($i = 1; $i < 4; $i++) {
       $node = Node::load($i);
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getSourceStatus($node));
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'en'));
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'es'));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getSourceStatus($node));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'en'));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'es'));
     }
 
     $key = $this->getBulkSelectionKey('en', 1);
@@ -188,13 +188,13 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
       'table[3]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslations('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     for ($i = 1; $i < 4; $i++) {
       $node = Node::load($i);
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getSourceStatus($node));
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'en'));
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'es'));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getSourceStatus($node));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'en'));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'es'));
     }
 
     $key = $this->getBulkSelectionKey('en', 1);
@@ -204,13 +204,13 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
       'table[3]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckTranslations('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     for ($i = 1; $i < 4; $i++) {
       $node = Node::load($i);
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getSourceStatus($node));
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'en'));
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'es'));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getSourceStatus($node));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'en'));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'es'));
     }
 
     $key = $this->getBulkSelectionKey('en', 1);
@@ -220,13 +220,13 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
       'table[3]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForDownloadTranslation('es', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     for ($i = 1; $i < 4; $i++) {
       $node = Node::load($i);
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getSourceStatus($node));
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'en'));
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'es'));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getSourceStatus($node));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'en'));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'es'));
     }
 
     $key = $this->getBulkSelectionKey('en', 1);
@@ -236,20 +236,20 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
       'table[3]' => TRUE,
       $this->getBulkOperationFormName() => 'change_profile:automatic',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check that there are three nodes with the Automatic Profile
     $automatic_profile = $this->xpath("//td[contains(text(), 'Automatic')]");
-    $this->assertEqual(count($automatic_profile), 3, 'There are three nodes with the Automatic Profile set.');
+    $this->assertEquals(count($automatic_profile), 3, 'There are three nodes with the Automatic Profile set.');
 
     \Drupal::entityTypeManager()->getStorage('node')->resetCache();
     \Drupal::entityTypeManager()->getStorage('lingotek_content_metadata')->resetCache();
 
     for ($i = 1; $i < 4; $i++) {
       $node = Node::load($i);
-      $this->assertIdentical(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($node));
-      $this->assertIdentical(Lingotek::STATUS_CURRENT, $content_translation_service->getTargetStatus($node, 'en'));
-      $this->assertIdentical(Lingotek::STATUS_READY, $content_translation_service->getTargetStatus($node, 'es'));
+      $this->assertSame(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($node));
+      $this->assertSame(Lingotek::STATUS_CURRENT, $content_translation_service->getTargetStatus($node, 'en'));
+      $this->assertSame(Lingotek::STATUS_READY, $content_translation_service->getTargetStatus($node, 'es'));
     }
 
     $key = $this->getBulkSelectionKey('en', 1);
@@ -259,16 +259,16 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
       'table[3]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     \Drupal::entityTypeManager()->getStorage('node')->resetCache();
     \Drupal::entityTypeManager()->getStorage('lingotek_content_metadata')->resetCache();
 
     for ($i = 1; $i < 4; $i++) {
       $node = Node::load($i);
-      $this->assertIdentical(Lingotek::STATUS_IMPORTING, $content_translation_service->getSourceStatus($node));
-      $this->assertIdentical(Lingotek::STATUS_IMPORTING, $content_translation_service->getTargetStatus($node, 'en'));
-      $this->assertIdentical(Lingotek::STATUS_PENDING, $content_translation_service->getTargetStatus($node, 'es'));
+      $this->assertSame(Lingotek::STATUS_IMPORTING, $content_translation_service->getSourceStatus($node));
+      $this->assertSame(Lingotek::STATUS_IMPORTING, $content_translation_service->getTargetStatus($node, 'en'));
+      $this->assertSame(Lingotek::STATUS_PENDING, $content_translation_service->getTargetStatus($node, 'es'));
     }
 
     $key = $this->getBulkSelectionKey('en', 1);
@@ -278,16 +278,16 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
       'table[3]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckUpload('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     \Drupal::entityTypeManager()->getStorage('node')->resetCache();
     \Drupal::entityTypeManager()->getStorage('lingotek_content_metadata')->resetCache();
 
     for ($i = 1; $i < 4; $i++) {
       $node = Node::load($i);
-      $this->assertIdentical(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($node));
-      $this->assertIdentical(Lingotek::STATUS_CURRENT, $content_translation_service->getTargetStatus($node, 'en'));
-      $this->assertIdentical(Lingotek::STATUS_PENDING, $content_translation_service->getTargetStatus($node, 'es'));
+      $this->assertSame(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($node));
+      $this->assertSame(Lingotek::STATUS_CURRENT, $content_translation_service->getTargetStatus($node, 'en'));
+      $this->assertSame(Lingotek::STATUS_PENDING, $content_translation_service->getTargetStatus($node, 'es'));
     }
 
     $key = $this->getBulkSelectionKey('en', 1);
@@ -297,16 +297,16 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
       'table[3]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslations('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     \Drupal::entityTypeManager()->getStorage('node')->resetCache();
     \Drupal::entityTypeManager()->getStorage('lingotek_content_metadata')->resetCache();
 
     for ($i = 1; $i < 4; $i++) {
       $node = Node::load($i);
-      $this->assertIdentical(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($node));
-      $this->assertIdentical(Lingotek::STATUS_CURRENT, $content_translation_service->getTargetStatus($node, 'en'));
-      $this->assertIdentical(Lingotek::STATUS_PENDING, $content_translation_service->getTargetStatus($node, 'es'));
+      $this->assertSame(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($node));
+      $this->assertSame(Lingotek::STATUS_CURRENT, $content_translation_service->getTargetStatus($node, 'en'));
+      $this->assertSame(Lingotek::STATUS_PENDING, $content_translation_service->getTargetStatus($node, 'es'));
     }
 
     $key = $this->getBulkSelectionKey('en', 1);
@@ -316,16 +316,16 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
       'table[3]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckTranslations('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     \Drupal::entityTypeManager()->getStorage('node')->resetCache();
     \Drupal::entityTypeManager()->getStorage('lingotek_content_metadata')->resetCache();
 
     for ($i = 1; $i < 4; $i++) {
       $node = Node::load($i);
-      $this->assertIdentical(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($node));
-      $this->assertIdentical(Lingotek::STATUS_CURRENT, $content_translation_service->getTargetStatus($node, 'en'));
-      $this->assertIdentical(Lingotek::STATUS_READY, $content_translation_service->getTargetStatus($node, 'es'));
+      $this->assertSame(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($node));
+      $this->assertSame(Lingotek::STATUS_CURRENT, $content_translation_service->getTargetStatus($node, 'en'));
+      $this->assertSame(Lingotek::STATUS_READY, $content_translation_service->getTargetStatus($node, 'es'));
     }
 
     $key = $this->getBulkSelectionKey('en', 1);
@@ -335,16 +335,16 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
       'table[3]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForDownloadTranslations('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     \Drupal::entityTypeManager()->getStorage('node')->resetCache();
     \Drupal::entityTypeManager()->getStorage('lingotek_content_metadata')->resetCache();
 
     for ($i = 1; $i < 4; $i++) {
       $node = Node::load($i);
-      $this->assertIdentical(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($node));
-      $this->assertIdentical(Lingotek::STATUS_CURRENT, $content_translation_service->getTargetStatus($node, 'en'));
-      $this->assertIdentical(Lingotek::STATUS_READY, $content_translation_service->getTargetStatus($node, 'es'));
+      $this->assertSame(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($node));
+      $this->assertSame(Lingotek::STATUS_CURRENT, $content_translation_service->getTargetStatus($node, 'en'));
+      $this->assertSame(Lingotek::STATUS_READY, $content_translation_service->getTargetStatus($node, 'es'));
     }
 
     // Edit the nodes.
@@ -360,9 +360,9 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
 
     for ($i = 1; $i < 4; $i++) {
       $node = Node::load($i);
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getSourceStatus($node));
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'en'));
-      $this->assertIdentical(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'es'));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getSourceStatus($node));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'en'));
+      $this->assertSame(Lingotek::STATUS_DISABLED, $content_translation_service->getTargetStatus($node, 'es'));
     }
 
     // Edit the nodes.
@@ -378,9 +378,9 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
 
     for ($i = 1; $i < 4; $i++) {
       $node = Node::load($i);
-      $this->assertIdentical(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($node));
-      $this->assertIdentical(Lingotek::STATUS_CURRENT, $content_translation_service->getTargetStatus($node, 'en'));
-      $this->assertIdentical(Lingotek::STATUS_READY, $content_translation_service->getTargetStatus($node, 'es'));
+      $this->assertSame(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($node));
+      $this->assertSame(Lingotek::STATUS_CURRENT, $content_translation_service->getTargetStatus($node, 'en'));
+      $this->assertSame(Lingotek::STATUS_READY, $content_translation_service->getTargetStatus($node, 'es'));
     }
   }
 
@@ -417,7 +417,7 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
       'table[3]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCancel('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $key = $this->getBulkSelectionKey('en', 1);
     $edit = [
@@ -426,11 +426,11 @@ class LingotekNodeBulkProfileTest extends LingotekTestBase {
       'table[3]' => TRUE,
       $this->getBulkOperationFormName() => 'change_profile:automatic',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check that there are three nodes with the Automatic Profile
     $automatic_profile = $this->xpath("//td[contains(text(), 'Automatic')]");
-    $this->assertEqual(count($automatic_profile), 3, 'There are three nodes with the Automatic Profile set.');
+    $this->assertEquals(count($automatic_profile), 3, 'There are three nodes with the Automatic Profile set.');
   }
 
 }

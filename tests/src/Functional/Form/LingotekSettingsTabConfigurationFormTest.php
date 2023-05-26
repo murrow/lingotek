@@ -17,17 +17,17 @@ class LingotekSettingsTabConfigurationFormTest extends LingotekTestBase {
   public function testConfigurationForm() {
     $this->drupalGet('admin/lingotek/settings');
     // Nothing is selected.
-    $this->assertNoFieldChecked('edit-table-configurable-language-enabled');
+    $this->assertSession()->checkboxNotChecked('edit-table-configurable-language-enabled');
     // Check the configurable language and set the manual profile.
     $edit = [
       'table[configurable_language][enabled]' => 1,
       'table[configurable_language][profile]' => 'manual',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save', [], 'lingoteksettings-tab-configuration-form');
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-configuration-form');
 
     // The values shown are correct.
-    $this->assertFieldChecked('edit-table-configurable-language-enabled');
-    $this->assertFieldByName('table[configurable_language][profile]', 'manual');
+    $this->assertSession()->checkboxChecked('edit-table-configurable-language-enabled');
+    $this->assertSession()->fieldValueEquals('table[configurable_language][profile]', 'manual');
 
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $config_translation */
     $config_translation = \Drupal::service('lingotek.config_translation');
@@ -35,8 +35,8 @@ class LingotekSettingsTabConfigurationFormTest extends LingotekTestBase {
     $lingotek_config = \Drupal::service('lingotek.configuration');
 
     $this->assertTrue($config_translation->isEnabled('configurable_language'));
-    $this->assertEqual('manual', $lingotek_config->getConfigEntityDefaultProfileId('configurable_language'));
-    $this->assertEqual(['configurable_language'], $config_translation->getEnabledConfigTypes());
+    $this->assertEquals('manual', $lingotek_config->getConfigEntityDefaultProfileId('configurable_language'));
+    $this->assertEquals(['configurable_language'], $config_translation->getEnabledConfigTypes());
   }
 
 }

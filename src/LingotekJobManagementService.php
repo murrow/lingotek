@@ -6,6 +6,7 @@ class LingotekJobManagementService {
 
   public function getAllContentJobs(array &$jobs) {
     $entity_query = \Drupal::entityQuery('lingotek_content_metadata');
+    $entity_query->accessCheck(FALSE);
     $entity_query->exists('job_id');
     $ids = $entity_query->execute();
 
@@ -30,6 +31,7 @@ class LingotekJobManagementService {
 
   public function getAllConfigJobs(array &$jobs) {
     $entity_query = \Drupal::entityQuery('lingotek_config_metadata');
+    $entity_query->accessCheck(FALSE);
     $entity_query->exists('job_id');
     $ids = $entity_query->execute();
 

@@ -140,7 +140,7 @@ class LingotekSettingsTabAccountForm extends LingotekConfigFormBase {
     ];
 
     $filters = $this->lingotekFilterManager->getLocallyAvailableFilters();
-    if ($filters > 0) {
+    if (!empty($filters)) {
       $default_filter = $this->lingotekFilterManager->getDefaultFilter();
       $default_filter_label = $this->lingotekFilterManager->getDefaultFilterLabel();
       $default_subfilter = $this->lingotekFilterManager->getDefaultSubfilter();

@@ -16,7 +16,7 @@ class LingotekNodeParagraphsSettingsTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'image', 'paragraphs', 'lingotek_paragraphs_test'];
+  protected static $modules = ['block', 'node', 'image', 'paragraphs', 'lingotek_paragraphs_test'];
 
   /**
    * @var \Drupal\node\NodeInterface
@@ -82,30 +82,32 @@ class LingotekNodeParagraphsSettingsTest extends LingotekTestBase {
    */
   public function testDisablingContentTranslationDoesntDisableLingotekTranslationForParagraphs() {
     $this->drupalGet('admin/lingotek/settings');
-    $this->assertFieldByName('node[paragraphed_content_demo][fields][field_paragraphs_demo]', TRUE);
-    $this->assertFieldByName('paragraph[image_text][fields][field_text_demo]', TRUE);
+    $this->assertSession()->fieldValueEquals('node[paragraphed_content_demo][fields][field_paragraphs_demo]', TRUE);
+    $this->assertSession()->fieldValueEquals('paragraph[image_text][fields][field_text_demo]', TRUE);
 
     $edit = [];
     $edit['settings[node][paragraphed_content_demo][fields][field_paragraphs_demo]'] = FALSE;
     $edit['settings[paragraph][image_text][fields][field_text_demo]'] = FALSE;
-    $this->drupalPostForm('/admin/config/regional/content-language', $edit, 'Save configuration');
+    $this->drupalGet('/admin/config/regional/content-language');
+    $this->submitForm($edit, 'Save configuration');
     $this->assertSession()->responseContains('Settings successfully updated.');
 
     $this->drupalGet('admin/lingotek/settings');
     // The paragraph is still enabled.
-    $this->assertFieldByName('node[paragraphed_content_demo][fields][field_paragraphs_demo]', TRUE);
+    $this->assertSession()->fieldValueEquals('node[paragraphed_content_demo][fields][field_paragraphs_demo]', TRUE);
     // The text field was disabled, and it's not even present.
     /** @var \Drupal\lingotek\LingotekConfigurationServiceInterface $lingotekConfig */
     $lingotekConfig = \Drupal::service('lingotek.configuration');
     $this->assertFalse($lingotekConfig->isFieldLingotekEnabled('paragraph', 'image_text', 'field_text_demo'));
-    $this->assertNoFieldByName('paragraph[image_text][fields][field_text_demo]');
+    $this->assertSession()->fieldValueNotEquals('paragraph[image_text][fields][field_text_demo]', '');
   }
 
   protected function setParagraphFieldsTranslatability(): void {
     $edit = [];
     $edit['settings[node][paragraphed_content_demo][fields][field_paragraphs_demo]'] = 1;
     $edit['settings[paragraph][image_text][fields][field_text_demo]'] = 1;
-    $this->drupalPostForm('/admin/config/regional/content-language', $edit, 'Save configuration');
+    $this->drupalGet('/admin/config/regional/content-language');
+    $this->submitForm($edit, 'Save configuration');
     $this->assertSession()->responseContains('Settings successfully updated.');
   }
 

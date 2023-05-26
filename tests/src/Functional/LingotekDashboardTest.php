@@ -17,7 +17,7 @@ class LingotekDashboardTest extends LingotekTestBase {
   /**
    * {@inheritDoc}
    */
-  public static $modules = ['block', 'node', 'comment'];
+  protected static $modules = ['block', 'node', 'comment'];
 
   /**
    * Test that a language can be added.
@@ -41,18 +41,18 @@ class LingotekDashboardTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical('it', $response['xcode']);
-    $this->assertIdentical('it_IT', $response['locale']);
-    $this->assertIdentical(1, $response['active']);
-    $this->assertIdentical(1, $response['enabled']);
-    $this->assertIdentical(0, $response['source']['total']);
-    $this->assertIdentical(0, $response['target']['total']);
+    $this->assertSame('it', $response['xcode']);
+    $this->assertSame('it_IT', $response['locale']);
+    $this->assertSame(1, $response['active']);
+    $this->assertSame(1, $response['enabled']);
+    $this->assertSame(0, $response['source']['total']);
+    $this->assertSame(0, $response['target']['total']);
 
     $italian_language = ConfigurableLanguage::load('it');
     /** @var \Drupal\language\ConfigurableLanguageInterface $italian_language */
     $this->assertNotNull($italian_language, 'Italian language has been added.');
-    $this->assertIdentical('Italian', $italian_language->getName());
-    $this->assertIdentical(ConfigurableLanguage::DIRECTION_LTR, $italian_language->getDirection());
+    $this->assertSame('Italian', $italian_language->getName());
+    $this->assertSame(ConfigurableLanguage::DIRECTION_LTR, $italian_language->getDirection());
 
     // @ToDo: The native language is not saved.
     // $config_translation = \Drupal::languageManager()->getLanguageConfigOverride('it', $italian_language->id());
@@ -110,18 +110,18 @@ class LingotekDashboardTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical('ar', $response['xcode']);
-    $this->assertIdentical('ar_AE', $response['locale']);
-    $this->assertIdentical(1, $response['active']);
-    $this->assertIdentical(1, $response['enabled']);
-    $this->assertIdentical(0, $response['source']['total']);
-    $this->assertIdentical(0, $response['target']['total']);
+    $this->assertSame('ar', $response['xcode']);
+    $this->assertSame('ar_AE', $response['locale']);
+    $this->assertSame(1, $response['active']);
+    $this->assertSame(1, $response['enabled']);
+    $this->assertSame(0, $response['source']['total']);
+    $this->assertSame(0, $response['target']['total']);
 
+    /** @var \Drupal\language\ConfigurableLanguageInterface $arabic_language */
     $arabic_language = ConfigurableLanguage::load('ar');
-    /** @var \Drupal\language\ConfigurableLanguageInterface $italian_language */
     $this->assertNotNull($arabic_language, 'Arabic language has been added.');
-    $this->assertIdentical('Arabic', $arabic_language->getName());
-    $this->assertIdentical(ConfigurableLanguage::DIRECTION_RTL, $arabic_language->getDirection());
+    $this->assertSame('Arabic', $arabic_language->getName());
+    $this->assertSame(ConfigurableLanguage::DIRECTION_RTL, $arabic_language->getDirection());
 
     // @ToDo: The native language is not saved.
   }
@@ -148,18 +148,18 @@ class LingotekDashboardTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical('ar', $response['xcode']);
-    $this->assertIdentical('ar', $response['locale']);
-    $this->assertIdentical(1, $response['active']);
-    $this->assertIdentical(1, $response['enabled']);
-    $this->assertIdentical(0, $response['source']['total']);
-    $this->assertIdentical(0, $response['target']['total']);
+    $this->assertSame('ar', $response['xcode']);
+    $this->assertSame('ar', $response['locale']);
+    $this->assertSame(1, $response['active']);
+    $this->assertSame(1, $response['enabled']);
+    $this->assertSame(0, $response['source']['total']);
+    $this->assertSame(0, $response['target']['total']);
 
+    /** @var \Drupal\language\ConfigurableLanguageInterface $arabic_language */
     $arabic_language = ConfigurableLanguage::load('ar');
-    /** @var \Drupal\language\ConfigurableLanguageInterface $italian_language */
     $this->assertNotNull($arabic_language, 'Arabic language has been added.');
-    $this->assertIdentical('Arabic', $arabic_language->getName());
-    $this->assertIdentical(ConfigurableLanguage::DIRECTION_RTL, $arabic_language->getDirection());
+    $this->assertSame('Arabic', $arabic_language->getName());
+    $this->assertSame(ConfigurableLanguage::DIRECTION_RTL, $arabic_language->getDirection());
 
     // @ToDo: The native language is not saved.
   }
@@ -186,18 +186,18 @@ class LingotekDashboardTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical('es', $response['xcode']);
-    $this->assertIdentical('es_ES', $response['locale']);
-    $this->assertIdentical(1, $response['active']);
-    $this->assertIdentical(1, $response['enabled']);
-    $this->assertIdentical(0, $response['source']['total']);
-    $this->assertIdentical(0, $response['target']['total']);
+    $this->assertSame('es', $response['xcode']);
+    $this->assertSame('es_ES', $response['locale']);
+    $this->assertSame(1, $response['active']);
+    $this->assertSame(1, $response['enabled']);
+    $this->assertSame(0, $response['source']['total']);
+    $this->assertSame(0, $response['target']['total']);
 
     $esEsLanguage = ConfigurableLanguage::load('es');
     /** @var \Drupal\language\ConfigurableLanguageInterface $esEsLanguage */
     $this->assertNotNull($esEsLanguage, 'Spanish (Spain) language has been added.');
-    $this->assertIdentical('Spanish (Spain)', $esEsLanguage->getName());
-    $this->assertIdentical(ConfigurableLanguage::DIRECTION_LTR, $esEsLanguage->getDirection());
+    $this->assertSame('Spanish (Spain)', $esEsLanguage->getName());
+    $this->assertSame(ConfigurableLanguage::DIRECTION_LTR, $esEsLanguage->getDirection());
 
     // The language must be returned in the dashboard.
     $request = $this->client->get($url, [
@@ -209,7 +209,7 @@ class LingotekDashboardTest extends LingotekTestBase {
     ]);
     $response = json_decode($request->getBody(), TRUE);
     $returned_languages = array_keys($response['languages']);
-    $this->assertIdentical(['en_US', 'es_ES'], $returned_languages);
+    $this->assertSame(['en_US', 'es_ES'], $returned_languages);
 
     $post = [
       'code' => 'es_AR',
@@ -227,18 +227,18 @@ class LingotekDashboardTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical('es-ar', $response['xcode']);
-    $this->assertIdentical('es_AR', $response['locale']);
-    $this->assertIdentical(1, $response['active']);
-    $this->assertIdentical(1, $response['enabled']);
-    $this->assertIdentical(0, $response['source']['total']);
-    $this->assertIdentical(0, $response['target']['total']);
+    $this->assertSame('es-ar', $response['xcode']);
+    $this->assertSame('es_AR', $response['locale']);
+    $this->assertSame(1, $response['active']);
+    $this->assertSame(1, $response['enabled']);
+    $this->assertSame(0, $response['source']['total']);
+    $this->assertSame(0, $response['target']['total']);
 
     $esArLanguage = ConfigurableLanguage::load('es-ar');
     /** @var \Drupal\language\ConfigurableLanguageInterface $esArLanguage */
     $this->assertNotNull($esArLanguage, 'Spanish (Argentina) language has been added.');
-    $this->assertIdentical('Spanish (Argentina)', $esArLanguage->getName());
-    $this->assertIdentical(ConfigurableLanguage::DIRECTION_LTR, $esArLanguage->getDirection());
+    $this->assertSame('Spanish (Argentina)', $esArLanguage->getName());
+    $this->assertSame(ConfigurableLanguage::DIRECTION_LTR, $esArLanguage->getDirection());
 
     // The language must be returned in the dashboard.
     $request = $this->client->get($url, [
@@ -250,7 +250,7 @@ class LingotekDashboardTest extends LingotekTestBase {
     ]);
     $response = json_decode($request->getBody(), TRUE);
     $returned_languages = array_keys($response['languages']);
-    $this->assertIdentical(['en_US', 'es_AR', 'es_ES'], $returned_languages);
+    $this->assertSame(['en_US', 'es_AR', 'es_ES'], $returned_languages);
   }
 
   /**
@@ -275,18 +275,18 @@ class LingotekDashboardTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical('es', $response['xcode']);
-    $this->assertIdentical('es_AR', $response['locale']);
-    $this->assertIdentical(1, $response['active']);
-    $this->assertIdentical(1, $response['enabled']);
-    $this->assertIdentical(0, $response['source']['total']);
-    $this->assertIdentical(0, $response['target']['total']);
+    $this->assertSame('es', $response['xcode']);
+    $this->assertSame('es_AR', $response['locale']);
+    $this->assertSame(1, $response['active']);
+    $this->assertSame(1, $response['enabled']);
+    $this->assertSame(0, $response['source']['total']);
+    $this->assertSame(0, $response['target']['total']);
 
     $esArLanguage = ConfigurableLanguage::load('es');
     /** @var \Drupal\language\ConfigurableLanguageInterface $esArLanguage */
     $this->assertNotNull($esArLanguage, 'Spanish (Argentina) language has been added.');
-    $this->assertIdentical('Spanish (Argentina)', $esArLanguage->getName());
-    $this->assertIdentical(ConfigurableLanguage::DIRECTION_LTR, $esArLanguage->getDirection());
+    $this->assertSame('Spanish (Argentina)', $esArLanguage->getName());
+    $this->assertSame(ConfigurableLanguage::DIRECTION_LTR, $esArLanguage->getDirection());
 
     // The language must be returned in the dashboard.
     $request = $this->client->get($url, [
@@ -298,7 +298,7 @@ class LingotekDashboardTest extends LingotekTestBase {
     ]);
     $response = json_decode($request->getBody(), TRUE);
     $returned_languages = array_keys($response['languages']);
-    $this->assertIdentical(['en_US', 'es_AR'], $returned_languages);
+    $this->assertSame(['en_US', 'es_AR'], $returned_languages);
 
     $post = [
       'code' => 'es_ES',
@@ -316,18 +316,18 @@ class LingotekDashboardTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical('es-es', $response['xcode']);
-    $this->assertIdentical('es_ES', $response['locale']);
-    $this->assertIdentical(1, $response['active']);
-    $this->assertIdentical(1, $response['enabled']);
-    $this->assertIdentical(0, $response['source']['total']);
-    $this->assertIdentical(0, $response['target']['total']);
+    $this->assertSame('es-es', $response['xcode']);
+    $this->assertSame('es_ES', $response['locale']);
+    $this->assertSame(1, $response['active']);
+    $this->assertSame(1, $response['enabled']);
+    $this->assertSame(0, $response['source']['total']);
+    $this->assertSame(0, $response['target']['total']);
 
     $esEsLanguage = ConfigurableLanguage::load('es-es');
     /** @var \Drupal\language\ConfigurableLanguageInterface $esEsLanguage */
     $this->assertNotNull($esEsLanguage, 'Spanish (Spain) language has been added.');
-    $this->assertIdentical('Spanish (Spain)', $esEsLanguage->getName());
-    $this->assertIdentical(ConfigurableLanguage::DIRECTION_LTR, $esEsLanguage->getDirection());
+    $this->assertSame('Spanish (Spain)', $esEsLanguage->getName());
+    $this->assertSame(ConfigurableLanguage::DIRECTION_LTR, $esEsLanguage->getDirection());
 
     // The language must be returned in the dashboard.
     $request = $this->client->get($url, [
@@ -339,7 +339,7 @@ class LingotekDashboardTest extends LingotekTestBase {
     ]);
     $response = json_decode($request->getBody(), TRUE);
     $returned_languages = array_keys($response['languages']);
-    $this->assertIdentical(['en_US', 'es_AR', 'es_ES'], $returned_languages);
+    $this->assertSame(['en_US', 'es_AR', 'es_ES'], $returned_languages);
   }
 
   /**
@@ -364,7 +364,7 @@ class LingotekDashboardTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose(var_export($response, TRUE));
+    dump(var_export($response, TRUE));
 
     // Rebuild the container so that the new languages are picked up by services
     // that hold a list of languages.
@@ -373,7 +373,7 @@ class LingotekDashboardTest extends LingotekTestBase {
     /** @var \Drupal\Core\Language\LanguageManagerInterface $language_manager */
     $language_manager = \Drupal::service('language_manager');
     $languages = $language_manager->getLanguages();
-    $this->assertIdentical(2, count($languages));
+    $this->assertSame(2, count($languages));
 
     // Check the properties of the language.
     $request = $this->client->get(Url::fromRoute('lingotek.dashboard_endpoint', ['code' => 'es_ES'])->setAbsolute()->toString(), [
@@ -384,14 +384,14 @@ class LingotekDashboardTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical('GET', $response['method']);
-    $this->assertIdentical('es', $response['xcode']);
-    $this->assertIdentical('es_ES', $response['locale']);
-    $this->assertIdentical(1, $response['active']);
-    $this->assertIdentical(1, $response['enabled']);
+    $this->assertSame('GET', $response['method']);
+    $this->assertSame('es', $response['xcode']);
+    $this->assertSame('es_ES', $response['locale']);
+    $this->assertSame(1, $response['active']);
+    $this->assertSame(1, $response['enabled']);
 
     $language = ConfigurableLanguage::load('es');
-    $this->assertIdentical($language->getThirdPartySetting('lingotek', 'disabled', NULL), FALSE, 'The Spanish language is enabled');
+    $this->assertSame($language->getThirdPartySetting('lingotek', 'disabled', NULL), FALSE, 'The Spanish language is enabled');
 
     $request = $this->client->delete($url, [
       'body' => http_build_query(['code' => 'es_ES']),
@@ -403,19 +403,19 @@ class LingotekDashboardTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical('DELETE', $response['method']);
-    $this->assertIdentical('es', $response['language']);
-    $this->assertIdentical('Language disabled: es_ES', $response['message']);
+    $this->assertSame('DELETE', $response['method']);
+    $this->assertSame('es', $response['language']);
+    $this->assertSame('Language disabled: es_ES', $response['message']);
 
     // Rebuild the container so that the new languages are picked up by services
     // that hold a list of languages.
     $this->rebuildContainer();
 
     $languages = $language_manager->getLanguages();
-    $this->assertIdentical(2, count($languages), 'Spanish language is disabled, but not deleted.');
+    $this->assertSame(2, count($languages), 'Spanish language is disabled, but not deleted.');
 
     $language = ConfigurableLanguage::load('es');
-    $this->assertIdentical($language->getThirdPartySetting('lingotek', 'disabled', NULL), TRUE, 'The Spanish language is disabled');
+    $this->assertSame($language->getThirdPartySetting('lingotek', 'disabled', NULL), TRUE, 'The Spanish language is disabled');
 
     // Check the properties of the language.
     $request = $this->client->get(Url::fromRoute('lingotek.dashboard_endpoint', ['code' => 'es_ES'])->setAbsolute()->toString(), [
@@ -426,11 +426,11 @@ class LingotekDashboardTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical('GET', $response['method']);
-    $this->assertIdentical('es', $response['xcode']);
-    $this->assertIdentical('es_ES', $response['locale']);
-    $this->assertIdentical(0, $response['active']);
-    $this->assertIdentical(1, $response['enabled']);
+    $this->assertSame('GET', $response['method']);
+    $this->assertSame('es', $response['xcode']);
+    $this->assertSame('es_ES', $response['locale']);
+    $this->assertSame(0, $response['active']);
+    $this->assertSame(1, $response['enabled']);
 
     $post = [
       'code' => 'es_ES',
@@ -448,11 +448,11 @@ class LingotekDashboardTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical('POST', $response['method']);
-    $this->assertIdentical('es', $response['xcode']);
-    $this->assertIdentical('es_ES', $response['locale']);
-    $this->assertIdentical(1, $response['active']);
-    $this->assertIdentical(1, $response['enabled']);
+    $this->assertSame('POST', $response['method']);
+    $this->assertSame('es', $response['xcode']);
+    $this->assertSame('es_ES', $response['locale']);
+    $this->assertSame(1, $response['active']);
+    $this->assertSame(1, $response['enabled']);
 
     // Check the properties of the language.
     $request = $this->client->get(Url::fromRoute('lingotek.dashboard_endpoint', ['code' => 'es_ES'])->setAbsolute()->toString(), [
@@ -463,21 +463,21 @@ class LingotekDashboardTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical('GET', $response['method']);
-    $this->assertIdentical('es', $response['xcode']);
-    $this->assertIdentical('es_ES', $response['locale']);
-    $this->assertIdentical(1, $response['active']);
-    $this->assertIdentical(1, $response['enabled']);
+    $this->assertSame('GET', $response['method']);
+    $this->assertSame('es', $response['xcode']);
+    $this->assertSame('es_ES', $response['locale']);
+    $this->assertSame(1, $response['active']);
+    $this->assertSame(1, $response['enabled']);
 
     $languages = $language_manager->getLanguages();
-    $this->assertIdentical(2, count($languages), 'Spanish language is enabled again, no new languages added.');
+    $this->assertSame(2, count($languages), 'Spanish language is enabled again, no new languages added.');
 
     // Rebuild the container so that the new languages are picked up by services
     // that hold a list of languages.
     $this->rebuildContainer();
 
     $language = ConfigurableLanguage::load('es');
-    $this->assertIdentical($language->getThirdPartySetting('lingotek', 'disabled', NULL), FALSE, 'The Spanish language is enabled');
+    $this->assertSame($language->getThirdPartySetting('lingotek', 'disabled', NULL), FALSE, 'The Spanish language is enabled');
   }
 
   /**
@@ -502,20 +502,20 @@ class LingotekDashboardTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical('POST', $response['method']);
-    $this->assertIdentical('es', $response['xcode']);
-    $this->assertIdentical('es_ES', $response['locale']);
-    $this->assertIdentical(1, $response['active']);
-    $this->assertIdentical(1, $response['enabled']);
+    $this->assertSame('POST', $response['method']);
+    $this->assertSame('es', $response['xcode']);
+    $this->assertSame('es_ES', $response['locale']);
+    $this->assertSame(1, $response['active']);
+    $this->assertSame(1, $response['enabled']);
 
     // Rebuild the container so that the new languages are picked up by services
     // that hold a list of languages.
     $this->rebuildContainer();
 
-    /** @var LanguageManagerInterface $language_manager */
+    /** @var \Drupal\Core\Language\LanguageManagerInterface $language_manager */
     $language_manager = \Drupal::service('language_manager');
     $languages = $language_manager->getLanguages();
-    $this->assertIdentical(2, count($languages));
+    $this->assertSame(2, count($languages));
 
     // Check the stats.
     $request = $this->client->get($url, [
@@ -527,14 +527,14 @@ class LingotekDashboardTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical('GET', $response['method']);
-    $this->assertIdentical(2, $response['count']);
-    $this->assertIdentical('en', $response['languages']['en_US']['xcode']);
-    $this->assertIdentical(1, $response['languages']['en_US']['active']);
-    $this->assertIdentical(1, $response['languages']['en_US']['enabled']);
-    $this->assertIdentical('es', $response['languages']['es_ES']['xcode']);
-    $this->assertIdentical(1, $response['languages']['es_ES']['active']);
-    $this->assertIdentical(1, $response['languages']['es_ES']['enabled']);
+    $this->assertSame('GET', $response['method']);
+    $this->assertSame(2, $response['count']);
+    $this->assertSame('en', $response['languages']['en_US']['xcode']);
+    $this->assertSame(1, $response['languages']['en_US']['active']);
+    $this->assertSame(1, $response['languages']['en_US']['enabled']);
+    $this->assertSame('es', $response['languages']['es_ES']['xcode']);
+    $this->assertSame(1, $response['languages']['es_ES']['active']);
+    $this->assertSame(1, $response['languages']['es_ES']['enabled']);
 
     // Disable Spanish.
     $request = $this->client->delete($url, [
@@ -547,9 +547,9 @@ class LingotekDashboardTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical('DELETE', $response['method']);
-    $this->assertIdentical('es', $response['language']);
-    $this->assertIdentical('Language disabled: es_ES', $response['message']);
+    $this->assertSame('DELETE', $response['method']);
+    $this->assertSame('es', $response['language']);
+    $this->assertSame('Language disabled: es_ES', $response['message']);
 
     // Rebuild the container so that the new languages are picked up by services
     // that hold a list of languages.
@@ -565,14 +565,14 @@ class LingotekDashboardTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical('GET', $response['method']);
-    $this->assertIdentical(2, $response['count']);
-    $this->assertIdentical('en', $response['languages']['en_US']['xcode']);
-    $this->assertIdentical(1, $response['languages']['en_US']['active']);
-    $this->assertIdentical(1, $response['languages']['en_US']['enabled']);
-    $this->assertIdentical('es', $response['languages']['es_ES']['xcode']);
-    $this->assertIdentical(0, $response['languages']['es_ES']['active']);
-    $this->assertIdentical(1, $response['languages']['es_ES']['enabled']);
+    $this->assertSame('GET', $response['method']);
+    $this->assertSame(2, $response['count']);
+    $this->assertSame('en', $response['languages']['en_US']['xcode']);
+    $this->assertSame(1, $response['languages']['en_US']['active']);
+    $this->assertSame(1, $response['languages']['en_US']['enabled']);
+    $this->assertSame('es', $response['languages']['es_ES']['xcode']);
+    $this->assertSame(0, $response['languages']['es_ES']['active']);
+    $this->assertSame(1, $response['languages']['es_ES']['enabled']);
   }
 
   /**
@@ -584,7 +584,7 @@ class LingotekDashboardTest extends LingotekTestBase {
 
     // One language added, there are missing translations.
     $this->drupalGet('admin/lingotek');
-    $this->assertRaw(t('Missing translations for: @languages. See the <a href=":updates">Available translation updates</a> page for more information.', ['@languages' => t('Spanish'), ':updates' => Url::fromRoute('locale.translate_status')->toString()]), 'Missing translations message');
+    $this->assertSession()->responseContains(t('Missing translations for: @languages. See the <a href=":updates">Available translation updates</a> page for more information.', ['@languages' => t('Spanish'), ':updates' => Url::fromRoute('locale.translate_status')->toString()]));
 
     // Override Drupal core translation status as 'up-to-date'.
     $status = locale_translation_get_status();
@@ -594,7 +594,7 @@ class LingotekDashboardTest extends LingotekTestBase {
 
     // There are no missing translations, translations are current.
     $this->drupalGet('admin/lingotek');
-    $this->assertNoRaw(t('Missing translations for: @languages. See the <a href=":updates">Available translation updates</a> page for more information.', ['@languages' => t('Spanish'), ':updates' => Url::fromRoute('locale.translate_status')->toString()]), 'No missing translations message with current translations');
+    $this->assertSession()->responseNotContains(t('Missing translations for: @languages. See the <a href=":updates">Available translation updates</a> page for more information.', ['@languages' => t('Spanish'), ':updates' => Url::fromRoute('locale.translate_status')->toString()]));
 
     // Set lingotek module to have a local translation available.
     $status = locale_translation_get_status();
@@ -604,7 +604,7 @@ class LingotekDashboardTest extends LingotekTestBase {
 
     // There are no missing translations, translations are local.
     $this->drupalGet('admin/lingotek');
-    $this->assertNoRaw(t('Missing translations for: @languages. See the <a href=":updates">Available translation updates</a> page for more information.', ['@languages' => t('Spanish'), ':updates' => Url::fromRoute('locale.translate_status')->toString()]), 'No missing translations message with local translations');
+    $this->assertSession()->responseNotContains(t('Missing translations for: @languages. See the <a href=":updates">Available translation updates</a> page for more information.', ['@languages' => t('Spanish'), ':updates' => Url::fromRoute('locale.translate_status')->toString()]));
   }
 
   /**

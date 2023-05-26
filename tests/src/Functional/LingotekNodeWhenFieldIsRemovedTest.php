@@ -19,7 +19,7 @@ class LingotekNodeWhenFieldIsRemovedTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'field_ui'];
+  protected static $modules = ['block', 'node', 'field_ui'];
 
   /**
    * {@inheritdoc}
@@ -94,16 +94,16 @@ class LingotekNodeWhenFieldIsRemovedTest extends LingotekTestBase {
     // And we cannot request yet a translation.
     $this->assertNoLingotekRequestTranslationLink('es_MX');
     $this->clickLink('EN');
-    $this->assertText('Node Llamas are cool has been uploaded.');
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSession()->pageTextContains('Node Llamas are cool has been uploaded.');
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // Check that only the configured fields have been uploaded.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
-    $this->assertEqual(1, count($data['new_field'][0]));
+    $this->assertEquals(1, count($data['new_field'][0]));
     $this->assertTrue(isset($data['new_field'][0]['value']));
 
     // There is a link for checking status.
@@ -111,7 +111,7 @@ class LingotekNodeWhenFieldIsRemovedTest extends LingotekTestBase {
     // And we can already request a translation.
     $this->assertLingotekRequestTranslationLink('es_MX');
     $this->clickLink('EN');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Now we remove the field!
     $this->removeField('node', 'article', 'new_field');
@@ -126,20 +126,20 @@ class LingotekNodeWhenFieldIsRemovedTest extends LingotekTestBase {
     // Request the Spanish translation.
     $this->assertLingotekRequestTranslationLink('es_MX');
     $this->clickLink('ES');
-    $this->assertText("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $this->assertLingotekCheckTargetStatusLink('es_MX');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText('The es_MX translation for node Llamas are cool is ready for download.');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains('The es_MX translation for node Llamas are cool is ready for download.');
 
     // Download the Spanish translation.
     $this->assertLingotekDownloadTargetLink('es_MX');
     $this->clickLink('ES');
-    $this->assertText('The translation of node Llamas are cool into es_MX has been downloaded.');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_MX has been downloaded.');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
 
     // Now the link is to the workbench, and it opens in a new tab.
     $this->assertLingotekWorkbenchLink('es_MX', 'dummy-document-hash-id', 'ES');
@@ -148,7 +148,7 @@ class LingotekNodeWhenFieldIsRemovedTest extends LingotekTestBase {
     $this->clickLink('Llamas are cool');
     $this->clickLink('Translate');
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
   }
 
   /**
@@ -228,7 +228,7 @@ class LingotekNodeWhenFieldIsRemovedTest extends LingotekTestBase {
     $assert_session->linkByHrefExists("/admin/structure/types/manage/$bundle/fields/$entity_type_id.$bundle.$field_name/delete");
 
     $this->drupalGet("/admin/structure/types/manage/$bundle/fields/$entity_type_id.$bundle.$field_name/delete");
-    $this->drupalPostForm(NULL, [], 'Delete');
+    $this->submitForm([], 'Delete');
   }
 
 }

@@ -40,7 +40,7 @@ abstract class LingotekTestBase extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['lingotek', 'lingotek_test'];
+  protected static $modules = ['lingotek', 'lingotek_test'];
 
   /**
    * Minimal Lingotek translation manager user.
@@ -151,8 +151,8 @@ abstract class LingotekTestBase extends BrowserTestBase {
   protected function connectToLingotek() {
     $this->drupalGet('admin/lingotek/setup/account');
     $this->clickLink('Connect Lingotek Account');
-    $this->drupalPostForm(NULL, ['community' => 'test_community'], 'Next');
-    $this->drupalPostForm(NULL, [
+    $this->submitForm(['community' => 'test_community'], 'Next');
+    $this->submitForm([
       'project' => 'test_project',
       'vault' => 'test_vault',
       'workflow' => 'test_workflow',
@@ -202,7 +202,7 @@ abstract class LingotekTestBase extends BrowserTestBase {
 
     if ($filter !== NULL) {
       $edit = ['filters[wrapper][bundle]' => $filter];
-      $this->drupalPostForm(NULL, $edit, t('Filter'));
+      $this->submitForm($edit, t('Filter'));
     }
   }
 
@@ -220,7 +220,7 @@ abstract class LingotekTestBase extends BrowserTestBase {
    */
   protected function assertUploadedDataFieldCount(array $data, $count) {
     // We have to add one item because of the metadata we include.
-    $this->assertEqual($count + 1, count($data));
+    $this->assertEquals($count + 1, count($data));
   }
 
   /**
@@ -262,11 +262,11 @@ abstract class LingotekTestBase extends BrowserTestBase {
   protected function assertManagementFormProfile($index, $profile) {
     $elements = $this->xpath("//*[@id='edit-table']/tbody/tr[$index]/td[6]");
     if ($profile === NULL) {
-      $this->assertEqual(0, count($elements), "Profile for $index is shown as empty");
+      $this->assertEquals(0, count($elements), "Profile for $index is shown as empty");
     }
     else {
       $shown_profile = $elements[0]->getHtml();
-      $this->assertEqual($profile, $shown_profile, "Profile for $index is shown as $profile");
+      $this->assertEquals($profile, $shown_profile, "Profile for $index is shown as $profile");
     }
   }
 
@@ -288,11 +288,13 @@ abstract class LingotekTestBase extends BrowserTestBase {
       \Drupal::service('content_moderation.moderation_information')
         ->shouldModerateEntitiesOfBundle($entity_definition, $bundle)) {
       $edit['moderation_state[0][state]'] = 'published';
-      $this->drupalPostForm($path, $edit, t('Save'));
+      $this->drupalGet($path);
+      $this->submitForm($edit, t('Save'));
     }
     else {
       $edit['status[value]'] = TRUE;
-      $this->drupalPostForm($path, $edit, t('Save'));
+      $this->drupalGet($path);
+      $this->submitForm($edit, t('Save'));
     }
   }
 
@@ -308,11 +310,13 @@ abstract class LingotekTestBase extends BrowserTestBase {
       \Drupal::service('content_moderation.moderation_information')
         ->shouldModerateEntitiesOfBundle($entity_definition, $bundle)) {
       $edit['moderation_state[0][state]'] = 'draft';
-      $this->drupalPostForm($path, $edit, t('Save'));
+      $this->drupalGet($path);
+      $this->submitForm($edit, t('Save'));
     }
     else {
       $edit['status[value]'] = FALSE;
-      $this->drupalPostForm($path, $edit, t('Save'));
+      $this->drupalGet($path);
+      $this->submitForm($edit, t('Save'));
     }
   }
 
@@ -328,40 +332,47 @@ abstract class LingotekTestBase extends BrowserTestBase {
       \Drupal::service('content_moderation.moderation_information')
         ->shouldModerateEntitiesOfBundle($entity_definition, $bundle)) {
       $edit['moderation_state[0][state]'] = 'archived';
-      $this->drupalPostForm($path, $edit, t('Save'));
+      $this->drupalGet($path);
+      $this->submitForm($edit, t('Save'));
     }
     else {
       $edit['status[value]'] = FALSE;
-      $this->drupalPostForm($path, $edit, t('Save'));
+      $this->drupalGet($path);
+      $this->submitForm($edit, t('Save'));
     }
   }
 
   protected function saveAsUnpublishedNodeForm(array $edit, $bundle = 'article') {
     $path = ($bundle !== NULL) ? "node/add/$bundle" : NULL;
     $edit['status[value]'] = FALSE;
-    $this->drupalPostForm($path, $edit, t('Save'));
+    $this->drupalGet($path);
+    $this->submitForm($edit, t('Save'));
   }
 
   protected function saveAsRequestReviewNodeForm(array $edit, $bundle = 'article') {
     $path = ($bundle !== NULL) ? "node/add/$bundle" : NULL;
     $edit['moderation_state[0][state]'] = 'needs_review';
-    $this->drupalPostForm($path, $edit, t('Save'));
+    $this->drupalGet($path);
+    $this->submitForm($edit, t('Save'));
   }
 
   protected function editAsRequestReviewNodeForm($path, array $edit) {
     $edit['moderation_state[0][state]'] = 'needs_review';
-    $this->drupalPostForm($path, $edit, t('Save'));
+    $this->drupalGet($path);
+    $this->submitForm($edit, t('Save'));
   }
 
   protected function saveAsNewDraftNodeForm(array $edit, $bundle = 'article') {
     $path = ($bundle !== NULL) ? "node/add/$bundle" : NULL;
     $edit['moderation_state[0][state]'] = 'draft';
-    $this->drupalPostForm($path, $edit, t('Save'));
+    $this->drupalGet($path);
+    $this->submitForm($edit, t('Save'));
   }
 
   protected function editAsNewDraftNodeForm($path, array $edit) {
     $edit['moderation_state[0][state]'] = 'draft';
-    $this->drupalPostForm($path, $edit, t('Save'));
+    $this->drupalGet($path);
+    $this->submitForm($edit, t('Save'));
   }
 
   protected function saveAndKeepPublishedNodeForm(array $edit, $nid, $usePath = TRUE) {
@@ -376,11 +387,13 @@ abstract class LingotekTestBase extends BrowserTestBase {
       \Drupal::service('content_moderation.moderation_information')
         ->shouldModerateEntitiesOfBundle($entity_definition, $bundle)) {
       $edit['moderation_state[0][state]'] = 'published';
-      $this->drupalPostForm($path, $edit, t('Save'));
+      $this->drupalGet($path);
+      $this->submitForm($edit, t('Save'));
     }
     else {
       $edit['status[value]'] = TRUE;
-      $this->drupalPostForm($path, $edit, t('Save'));
+      $this->drupalGet($path);
+      $this->submitForm($edit, t('Save'));
     }
   }
 
@@ -390,7 +403,8 @@ abstract class LingotekTestBase extends BrowserTestBase {
       $path = $prefix . '/' . $path;
     }
     $edit['status[value]'] = TRUE;
-    $this->drupalPostForm($path, $edit, t('Save (this translation)'));
+    $this->drupalGet($path);
+    $this->submitForm($edit, t('Save (this translation)'));
   }
 
   /**
@@ -408,7 +422,8 @@ abstract class LingotekTestBase extends BrowserTestBase {
       foreach ($bundles as $bundle) {
         $edit["bundles[$bundle]"] = $bundle;
       }
-      $this->drupalPostForm("/admin/config/workflow/workflows/manage/$workflow_id/type/$entity_type_id", $edit, 'Save');
+      $this->drupalGet("/admin/config/workflow/workflows/manage/$workflow_id/type/$entity_type_id");
+      $this->submitForm($edit, 'Save');
     }
   }
 
@@ -424,7 +439,7 @@ abstract class LingotekTestBase extends BrowserTestBase {
     $status_target = $this->xpath("//a[contains(@class,'language-icon') and contains(@class,'target-" . strtolower($status) . "')  and contains(text(), '" . strtoupper($language) . "')]");
     // If not found, maybe it didn't have a link.
     if (count($status_target) === 1) {
-      $this->assertEqual(count($status_target), 1, 'The target ' . strtoupper($language) . ' has been marked with status ' . strtolower($status) . '.');
+      $this->assertEquals(count($status_target), 1, 'The target ' . strtoupper($language) . ' has been marked with status ' . strtolower($status) . '.');
     }
     // Our query looks for containing, so it's not totally accurate. It can confuse e.g. ES with ES-AR.
     elseif (count($status_target) > 1) {
@@ -432,7 +447,7 @@ abstract class LingotekTestBase extends BrowserTestBase {
     }
     else {
       $status_target = $this->xpath("//span[contains(@class,'language-icon') and contains(@class,'target-" . strtolower($status) . "')  and contains(text(), '" . strtoupper($language) . "')]");
-      $this->assertEqual(count($status_target), 1, 'The target ' . strtoupper($language) . ' has been marked with status ' . strtolower($status) . '.');
+      $this->assertEquals(count($status_target), 1, 'The target ' . strtoupper($language) . ' has been marked with status ' . strtolower($status) . '.');
     }
   }
 
@@ -446,7 +461,7 @@ abstract class LingotekTestBase extends BrowserTestBase {
    */
   protected function assertNoTargetStatus($language, $status) {
     $status_target = $this->xpath("//a[contains(@class,'language-icon') and contains(@class,'target-" . strtolower($status) . "')  and contains(text(), '" . strtoupper($language) . "')]");
-    $this->assertEqual(count($status_target), 0, 'The target ' . strtoupper($language) . ' has not been marked with status ' . strtolower($status) . '.');
+    $this->assertEquals(count($status_target), 0, 'The target ' . strtoupper($language) . ' has not been marked with status ' . strtolower($status) . '.');
   }
 
   /**
@@ -461,11 +476,11 @@ abstract class LingotekTestBase extends BrowserTestBase {
     $status_target = $this->xpath("//a[contains(@class,'language-icon') and contains(@class,'source-" . strtolower($status) . "')  and contains(text(), '" . strtoupper($language) . "')]");
     // If not found, maybe it didn't have a link.
     if (count($status_target) === 1) {
-      $this->assertEqual(count($status_target), 1, 'The source ' . strtoupper($language) . ' has been marked with status ' . strtolower($status) . '.');
+      $this->assertEquals(count($status_target), 1, 'The source ' . strtoupper($language) . ' has been marked with status ' . strtolower($status) . '.');
     }
     else {
       $status_target = $this->xpath("//span[contains(@class,'language-icon') and contains(@class,'source-" . strtolower($status) . "')  and contains(text(), '" . strtoupper($language) . "')]");
-      $this->assertEqual(count($status_target), 1, 'The source ' . strtoupper($language) . ' has been marked with status ' . strtolower($status) . '.');
+      $this->assertEquals(count($status_target), 1, 'The source ' . strtoupper($language) . ' has been marked with status ' . strtolower($status) . '.');
     }
   }
 
@@ -481,11 +496,11 @@ abstract class LingotekTestBase extends BrowserTestBase {
     $status_target = $this->xpath("//span[contains(@class,'language-icon') and contains(@class,'source-" . strtolower($status) . "')  and ./a[contains(text(), '" . strtoupper($language) . "')]]");
     // If not found, maybe it didn't have a link.
     if (count($status_target) === 0) {
-      $this->assertEqual(count($status_target), 0, 'The source ' . strtoupper($language) . ' has not been marked with status ' . strtolower($status) . '.');
+      $this->assertEquals(count($status_target), 0, 'The source ' . strtoupper($language) . ' has not been marked with status ' . strtolower($status) . '.');
     }
     else {
       $status_target = $this->xpath("//span[contains(@class,'language-icon') and contains(@class,'source-" . strtolower($status) . "')  and contains(text(), '" . strtoupper($language) . "')]");
-      $this->assertEqual(count($status_target), 0, 'The source ' . strtoupper($language) . ' has not been marked with status ' . strtolower($status) . '.');
+      $this->assertEquals(count($status_target), 0, 'The source ' . strtoupper($language) . ' has not been marked with status ' . strtolower($status) . '.');
     }
   }
 
@@ -501,8 +516,8 @@ abstract class LingotekTestBase extends BrowserTestBase {
    */
   protected function assertNoTargetError($label, $language, $locale) {
     $source_error = $this->xpath("//span[contains(@class,'language-icon') and contains(@class,'target-error')  and ./a[contains(text(), '" . strtoupper($language) . "')]]");
-    $this->assertEqual(count($source_error), 0, 'The target ' . strtoupper($language) . ' has not been marked as error.');
-    $this->assertNoText($label . ' ' . $locale . ' translation download failed. Please try again.');
+    $this->assertEquals(count($source_error), 0, 'The target ' . strtoupper($language) . ' has not been marked as error.');
+    $this->assertSession()->pageTextNotContains($label . ' ' . $locale . ' translation download failed. Please try again.');
   }
 
   /**
@@ -517,8 +532,8 @@ abstract class LingotekTestBase extends BrowserTestBase {
    */
   protected function assertNoConfigTargetError($label, $language, $locale) {
     $source_error = $this->xpath("//span[contains(@class,'language-icon') and contains(@class,'target-error')  and ./a[contains(text(), '" . strtoupper($language) . "')]]");
-    $this->assertEqual(count($source_error), 0, 'The target ' . strtoupper($language) . ' has not been marked as error.');
-    $this->assertNoText($label . ' ' . $locale . ' translation download failed. Please try again.');
+    $this->assertEquals(count($source_error), 0, 'The target ' . strtoupper($language) . ' has not been marked as error.');
+    $this->assertSession()->pageTextNotContains($label . ' ' . $locale . ' translation download failed. Please try again.');
   }
 
   /**
@@ -591,7 +606,8 @@ abstract class LingotekTestBase extends BrowserTestBase {
         }
       }
     }
-    $this->drupalPostForm('admin/lingotek/settings', $edit, 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->drupalGet('admin/lingotek/settings', []);
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
   }
 
   /**
@@ -700,7 +716,8 @@ abstract class LingotekTestBase extends BrowserTestBase {
       $edit['table[' . $entity_type . '][enabled]'] = 1;
       $edit['table[' . $entity_type . '][profile]'] = $profile;
     }
-    $this->drupalPostForm('admin/lingotek/settings', $edit, 'Save', [], 'lingoteksettings-tab-configuration-form');
+    $this->drupalGet('admin/lingotek/settings', []);
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-configuration-form');
   }
 
   /**

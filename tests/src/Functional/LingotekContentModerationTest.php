@@ -20,7 +20,7 @@ class LingotekContentModerationTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'content_moderation'];
+  protected static $modules = ['block', 'node', 'content_moderation'];
 
   /**
    * {@inheritdoc}
@@ -101,8 +101,8 @@ class LingotekContentModerationTest extends LingotekTestBase {
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
     $this->saveAsRequestReviewNodeForm($edit, 'article');
 
-    $this->assertText('Article Llamas are cool has been created.');
-    $this->assertNoText('Llamas are cool sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
+    $this->assertSession()->pageTextNotContains('Llamas are cool sent to Lingotek successfully.');
   }
 
   /**
@@ -116,8 +116,8 @@ class LingotekContentModerationTest extends LingotekTestBase {
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
     $this->saveAsRequestReviewNodeForm($edit, 'article');
 
-    $this->assertText('Article Llamas are cool has been created.');
-    $this->assertNoText('Llamas are cool sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
+    $this->assertSession()->pageTextNotContains('Llamas are cool sent to Lingotek successfully.');
   }
 
   /**
@@ -131,8 +131,8 @@ class LingotekContentModerationTest extends LingotekTestBase {
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
     $this->saveAsNewDraftNodeForm($edit, 'article');
 
-    $this->assertText('Article Llamas are cool has been created.');
-    $this->assertText('Llamas are cool sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
+    $this->assertSession()->pageTextContains('Llamas are cool sent to Lingotek successfully.');
   }
 
   /**
@@ -146,8 +146,8 @@ class LingotekContentModerationTest extends LingotekTestBase {
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
     $this->saveAsNewDraftNodeForm($edit, 'article');
 
-    $this->assertText('Article Llamas are cool has been created.');
-    $this->assertNoText('Llamas are cool sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
+    $this->assertSession()->pageTextNotContains('Llamas are cool sent to Lingotek successfully.');
   }
 
   /**
@@ -161,11 +161,11 @@ class LingotekContentModerationTest extends LingotekTestBase {
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
     $this->saveAsNewDraftNodeForm($edit, 'article');
 
-    $this->assertText('Article Llamas are cool has been created.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
     $this->editAsRequestReviewNodeForm('/node/1/edit', $edit);
 
-    $this->assertText('Article Llamas are cool has been updated.');
-    $this->assertNoText('Llamas are cool was updated and sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been updated.');
+    $this->assertSession()->pageTextNotContains('Llamas are cool was updated and sent to Lingotek successfully.');
   }
 
   /**
@@ -179,11 +179,11 @@ class LingotekContentModerationTest extends LingotekTestBase {
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
     $this->saveAsNewDraftNodeForm($edit, 'article');
 
-    $this->assertText('Article Llamas are cool has been created.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
     $this->editAsRequestReviewNodeForm('/node/1/edit', $edit);
 
-    $this->assertText('Article Llamas are cool has been updated.');
-    $this->assertNoText('Llamas are cool was updated and sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been updated.');
+    $this->assertSession()->pageTextNotContains('Llamas are cool was updated and sent to Lingotek successfully.');
   }
 
   /**
@@ -197,12 +197,12 @@ class LingotekContentModerationTest extends LingotekTestBase {
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
     $this->saveAsNewDraftNodeForm($edit, 'article');
 
-    $this->assertText('Article Llamas are cool has been created.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
     $edit['body[0][value]'] = 'Llamas are very cool!';
     $this->editAsNewDraftNodeForm('/node/1/edit', $edit);
 
-    $this->assertText('Article Llamas are cool has been updated.');
-    $this->assertText('Llamas are cool was updated and sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been updated.');
+    $this->assertSession()->pageTextContains('Llamas are cool was updated and sent to Lingotek successfully.');
   }
 
   /**
@@ -216,11 +216,11 @@ class LingotekContentModerationTest extends LingotekTestBase {
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
     $this->saveAsNewDraftNodeForm($edit, 'article');
 
-    $this->assertText('Article Llamas are cool has been created.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
     $this->editAsNewDraftNodeForm('/node/1/edit', $edit);
 
-    $this->assertText('Article Llamas are cool has been updated.');
-    $this->assertNoText('Llamas are cool was updated and sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been updated.');
+    $this->assertSession()->pageTextNotContains('Llamas are cool was updated and sent to Lingotek successfully.');
   }
 
   protected function configureNeedsReviewAsUploadState() {
@@ -253,9 +253,9 @@ class LingotekContentModerationTest extends LingotekTestBase {
 
     // Moderate.
     $edit = ['new_state' => 'needs_review'];
-    $this->drupalPostForm(NULL, $edit, 'Apply');
-    $this->assertText('The moderation state has been updated.');
-    $this->assertText('Llamas are cool sent to Lingotek successfully.');
+    $this->submitForm($edit, 'Apply');
+    $this->assertSession()->pageTextContains('The moderation state has been updated.');
+    $this->assertSession()->pageTextContains('Llamas are cool sent to Lingotek successfully.');
   }
 
   public function testModerationToNonUploadStateWithAutomaticProfileDoesntTriggerUpload() {
@@ -270,9 +270,9 @@ class LingotekContentModerationTest extends LingotekTestBase {
 
     // Moderate.
     $edit = ['new_state' => 'published'];
-    $this->drupalPostForm(NULL, $edit, 'Apply');
-    $this->assertText('The moderation state has been updated.');
-    $this->assertNoText('Llamas are cool sent to Lingotek successfully.');
+    $this->submitForm($edit, 'Apply');
+    $this->assertSession()->pageTextContains('The moderation state has been updated.');
+    $this->assertSession()->pageTextNotContains('Llamas are cool sent to Lingotek successfully.');
   }
 
   public function testModerationToUploadStateWithManualProfileDoesntTriggerUpload() {
@@ -287,9 +287,9 @@ class LingotekContentModerationTest extends LingotekTestBase {
 
     // Moderate.
     $edit = ['new_state' => 'needs_review'];
-    $this->drupalPostForm(NULL, $edit, 'Apply');
-    $this->assertText('The moderation state has been updated.');
-    $this->assertNoText('Llamas are cool sent to Lingotek successfully.');
+    $this->submitForm($edit, 'Apply');
+    $this->assertSession()->pageTextContains('The moderation state has been updated.');
+    $this->assertSession()->pageTextNotContains('Llamas are cool sent to Lingotek successfully.');
   }
 
   public function testModerationToNonUploadStateWithManualProfileDoesntTriggerUpload() {
@@ -304,9 +304,9 @@ class LingotekContentModerationTest extends LingotekTestBase {
 
     // Moderate.
     $edit = ['new_state' => 'published'];
-    $this->drupalPostForm(NULL, $edit, 'Apply');
-    $this->assertText('The moderation state has been updated.');
-    $this->assertNoText('Llamas are cool sent to Lingotek successfully.');
+    $this->submitForm($edit, 'Apply');
+    $this->assertSession()->pageTextContains('The moderation state has been updated.');
+    $this->assertSession()->pageTextNotContains('Llamas are cool sent to Lingotek successfully.');
   }
 
   public function testDownloadFromUploadStateTriggersATransition() {
@@ -322,16 +322,16 @@ class LingotekContentModerationTest extends LingotekTestBase {
     // The status is draft.
     $value = $this->xpath('//div[@id="edit-current"]/text()');
     $value = trim($value[1]->getText());
-    $this->assertEqual($value, 'Draft', 'Workbench current status is draft');
+    $this->assertEquals($value, 'Draft', 'Workbench current status is draft');
 
     // Moderate to Needs review, so it's uploaded.
     $edit = ['new_state' => 'needs_review'];
-    $this->drupalPostForm(NULL, $edit, 'Apply');
+    $this->submitForm($edit, 'Apply');
 
     // The status is needs review.
     $value = $this->xpath('//div[@id="edit-current"]/text()');
     $value = trim($value[1]->getText());
-    $this->assertEqual($value, 'Needs Review', 'Workbench current status is Needs Review');
+    $this->assertEquals($value, 'Needs Review', 'Workbench current status is Needs Review');
 
     $this->goToContentBulkManagementForm();
     // Request translation.
@@ -343,7 +343,7 @@ class LingotekContentModerationTest extends LingotekTestBase {
 
     // Let's see the current status is modified.
     $this->clickLink('Llamas are cool');
-    $this->assertNoFieldByName('new_state', 'The transition to a new content moderation status happened (so no moderation form is shown).');
+    $this->assertSession()->fieldValueNotEquals('new_state', 'The transition to a new content moderation status happened (so no moderation form is shown).');
   }
 
   public function testDownloadWhenContentModerationWasSetupAfterLingotek() {
@@ -391,7 +391,7 @@ class LingotekContentModerationTest extends LingotekTestBase {
 
     // Moderate to Needs review, so it's uploaded.
     $edit = ['new_state' => 'needs_review'];
-    $this->drupalPostForm(NULL, $edit, 'Apply');
+    $this->submitForm($edit, 'Apply');
 
     // The status is needs review.
     $value = $this->xpath('//div[@id="edit-current"]/text()');
@@ -405,7 +405,7 @@ class LingotekContentModerationTest extends LingotekTestBase {
     $this->clickLink('ES');
     // Download translation.
     $this->clickLink('ES');
-    $this->assertText('The translation of node Llamas are cool into es_MX has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_MX has been downloaded.');
 
     // Let's see the current status is modified.
     $this->clickLink('Llamas are cool');
@@ -434,11 +434,11 @@ class LingotekContentModerationTest extends LingotekTestBase {
 
     // Moderate to Needs review, so it's uploaded.
     $edit = ['new_state' => 'needs_review'];
-    $this->drupalPostForm(NULL, $edit, 'Apply');
+    $this->submitForm($edit, 'Apply');
 
     // Moderate back to draft, so the transition won't happen on download.
     $edit = ['new_state' => 'draft'];
-    $this->drupalPostForm(NULL, $edit, 'Apply');
+    $this->submitForm($edit, 'Apply');
 
     $this->goToContentBulkManagementForm();
     // Request translation.
@@ -466,32 +466,32 @@ class LingotekContentModerationTest extends LingotekTestBase {
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
     $this->saveAndPublishNodeForm($edit, 'article');
-    $this->assertText('Article Llamas are cool has been created.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
 
     $this->goToContentBulkManagementForm();
 
     // Upload.
     $this->clickLink('EN');
-    $this->assertText('Node Llamas are cool has been uploaded.');
+    $this->assertSession()->pageTextContains('Node Llamas are cool has been uploaded.');
 
     // Request translation.
     $this->clickLink('ES');
-    $this->assertText('Locale \'es_MX\' was added as a translation target for node Llamas are cool.');
+    $this->assertSession()->pageTextContains('Locale \'es_MX\' was added as a translation target for node Llamas are cool.');
     // Check translation.
     $this->clickLink('ES');
-    $this->assertText('The es_MX translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_MX translation for node Llamas are cool is ready for download.');
 
     // Edit the original as a new draft.
     $edit = [];
     $edit['title[0][value]'] = 'Dogs are cool';
     $edit['body[0][value]'] = 'Dogs are very cool';
     $this->editAsNewDraftNodeForm('/node/1/edit', $edit);
-    $this->assertNoText('Dogs are cool was updated and sent to Lingotek successfully.');
-    $this->assertText('Article Dogs are cool has been updated.');
+    $this->assertSession()->pageTextNotContains('Dogs are cool was updated and sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Dogs are cool has been updated.');
 
     // The source published revision is the default one.
     $this->drupalGet('node/1');
-    $this->assertText('Llamas are cool');
+    $this->assertSession()->pageTextContains('Llamas are cool');
 
     $this->goToContentBulkManagementForm();
 
@@ -500,20 +500,20 @@ class LingotekContentModerationTest extends LingotekTestBase {
       'table[1]' => TRUE,
       'operation' => 'download_translation:es',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Execute'));
-    $this->assertText('Operations completed.');
+    $this->submitForm($edit, t('Execute'));
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     // The source published revision must be the same still.
     $this->drupalGet('node/1');
-    $this->assertText('Llamas are cool');
+    $this->assertSession()->pageTextContains('Llamas are cool');
 
     // But the latest revision should keep the unpublished revision content.
     $this->drupalGet('node/1/latest');
-    $this->assertText('Dogs are cool');
+    $this->assertSession()->pageTextContains('Dogs are cool');
 
     // The published revision for the translated content is the right one.
     $this->drupalGet('es/node/1');
-    $this->assertText('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
 
     // There's only one revision for Spanish so we cannot check the latest.
   }
@@ -534,39 +534,39 @@ class LingotekContentModerationTest extends LingotekTestBase {
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
     $this->saveAndPublishNodeForm($edit, 'article');
-    $this->assertText('Article Llamas are cool has been created.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
 
     $this->goToContentBulkManagementForm();
 
     // Upload.
     $this->clickLink('EN');
-    $this->assertText('Node Llamas are cool has been uploaded.');
+    $this->assertSession()->pageTextContains('Node Llamas are cool has been uploaded.');
 
     // Request translation.
     $this->clickLink('ES');
-    $this->assertText('Locale \'es_MX\' was added as a translation target for node Llamas are cool.');
+    $this->assertSession()->pageTextContains('Locale \'es_MX\' was added as a translation target for node Llamas are cool.');
     // Check translation.
     $this->clickLink('ES');
-    $this->assertText('The es_MX translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_MX translation for node Llamas are cool is ready for download.');
 
     // Request translation.
     $this->clickLink('IT');
-    $this->assertText('Locale \'it_IT\' was added as a translation target for node Llamas are cool.');
+    $this->assertSession()->pageTextContains('Locale \'it_IT\' was added as a translation target for node Llamas are cool.');
     // Check translation.
     $this->clickLink('IT');
-    $this->assertText('The it_IT translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The it_IT translation for node Llamas are cool is ready for download.');
 
     // Edit the original as a new draft.
     $edit = [];
     $edit['title[0][value]'] = 'Dogs are cool';
     $edit['body[0][value]'] = 'Dogs are very cool';
     $this->editAsNewDraftNodeForm('/node/1/edit', $edit);
-    $this->assertNoText('Dogs are cool was updated and sent to Lingotek successfully.');
-    $this->assertText('Article Dogs are cool has been updated.');
+    $this->assertSession()->pageTextNotContains('Dogs are cool was updated and sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Dogs are cool has been updated.');
 
     // The source published revision is the default one.
     $this->drupalGet('node/1');
-    $this->assertText('Llamas are cool');
+    $this->assertSession()->pageTextContains('Llamas are cool');
 
     $this->goToContentBulkManagementForm();
 
@@ -575,26 +575,26 @@ class LingotekContentModerationTest extends LingotekTestBase {
       'table[1]' => TRUE,
       'operation' => 'download_translations',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Execute'));
-    $this->assertText('Operations completed.');
+    $this->submitForm($edit, t('Execute'));
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     // The source published revision must be the same still.
     $this->drupalGet('node/1');
-    $this->assertText('Llamas are cool');
+    $this->assertSession()->pageTextContains('Llamas are cool');
 
     // But the latest revision should keep the unpublished revision content.
     $this->drupalGet('node/1/latest');
-    $this->assertText('Dogs are cool');
+    $this->assertSession()->pageTextContains('Dogs are cool');
 
     // The published revision for the Spanish translated content is the right one.
     $this->drupalGet('es/node/1');
-    $this->assertText('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
 
     // There's only one revision for Spanish so we cannot check the latest.
 
     // The published revision for the Italian translated content is the right one.
     $this->drupalGet('it/node/1');
-    $this->assertText('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
 
     // There's only one revision for Italian too so we cannot check the latest.
   }
@@ -610,32 +610,32 @@ class LingotekContentModerationTest extends LingotekTestBase {
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
     $this->saveAndPublishNodeForm($edit, 'article');
-    $this->assertText('Article Llamas are cool has been created.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
 
     // Edit the original as a new draft.
     $edit = [];
     $edit['title[0][value]'] = 'Dogs are cool';
     $edit['body[0][value]'] = 'Dogs are very cool';
     $this->editAsNewDraftNodeForm('/node/1/edit', $edit);
-    $this->assertNoText('Dogs are cool was updated and sent to Lingotek successfully.');
-    $this->assertText('Article Dogs are cool has been updated.');
+    $this->assertSession()->pageTextNotContains('Dogs are cool was updated and sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Dogs are cool has been updated.');
 
     $this->goToContentBulkManagementForm();
 
     // Upload.
     $this->clickLink('EN');
-    $this->assertText('Node Llamas are cool has been uploaded.');
+    $this->assertSession()->pageTextContains('Node Llamas are cool has been uploaded.');
 
     // Request translation.
     $this->clickLink('ES');
-    $this->assertText('Locale \'es_MX\' was added as a translation target for node Llamas are cool.');
+    $this->assertSession()->pageTextContains('Locale \'es_MX\' was added as a translation target for node Llamas are cool.');
     // Check translation.
     $this->clickLink('ES');
-    $this->assertText('The es_MX translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_MX translation for node Llamas are cool is ready for download.');
 
     // The source published revision is the default one.
     $this->drupalGet('node/1');
-    $this->assertText('Llamas are cool');
+    $this->assertSession()->pageTextContains('Llamas are cool');
 
     $this->goToContentBulkManagementForm();
 
@@ -644,25 +644,25 @@ class LingotekContentModerationTest extends LingotekTestBase {
       'table[1]' => TRUE,
       'operation' => 'download_translation:es',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Execute'));
-    $this->assertText('Operations completed.');
+    $this->submitForm($edit, t('Execute'));
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     // The source published revision must be the same still.
     $this->drupalGet('node/1');
-    $this->assertText('Llamas are cool');
+    $this->assertSession()->pageTextContains('Llamas are cool');
 
     // But the latest revision should keep the unpublished revision content.
     $this->drupalGet('node/1/latest');
-    $this->assertText('Dogs are cool');
+    $this->assertSession()->pageTextContains('Dogs are cool');
 
     // The translated revision is not published, so the source published
     // revision is displayed.
     $this->drupalGet('es/node/1');
-    $this->assertText('Llamas are cool');
+    $this->assertSession()->pageTextContains('Llamas are cool');
 
     // And it's also the latest published revision.
     $this->drupalGet('es/node/1/latest');
-    $this->assertText('Los perros son chulos');
+    $this->assertSession()->pageTextContains('Los perros son chulos');
   }
 
   public function testBulkManagementUploadsLatestDraftRevision() {
@@ -676,21 +676,21 @@ class LingotekContentModerationTest extends LingotekTestBase {
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
     $this->saveAndPublishNodeForm($edit, 'article');
-    $this->assertText('Article Llamas are cool has been created.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
 
     // Edit the original as a new draft.
     $edit = [];
     $edit['title[0][value]'] = 'Dogs are cool';
     $edit['body[0][value]'] = 'Dogs are very cool';
     $this->editAsNewDraftNodeForm('/node/1/edit', $edit);
-    $this->assertNoText('Dogs are cool was updated and sent to Lingotek successfully.');
-    $this->assertText('Article Dogs are cool has been updated.');
+    $this->assertSession()->pageTextNotContains('Dogs are cool was updated and sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Dogs are cool has been updated.');
 
     $this->goToContentBulkManagementForm();
 
     // Upload.
     $this->clickLink('EN');
-    $this->assertText('Node Llamas are cool has been uploaded.');
+    $this->assertSession()->pageTextContains('Node Llamas are cool has been uploaded.');
 
     // Check that only the last revision fields have been uploaded.
     $data = json_decode(\Drupal::state()
@@ -716,8 +716,8 @@ class LingotekContentModerationTest extends LingotekTestBase {
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
     $this->saveAndPublishNodeForm($edit, 'page');
 
-    $this->assertText('Page Llamas are cool has been created.');
-    $this->assertText('Llamas are cool sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Page Llamas are cool has been created.');
+    $this->assertSession()->pageTextContains('Llamas are cool sent to Lingotek successfully.');
   }
 
   /**
@@ -728,9 +728,9 @@ class LingotekContentModerationTest extends LingotekTestBase {
    */
   protected function enableModerationThroughUI($content_type_id) {
     $this->drupalGet('/admin/config/workflow/workflows/manage/editorial/type/node');
-    $this->assertFieldByName("bundles[$content_type_id]");
+    $this->assertSession()->fieldExists("bundles[$content_type_id]");
     $edit["bundles[$content_type_id]"] = TRUE;
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
   }
 
   /**

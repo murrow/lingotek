@@ -16,7 +16,7 @@ class LingotekFieldBodyBulkDisabledTargetOverrideTranslationTest extends Lingote
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'field_ui'];
+  protected static $modules = ['block', 'node', 'field_ui'];
 
   /**
    * {@inheritdoc}
@@ -76,8 +76,8 @@ class LingotekFieldBodyBulkDisabledTargetOverrideTranslationTest extends Lingote
     $assert_session->linkByHrefNotExists($basepath . '/admin/lingotek/config/request/field_config/node.article.body/ca_ES?destination=' . $basepath . '/admin/lingotek/config/manage');
 
     $this->clickLink('EN');
-    $this->assertText('Body uploaded successfully');
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // There is a link for checking status.
@@ -87,7 +87,7 @@ class LingotekFieldBodyBulkDisabledTargetOverrideTranslationTest extends Lingote
     $assert_session->linkByHrefNotExists($basepath . '/admin/lingotek/config/request/field_config/node.article.body/ca_ES?destination=' . $basepath . '/admin/lingotek/config/manage');
 
     $this->clickLink('EN');
-    $this->assertText('Body status checked successfully');
+    $this->assertSession()->pageTextContains('Body status checked successfully');
 
     $assert_session->linkByHrefNotExists($basepath . '/admin/lingotek/config/request/field_config/node.article.body/ca_ES?destination=' . $basepath . '/admin/lingotek/config/manage');
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/field_config/node.article.body/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -116,11 +116,11 @@ class LingotekFieldBodyBulkDisabledTargetOverrideTranslationTest extends Lingote
       'table[node.article.body]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
-    $this->assertText('Operations completed.');
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/field_config/node.article.body/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $assert_session->linkByHrefNotExists($basepath . '/admin/lingotek/config/request/field_config/node.article.body/ca_ES?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -133,13 +133,13 @@ class LingotekFieldBodyBulkDisabledTargetOverrideTranslationTest extends Lingote
       'table[node.article.body]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslation('ca', 'node_fields'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical(NULL, \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame(NULL, \Drupal::state()
       ->get('lingotek.added_target_locale'));
-    $this->assertIdentical(NULL, \Drupal::state()
+    $this->assertSame(NULL, \Drupal::state()
       ->get('lingotek.requested_locales'));
 
-    $this->assertText('Operations completed.');
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     $this->assertTargetStatus('es', Lingotek::STATUS_REQUEST);
     $this->assertTargetStatus('ca', Lingotek::STATUS_DISABLED);
@@ -150,8 +150,8 @@ class LingotekFieldBodyBulkDisabledTargetOverrideTranslationTest extends Lingote
       'table[node.article.body]' => TRUE,
       $this->getBulkOperationFormName() => 'check_translation:ca',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical(NULL, \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame(NULL, \Drupal::state()
       ->get('lingotek.checked_target_locale'));
 
     $this->assertTargetStatus('es', Lingotek::STATUS_REQUEST);
@@ -163,8 +163,8 @@ class LingotekFieldBodyBulkDisabledTargetOverrideTranslationTest extends Lingote
       'table[node.article.body]' => TRUE,
       $this->getBulkOperationFormName() => 'download_translation:ca',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical(NULL, \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame(NULL, \Drupal::state()
       ->get('lingotek.downloaded_locale'));
 
     $this->assertTargetStatus('es', Lingotek::STATUS_REQUEST);
@@ -190,11 +190,11 @@ class LingotekFieldBodyBulkDisabledTargetOverrideTranslationTest extends Lingote
       'table[node.article.body]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('node_fields'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
-    $this->assertText('Operations completed.');
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     // There is a link for checking status.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_upload/field_config/node.article.body?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -202,11 +202,11 @@ class LingotekFieldBodyBulkDisabledTargetOverrideTranslationTest extends Lingote
       'table[node.article.body]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckUpload('node_fields'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
-    $this->assertText('Operations completed.');
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/field_config/node.article.body/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $assert_session->linkByHrefNotExists($basepath . '/admin/lingotek/config/request/field_config/node.article.body/ca_ES?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -219,11 +219,11 @@ class LingotekFieldBodyBulkDisabledTargetOverrideTranslationTest extends Lingote
       'table[node.article.body]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslations('node_fields'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical(['dummy-document-hash-id' => ['es_MX']], \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame(['dummy-document-hash-id' => ['es_MX']], \Drupal::state()
       ->get('lingotek.requested_locales'));
 
-    $this->assertText('Operations completed.');
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     $this->assertTargetStatus('es', Lingotek::STATUS_PENDING);
     $this->assertTargetStatus('ca', Lingotek::STATUS_DISABLED);
@@ -234,8 +234,8 @@ class LingotekFieldBodyBulkDisabledTargetOverrideTranslationTest extends Lingote
       'table[node.article.body]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckTranslations('node_fields'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical(NULL, \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame(NULL, \Drupal::state()
       ->get('lingotek.checked_target_locale'));
 
     $this->assertTargetStatus('es', Lingotek::STATUS_READY);
@@ -247,8 +247,8 @@ class LingotekFieldBodyBulkDisabledTargetOverrideTranslationTest extends Lingote
       'table[node.article.body]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForDownloadTranslations('node_fields'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.downloaded_locale'));
 
     $this->assertTargetStatus('es', Lingotek::STATUS_CURRENT);

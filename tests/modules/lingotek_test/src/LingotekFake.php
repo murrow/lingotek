@@ -23,6 +23,13 @@ class LingotekFake implements LingotekInterface {
   protected $api;
   protected $config;
 
+  /**
+   * The language-locale mapper.
+   *
+   * @var \Drupal\lingotek\LanguageLocaleMapperInterface|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $languageLocaleMapper;
+
   public function __construct(LingotekApiInterface $api, LanguageLocaleMapperInterface $language_locale_mapper, ConfigFactoryInterface $config) {
     $this->api = $api;
     $this->languageLocaleMapper = $language_locale_mapper;
@@ -359,10 +366,10 @@ class LingotekFake implements LingotekInterface {
     \Drupal::state()->set('lingotek.downloaded_locale', $locale);
     $type = \Drupal::state()->get('lingotek.uploaded_content_type', 'node');
     $typeWithLocale = $type . '.' . $locale;
-    $path = drupal_get_path('module', 'lingotek') . '/tests/modules/lingotek_test/document_responses/' . $typeWithLocale . '.json';
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek') . '/tests/modules/lingotek_test/document_responses/' . $typeWithLocale . '.json';
 
     if (!file_exists($path)) {
-      $path = drupal_get_path('module', 'lingotek') . '/tests/modules/lingotek_test/document_responses/' . $type . '.json';
+      $path = \Drupal::service('extension.list.module')->getPath('lingotek') . '/tests/modules/lingotek_test/document_responses/' . $type . '.json';
     }
 
     $input = file_get_contents($path);

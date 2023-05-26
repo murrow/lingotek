@@ -18,10 +18,10 @@ class LingotekNodeTranslationFlowNotCurrentToPendingTest extends LingotekTestBas
    *
    * @var array
    */
-  public static $modules = ['block', 'node'];
+  protected static $modules = ['block', 'node'];
 
   /**
-   * @var \Drupal\node\Entity\NodeInterface
+   * @var \Drupal\node\NodeInterface
    */
   protected $node;
 
@@ -75,8 +75,8 @@ class LingotekNodeTranslationFlowNotCurrentToPendingTest extends LingotekTestBas
     $this->assertNoLingotekRequestTranslationLink('es_MX');
     $this->assertNoLingotekRequestTranslationLink('de_AT');
     $this->clickLink('EN');
-    $this->assertText('Node Llamas are cool has been uploaded.');
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSession()->pageTextContains('Node Llamas are cool has been uploaded.');
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // There is a link for checking status.
     $this->assertLingotekCheckSourceStatusLink();
@@ -84,25 +84,25 @@ class LingotekNodeTranslationFlowNotCurrentToPendingTest extends LingotekTestBas
     $this->assertLingotekRequestTranslationLink('es_MX');
     $this->assertLingotekRequestTranslationLink('de_AT');
     $this->clickLink('EN');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request the Spanish translation.
     $this->assertLingotekRequestTranslationLink('es_MX');
     $this->clickLink('ES');
-    $this->assertText("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $this->assertLingotekCheckTargetStatusLink('es_MX');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText('The es_MX translation for node Llamas are cool is ready for download.');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains('The es_MX translation for node Llamas are cool is ready for download.');
 
     // Download the Spanish translation.
     $this->assertLingotekDownloadTargetLink('es_MX');
     $this->clickLink('ES');
-    $this->assertText('The translation of node Llamas are cool into es_MX has been downloaded.');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_MX has been downloaded.');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
 
     // Edit the Source
     $edit = [];
@@ -123,13 +123,13 @@ class LingotekNodeTranslationFlowNotCurrentToPendingTest extends LingotekTestBas
     // Clicking English must init the upload of content.
     $this->assertLingotekUpdateLink();
     $this->clickLink('EN');
-    $this->assertText('Node Llamas are cool EDITED has been updated.');
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSession()->pageTextContains('Node Llamas are cool EDITED has been updated.');
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // There is a link for checking status.
     $this->assertLingotekCheckSourceStatusLink('dummy-document-hash-id-1');
     $this->clickLink('EN');
-    $this->assertText('The import for node Llamas are cool EDITED is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool EDITED is complete.');
 
     $this->assertTargetStatus('ES', Lingotek::STATUS_PENDING);
 

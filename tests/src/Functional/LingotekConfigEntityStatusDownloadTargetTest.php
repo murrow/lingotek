@@ -16,7 +16,7 @@ class LingotekConfigEntityStatusDownloadTargetTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'node', 'field_ui'];
+  protected static $modules = ['block', 'node', 'field_ui'];
 
   protected function setUp(): void {
     parent::setUp();
@@ -58,30 +58,31 @@ class LingotekConfigEntityStatusDownloadTargetTest extends LingotekTestBase {
     // And we cannot request yet a translation.
     $assert_session->linkByHrefNotExists($basepath . '/admin/lingotek/config/request/field_config/node.article.body/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('EN');
-    $this->assertText(t('Body uploaded successfully'));
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSession()->pageTextContains(t('Body uploaded successfully'));
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // There is a link for checking status.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_upload/field_config/node.article.body?destination=' . $basepath . '/admin/lingotek/config/manage');
     // And we can already request a translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/field_config/node.article.body/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('EN');
-    $this->assertText('Body status checked successfully');
+    $this->assertSession()->pageTextContains('Body status checked successfully');
 
     // Request the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/field_config/node.article.body/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertText("Translation to es_MX requested successfully");
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains("Translation to es_MX requested successfully");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_download/field_config/node.article.body/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText("Translation to es_MX status checked successfully");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains("Translation to es_MX status checked successfully");
+    $this->drupalGet('/admin/structure/types/manage/article/fields/node.article.body');
 
     // Edit the object
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/node.article.body', ['label' => 'Body EDITED'], t('Save settings'));
+    $this->submitForm(['label' => 'Body EDITED'], t('Save settings'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm('node_fields');
@@ -89,19 +90,19 @@ class LingotekConfigEntityStatusDownloadTargetTest extends LingotekTestBase {
     // following tests will work, but for now it's not
     // // Check the status is edited for Spanish.
     // $edited = $this->xpath("//a[contains(@class,'language-icon') and contains(@class, 'target-edited')  and contains(text(), 'ES')]");
-    // $this->assertEqual(count($edited), 1, 'Edited translation is shown.');
+    // $this->assertEquals(count($edited), 1, 'Edited translation is shown.');
     //
     // // Download the Spanish translation.
     // $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/download/field_config/node.article.body/es_MX?destination=' . $basepath .'/admin/lingotek/config/manage');
     // $this->clickLink('ES');
-    // $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
-    // $this->assertText('Translation to es_MX downloaded successfully');
+    // $this->assertSame('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
+    // $this->assertSession()->pageTextContains('Translation to es_MX downloaded successfully');
     //
     // // Check the status is edited for Spanish.
     // $source_untracked = $this->xpath("//a[contains(@class,'language-icon') and contains(@class, 'source-edited')  and contains(@title, 'Re-upload (content has changed since last upload)')]");
-    // $this->assertEqual(count($source_untracked), 1, 'Edited source is shown.');
+    // $this->assertEquals(count($source_untracked), 1, 'Edited source is shown.');
     // $untracked = $this->xpath("//a[contains(@class,'language-icon') and contains(@class, 'target-edited')  and contains(text(), 'ES')]");
-    // $this->assertEqual(count($untracked), 1, 'Edited translation is shown.');
+    // $this->assertEquals(count($untracked), 1, 'Edited translation is shown.');
   }
 
 }

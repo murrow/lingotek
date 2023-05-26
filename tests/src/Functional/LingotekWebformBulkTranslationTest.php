@@ -17,7 +17,7 @@ class LingotekWebformBulkTranslationTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'frozenintime', 'webform'];
+  protected static $modules = ['block', 'node', 'frozenintime', 'webform'];
 
   /**
    * A webform.
@@ -97,44 +97,44 @@ class LingotekWebformBulkTranslationTest extends LingotekTestBase {
     // And we cannot request yet a translation.
     $assert_session->linkByHrefNotExists($basepath . '/admin/lingotek/config/request/webform/test/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('EN', 1);
-    $this->assertText(t('Test uploaded successfully'));
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSession()->pageTextContains(t('Test uploaded successfully'));
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // Check that only the configured fields have been uploaded.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->assertEqual('Test', $data['title']);
-    $this->assertEqual(6, count($data['elements']));
-    $this->assertEqual('First name', $data['elements']['first_name']['#title']);
-    $this->assertEqual('Last name', $data['elements']['last_name']['#title']);
-    $this->assertEqual('Sex', $data['elements']['sex']['#title']);
-    $this->assertEqual('Martial status', $data['elements']['martial_status']['#title']);
-    $this->assertEqual('Employment status', $data['elements']['employment_status']['#title']);
-    $this->assertEqual('Age', $data['elements']['age']['#title']);
+    $this->assertEquals('Test', $data['title']);
+    $this->assertEquals(6, count($data['elements']));
+    $this->assertEquals('First name', $data['elements']['first_name']['#title']);
+    $this->assertEquals('Last name', $data['elements']['last_name']['#title']);
+    $this->assertEquals('Sex', $data['elements']['sex']['#title']);
+    $this->assertEquals('Martial status', $data['elements']['martial_status']['#title']);
+    $this->assertEquals('Employment status', $data['elements']['employment_status']['#title']);
+    $this->assertEquals('Age', $data['elements']['age']['#title']);
 
     // There is a link for checking status.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_upload/webform/test?destination=' . $basepath . '/admin/lingotek/config/manage');
     // And we can already request a translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/webform/test/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('EN', 1);
-    $this->assertText('Test status checked successfully');
+    $this->assertSession()->pageTextContains('Test status checked successfully');
 
     // Request the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/webform/test/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertText("Translation to es_MX requested successfully");
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains("Translation to es_MX requested successfully");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_download/webform/test/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText("Translation to es_MX status checked successfully");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains("Translation to es_MX status checked successfully");
 
     // Download the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/download/webform/test/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertText('Translation to es_MX downloaded successfully');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->assertSession()->pageTextContains('Translation to es_MX downloaded successfully');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
 
     // Now the link is to the workbench, and it opens in a new tab.
     $this->assertLingotekWorkbenchLink('es_MX', 'dummy-document-hash-id', 'ES');

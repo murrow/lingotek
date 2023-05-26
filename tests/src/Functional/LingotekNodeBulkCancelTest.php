@@ -19,7 +19,7 @@ class LingotekNodeBulkCancelTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'node'];
+  protected static $modules = ['block', 'node'];
 
   protected function setUp(): void {
     parent::setUp();
@@ -73,18 +73,18 @@ class LingotekNodeBulkCancelTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCancel('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $content_translation_service */
     $content_translation_service = \Drupal::service('lingotek.content_translation');
 
     // Assert that The document has been cancelled remotely.
     $cancelled_docs = \Drupal::state()->get('lingotek.cancelled_docs', []);
-    $this->assertEqual(1, count($cancelled_docs), 'The document has been cancelled remotely.');
+    $this->assertEquals(1, count($cancelled_docs), 'The document has been cancelled remotely.');
 
     // Assert that no document has been deleted remotely.
     $deleted_docs = \Drupal::state()->get('lingotek.deleted_docs', []);
-    $this->assertEqual(0, count($deleted_docs), 'No document has been deleted remotely.');
+    $this->assertEquals(0, count($deleted_docs), 'No document has been deleted remotely.');
 
     $node = Node::load(1);
     $this->assertNull($content_translation_service->getDocumentId($node));
@@ -92,8 +92,8 @@ class LingotekNodeBulkCancelTest extends LingotekTestBase {
     $this->assertSourceStatus('EN', Lingotek::STATUS_CANCELLED);
     $this->assertTargetStatus('ES', Lingotek::STATUS_CANCELLED);
 
-    $this->assertIdentical(Lingotek::STATUS_CANCELLED, $content_translation_service->getSourceStatus($node));
-    $this->assertIdentical(Lingotek::STATUS_CANCELLED, $content_translation_service->getTargetStatus($node, 'es'));
+    $this->assertSame(Lingotek::STATUS_CANCELLED, $content_translation_service->getSourceStatus($node));
+    $this->assertSame(Lingotek::STATUS_CANCELLED, $content_translation_service->getTargetStatus($node, 'es'));
 
     // We can request again.
     $this->assertLingotekUploadLink();
@@ -127,7 +127,7 @@ class LingotekNodeBulkCancelTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCancelTarget('es', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $content_translation_service */
     $content_translation_service = \Drupal::service('lingotek.content_translation');
@@ -143,8 +143,8 @@ class LingotekNodeBulkCancelTest extends LingotekTestBase {
     $this->assertSourceStatus('EN', Lingotek::STATUS_CURRENT);
     $this->assertTargetStatus('ES', Lingotek::STATUS_CANCELLED);
 
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($entity));
-    $this->assertIdentical(Lingotek::STATUS_CANCELLED, $content_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CANCELLED, $content_translation_service->getTargetStatus($entity, 'es'));
 
     // We cannot request again.
     $this->assertNoLingotekRequestTranslationLink('es_ES');
@@ -176,7 +176,7 @@ class LingotekNodeBulkCancelTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCancelTarget('es', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $content_translation_service */
     $content_translation_service = \Drupal::service('lingotek.content_translation');
@@ -192,10 +192,10 @@ class LingotekNodeBulkCancelTest extends LingotekTestBase {
     $this->assertSourceStatus('EN', Lingotek::STATUS_CURRENT);
     $this->assertTargetStatus('ES', Lingotek::STATUS_CURRENT);
 
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($entity));
 
-    $this->assertText('Target es for node Llamas are cool was already completed in the TMS and cannot be cancelled unless the entire document is cancelled.');
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $content_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSession()->pageTextContains('Target es for node Llamas are cool was already completed in the TMS and cannot be cancelled unless the entire document is cancelled.');
+    $this->assertSame(Lingotek::STATUS_CURRENT, $content_translation_service->getTargetStatus($entity, 'es'));
   }
 
   protected function createAndTranslateNodeWithLinks() {
@@ -203,23 +203,23 @@ class LingotekNodeBulkCancelTest extends LingotekTestBase {
 
     // Clicking English must init the upload of content.
     $this->clickLink('EN');
-    $this->assertText('Node Llamas are cool has been uploaded.');
+    $this->assertSession()->pageTextContains('Node Llamas are cool has been uploaded.');
 
     // There is a link for checking status.
     $this->clickLink('EN');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request the Spanish translation.
     $this->clickLink('ES');
-    $this->assertText("Locale 'es_ES' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_ES' was added as a translation target for node Llamas are cool.");
 
     // Check status of the Spanish translation.
     $this->clickLink('ES');
-    $this->assertText('The es_ES translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_ES translation for node Llamas are cool is ready for download.');
 
     // Download the Spanish translation.
     $this->clickLink('ES');
-    $this->assertText('The translation of node Llamas are cool into es_ES has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_ES has been downloaded.');
   }
 
 }

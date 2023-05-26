@@ -29,7 +29,7 @@ class LingotekNodeEmbeddingTagsTranslationTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'node', 'image', 'comment', 'taxonomy'];
+  protected static $modules = ['block', 'node', 'image', 'comment', 'taxonomy'];
 
   /**
    * @var \Drupal\node\NodeInterface
@@ -135,8 +135,9 @@ class LingotekNodeEmbeddingTagsTranslationTest extends LingotekTestBase {
     $edit['langcode[0][value]'] = 'en';
     $edit['field_tags[target_id]'] = implode(',', ['Camelid', 'Herbivorous']);
     $edit['files[field_image_0]'] = \Drupal::service('file_system')->realpath($test_image->uri);
+    $this->drupalGet('node/add/article');
 
-    $this->drupalPostForm('node/add/article', $edit, t('Preview'));
+    $this->submitForm($edit, t('Preview'));
 
     unset($edit['files[field_image_0]']);
     $edit['field_image[0][alt]'] = 'Llamas are cool';
@@ -148,21 +149,21 @@ class LingotekNodeEmbeddingTagsTranslationTest extends LingotekTestBase {
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 4);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
-    $this->assertEqual(1, count($data['field_image'][0]));
+    $this->assertEquals(1, count($data['field_image'][0]));
     $this->assertTrue(isset($data['field_image'][0]['alt']));
-    $this->assertEqual(2, count($data['field_tags']));
-    $this->assertEqual('Camelid', $data['field_tags'][0]['name'][0]['value']);
-    $this->assertEqual('Herbivorous', $data['field_tags'][1]['name'][0]['value']);
+    $this->assertEquals(2, count($data['field_tags']));
+    $this->assertEquals('Camelid', $data['field_tags'][0]['name'][0]['value']);
+    $this->assertEquals('Herbivorous', $data['field_tags'][1]['name'][0]['value']);
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
+    $this->assertSame(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -171,31 +172,31 @@ class LingotekNodeEmbeddingTagsTranslationTest extends LingotekTestBase {
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     // Request translation.
     $link = $this->xpath('//a[normalize-space()="Request translation" and contains(@href,"es_AR")]');
     $link[0]->click();
-    $this->assertText("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_AR translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
     $this->assertLingotekWorkbenchLink('es_AR', 'dummy-document-hash-id', 'Edit in Ray Enterprise Workbench');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Llamas are cool into es_AR has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_AR has been downloaded.');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
-    $this->assertText('Camélido');
-    $this->assertText('Hervíboro');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Camélido');
+    $this->assertSession()->pageTextContains('Hervíboro');
   }
 
   /**
@@ -218,7 +219,7 @@ class LingotekNodeEmbeddingTagsTranslationTest extends LingotekTestBase {
     $this->node = Node::load(1);
 
     $term = Term::load(1);
-    $this->assertEqual('Camelid', $term->label());
+    $this->assertEquals('Camelid', $term->label());
     $term->delete();
 
     // Check that the translate tab is in the node.
@@ -229,53 +230,53 @@ class LingotekNodeEmbeddingTagsTranslationTest extends LingotekTestBase {
     // the upload status.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // Check that only the configured fields have been uploaded, including tags.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 4);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
     // Only one tag does really exist.
-    $this->assertEqual(1, count($data['field_tags']));
-    $this->assertEqual('Herbivorous', $data['field_tags'][1]['name'][0]['value']);
+    $this->assertEquals(1, count($data['field_tags']));
+    $this->assertEquals('Herbivorous', $data['field_tags'][1]['name'][0]['value']);
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
+    $this->assertSame(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('manual', $used_profile, 'The manual profile was used.');
+    $this->assertSame('manual', $used_profile, 'The manual profile was used.');
 
     // The document should have been imported, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     // Request translation.
     $link = $this->xpath('//a[normalize-space()="Request translation" and contains(@href,"es_AR")]');
     $link[0]->click();
-    $this->assertText("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_AR translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
     $this->assertLingotekWorkbenchLink('es_AR', 'dummy-document-hash-id', 'Edit in Ray Enterprise Workbench');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Llamas are cool into es_AR has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_AR has been downloaded.');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
-    $this->assertText('Hervíboro');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Hervíboro');
 
     $this->drupalGet('/taxonomy/term/2/translations');
     $this->drupalGet('/es-ar/taxonomy/term/2');
@@ -309,26 +310,26 @@ class LingotekNodeEmbeddingTagsTranslationTest extends LingotekTestBase {
     // the upload status.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // Check that only the configured fields have been uploaded, including tags.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 4);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
     // Only one tag does really exist.
-    $this->assertEqual(2, count($data['field_tags']));
-    $this->assertEqual('Camelid', $data['field_tags'][0]['name'][0]['value']);
-    $this->assertEqual('Herbivorous', $data['field_tags'][1]['name'][0]['value']);
+    $this->assertEquals(2, count($data['field_tags']));
+    $this->assertEquals('Camelid', $data['field_tags'][0]['name'][0]['value']);
+    $this->assertEquals('Herbivorous', $data['field_tags'][1]['name'][0]['value']);
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
+    $this->assertSame(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('manual', $used_profile, 'The manual profile was used.');
+    $this->assertSame('manual', $used_profile, 'The manual profile was used.');
 
     // Now we create a new revision, and this is removing a field tag reference.
     $this->node = Node::load(1);
@@ -338,8 +339,8 @@ class LingotekNodeEmbeddingTagsTranslationTest extends LingotekTestBase {
 
     // Check that we removed it correctly.
     $this->drupalGet('node/1');
-    $this->assertNoText('Camelid');
-    $this->assertText('Herbivorous');
+    $this->assertSession()->pageTextNotContains('Camelid');
+    $this->assertSession()->pageTextContains('Herbivorous');
 
     // We go back to the translations.
     $this->clickLink('Translate');
@@ -347,32 +348,32 @@ class LingotekNodeEmbeddingTagsTranslationTest extends LingotekTestBase {
     // The document should have been imported, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $link = $this->xpath('//a[normalize-space()="Request translation" and contains(@href,"es_AR")]');
     $link[0]->click();
-    $this->assertText("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_AR translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
     $this->assertLingotekWorkbenchLink('es_AR', 'dummy-document-hash-id', 'Edit in Ray Enterprise Workbench');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Llamas are cool into es_AR has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_AR has been downloaded.');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
 
     // The tags are BOTH there. Because we have translated an older revision.
-    $this->assertText('Camélido');
-    $this->assertText('Hervíboro');
+    $this->assertSession()->pageTextContains('Camélido');
+    $this->assertSession()->pageTextContains('Hervíboro');
   }
 
   /**
@@ -393,8 +394,8 @@ class LingotekNodeEmbeddingTagsTranslationTest extends LingotekTestBase {
 
     // Check that we removed the tags correctly.
     $this->drupalGet('node/1');
-    $this->assertNoText('Camelid');
-    $this->assertNoText('Herbivorous');
+    $this->assertSession()->pageTextNotContains('Camelid');
+    $this->assertSession()->pageTextNotContains('Herbivorous');
 
     // We go back to the translations.
     $this->clickLink('Translate');
@@ -402,14 +403,14 @@ class LingotekNodeEmbeddingTagsTranslationTest extends LingotekTestBase {
     // And we reupload it.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // Check that only the configured fields have been uploaded, including tags
     // and image even if not set.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 4);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
     $this->assertTrue(isset($data['field_image']));
     $this->assertTrue(isset($data['field_tags']));
@@ -420,20 +421,20 @@ class LingotekNodeEmbeddingTagsTranslationTest extends LingotekTestBase {
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_AR translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Llamas are cool is ready for download.');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Llamas are cool into es_AR has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_AR has been downloaded.');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
 
     // The tags have been removed from the content when re-downloading.
-    $this->assertNoText('Camélido');
-    $this->assertNoText('Hervíboro');
+    $this->assertSession()->pageTextNotContains('Camélido');
+    $this->assertSession()->pageTextNotContains('Hervíboro');
   }
 
   /**
@@ -466,7 +467,8 @@ class LingotekNodeEmbeddingTagsTranslationTest extends LingotekTestBase {
     $edit = [
       'node[article][fields][field_other_tags]' => 1,
     ];
-    $this->drupalPostForm('admin/lingotek/settings', $edit, 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->drupalGet('admin/lingotek/settings', []);
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
 
     // Create the terms.
     Term::create(['name' => 'Camelid', 'vid' => $this->vocabulary->id()])->save();
@@ -503,66 +505,66 @@ class LingotekNodeEmbeddingTagsTranslationTest extends LingotekTestBase {
     // the upload status.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // Check that only the configured fields have been uploaded, including tags.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 5);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
     // Two tags exist.
-    $this->assertEqual(2, count($data['field_tags']));
-    $this->assertEqual('Camelid', $data['field_tags'][0]['name'][0]['value']);
-    $this->assertEqual('1', $data['field_tags'][0]['_lingotek_metadata']['_entity_id']);
-    $this->assertEqual('Herbivorous', $data['field_tags'][1]['name'][0]['value']);
-    $this->assertEqual('2', $data['field_tags'][1]['_lingotek_metadata']['_entity_id']);
+    $this->assertEquals(2, count($data['field_tags']));
+    $this->assertEquals('Camelid', $data['field_tags'][0]['name'][0]['value']);
+    $this->assertEquals('1', $data['field_tags'][0]['_lingotek_metadata']['_entity_id']);
+    $this->assertEquals('Herbivorous', $data['field_tags'][1]['name'][0]['value']);
+    $this->assertEquals('2', $data['field_tags'][1]['_lingotek_metadata']['_entity_id']);
 
     // Also in the other field, but in some cases only the metadata.
-    $this->assertEqual(3, count($data['field_other_tags']));
+    $this->assertEquals(3, count($data['field_other_tags']));
 
     $this->assertFalse(isset($data['field_other_tags'][0]['name']));
-    $this->assertEqual('1', $data['field_other_tags'][0]['_lingotek_metadata']['_entity_id']);
+    $this->assertEquals('1', $data['field_other_tags'][0]['_lingotek_metadata']['_entity_id']);
 
-    $this->assertEqual('Spitting', $data['field_other_tags'][1]['name'][0]['value']);
-    $this->assertEqual('3', $data['field_other_tags'][1]['_lingotek_metadata']['_entity_id']);
+    $this->assertEquals('Spitting', $data['field_other_tags'][1]['name'][0]['value']);
+    $this->assertEquals('3', $data['field_other_tags'][1]['_lingotek_metadata']['_entity_id']);
 
     $this->assertFalse(isset($data['field_other_tags'][2]['name']));
-    $this->assertEqual('2', $data['field_other_tags'][2]['_lingotek_metadata']['_entity_id']);
+    $this->assertEquals('2', $data['field_other_tags'][2]['_lingotek_metadata']['_entity_id']);
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
+    $this->assertSame(\Drupal::request()->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('manual', $used_profile, 'The manual profile was used.');
+    $this->assertSame('manual', $used_profile, 'The manual profile was used.');
 
     // The document should have been imported, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $link = $this->xpath('//a[normalize-space()="Request translation" and contains(@href,"es_AR")]');
     $link[0]->click();
-    $this->assertText("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_AR translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
     $this->assertLingotekWorkbenchLink('es_AR', 'dummy-document-hash-id', 'Edit in Ray Enterprise Workbench');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Llamas are cool into es_AR has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_AR has been downloaded.');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
     $this->assertSession()->pageTextContains('Camélido');
     $this->assertSession()->pageTextContains('Hervíboro');
     $this->assertSession()->pageTextContains('Esputo');

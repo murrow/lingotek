@@ -16,7 +16,7 @@ class LingotekConfigTranslationDocumentUploadHookTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['block'];
+  protected static $modules = ['block'];
 
   protected function setUp(): void {
     parent::setUp();
@@ -46,7 +46,7 @@ class LingotekConfigTranslationDocumentUploadHookTest extends LingotekTestBase {
     // Check that [token] is encoded via hook_lingotek_config_entity_document_upload().
     // @see lingotek_test_lingotek_config_entity_document_upload()
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->assertEqual($data['settings.label'], 'Title with [***SITE:NAME***]');
+    $this->assertEquals($data['settings.label'], 'Title with [***SITE:NAME***]');
   }
 
 }

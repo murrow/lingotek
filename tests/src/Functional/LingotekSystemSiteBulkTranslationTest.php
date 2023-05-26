@@ -51,33 +51,33 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     // And we cannot request yet a translation.
     $assert_session->linkByHrefNotExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // There is a link for checking status.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_upload/system.site_information_settings/system.site_information_settings?destination=' . $basepath . '/admin/lingotek/config/manage');
     // And we can already request a translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('EN', 1);
-    $this->assertText('System information status checked successfully');
+    $this->assertSession()->pageTextContains('System information status checked successfully');
 
     // Request the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertText("Translation to es_MX requested successfully");
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains("Translation to es_MX requested successfully");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_download/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText("Translation to es_MX checked successfully");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains("Translation to es_MX checked successfully");
 
     // Download the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/download/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertText('Translation to es_MX downloaded successfully');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->assertSession()->pageTextContains('Translation to es_MX downloaded successfully');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
 
     // Now the link is to the workbench, and it opens in a new tab.
     $this->assertLingotekWorkbenchLink('es_MX', 'dummy-document-hash-id', 'ES');
@@ -105,8 +105,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // I can check current status.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_upload/system.site_information_settings/system.site_information_settings?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -114,7 +114,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'check_upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Request the German (AT) translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/de_AT?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -122,8 +122,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'request_translation:de',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('de_AT', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('de_AT', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_download/system.site_information_settings/system.site_information_settings/de_AT?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -131,8 +131,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'check_translation:de',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('de_AT', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('de_AT', \Drupal::state()->get('lingotek.checked_target_locale'));
 
     // Download the German translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/download/system.site_information_settings/system.site_information_settings/de_AT?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -140,8 +140,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'download_translation:de',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('de_AT', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('de_AT', \Drupal::state()->get('lingotek.downloaded_locale'));
 
     // Now the link is to the workbench, and it opens in a new tab.
     $this->assertLingotekWorkbenchLink('de_AT', 'dummy-document-hash-id', 'DE');
@@ -164,9 +164,10 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     // Add a language so we can check that it's not marked as for requesting if
     // it was already requested.
     ConfigurableLanguage::createFromLangcode('ko')->setThirdPartySetting('lingotek', 'locale', 'ko_KR')->save();
+    $this->drupalGet('/admin/config/system/site-information');
 
     // Edit the object
-    $this->drupalPostForm('/admin/config/system/site-information', ['site_name' => 'My site'], t('Save configuration'));
+    $this->submitForm(['site_name' => 'My site'], t('Save configuration'));
 
     // Login as translation manager.
     $this->drupalLogin($this->translationManagerUser);
@@ -184,18 +185,18 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Request korean, with outdated content available.
     $this->clickLink('KO');
-    $this->assertText("Translation to ko_KR requested successfully");
+    $this->assertSession()->pageTextContains("Translation to ko_KR requested successfully");
 
     // Reupload the content.
     $this->clickLink('EN', 1);
-    $this->assertText('System information has been updated.');
+    $this->assertSession()->pageTextContains('System information has been updated.');
 
     // Korean should be marked as requested, so we can check target.
     $this->assertTargetStatus('KO', Lingotek::STATUS_PENDING);
 
     // Recheck status.
     $this->clickLink('EN', 1);
-    $this->assertText('System information status checked successfully');
+    $this->assertSession()->pageTextContains('System information status checked successfully');
 
     // Check the translation after having been edited.
     // Check status of the Spanish translation.
@@ -203,12 +204,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'check_translation:es',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertText('Operations completed.');
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     // Download the translation.
     $this->clickLink('ES');
-    $this->assertText('Translation to es_MX downloaded successfully');
+    $this->assertSession()->pageTextContains('Translation to es_MX downloaded successfully');
   }
 
   /**
@@ -233,7 +234,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // I can check current status.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_upload/system.site_information_settings/system.site_information_settings?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -241,7 +242,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'check_upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Request all the translations.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/de_AT?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -249,7 +250,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'request_translations',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check status of all the translations.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_download/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -257,7 +258,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'check_translations',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Download all the translations.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/download/system.site_information_settings/system.site_information_settings/de_AT?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -265,7 +266,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'download_translations',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
   }
 
   /**
@@ -287,7 +288,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     // There is a link for requesting the Catalan translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/ca_ES?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('CA');
-    $this->assertText("Translation to ca_ES requested successfully");
+    $this->assertSession()->pageTextContains("Translation to ca_ES requested successfully");
   }
 
   /**
@@ -297,8 +298,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
   /**
    * ToDo: Add a test for this.
    */
-  public function testAddingConfigInDifferentLocale() {
-    $this->pass('Test not implemented yet.');
+  public function testAddingConfigInDifferentLocale()
+  {
   }
 
   /**
@@ -311,7 +312,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Upload the document, which must fail.
     $this->clickLink('EN', 1);
-    $this->assertText('System information upload failed. Please try again.');
+    $this->assertSession()->pageTextContains('System information upload failed. Please try again.');
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_ERROR);
@@ -323,12 +324,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_error_in_upload', FALSE);
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
   }
 
   /**
@@ -341,7 +342,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Upload the document, which must fail.
     $this->clickLink('EN', 1);
-    $this->assertText('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
+    $this->assertSession()->pageTextContains('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_ERROR);
@@ -353,12 +354,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_payment_required_error_in_upload', FALSE);
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
   }
 
   /**
@@ -371,7 +372,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Upload the document, which must fail.
     $this->clickLink('EN', 1);
-    $this->assertText('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
+    $this->assertSession()->pageTextContains('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_ERROR);
@@ -383,12 +384,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_processed_words_limit_error_in_upload', FALSE);
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
   }
 
   /**
@@ -401,12 +402,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Upload the document, which must succeed.
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
 
     // Check upload.
     $this->clickLink('EN', 1);
 
-    $this->assertText('System information status check failed. Please try again.');
+    $this->assertSession()->pageTextContains('System information status check failed. Please try again.');
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_IMPORTING);
@@ -418,7 +419,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_IMPORTING, $source_status);
+    $this->assertEquals(Lingotek::STATUS_IMPORTING, $source_status);
   }
 
   /**
@@ -429,7 +430,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Upload the document, which must succeed.
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
 
     // The document has not been imported yet.
     \Drupal::state()->set('lingotek.document_status_completion', FALSE);
@@ -437,7 +438,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     // Check upload.
     $this->clickLink('EN', 1);
 
-    $this->assertText('The import for System information is still pending.');
+    $this->assertSession()->pageTextContains('The import for System information is still pending.');
 
     // Check the right class is added.
     // We failed at checking status, but we don't know what happened.
@@ -452,7 +453,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_IMPORTING, $source_status);
+    $this->assertEquals(Lingotek::STATUS_IMPORTING, $source_status);
   }
 
   /**
@@ -465,12 +466,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Upload the document, which must succeed.
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
 
     // Check upload.
     $this->clickLink('EN', 1);
 
-    $this->assertText('Document System information was not found. Please upload again.');
+    $this->assertSession()->pageTextContains('Document System information was not found. Please upload again.');
 
     // Check the right class is added.
     // We cannot use assertSourceStatus() as there are 4 elements by default with that status.
@@ -483,7 +484,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_UNTRACKED, $source_status);
+    $this->assertEquals(Lingotek::STATUS_UNTRACKED, $source_status);
   }
 
   /**
@@ -494,14 +495,15 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Upload the document, which must succeed.
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
 
     // Check upload.
     $this->clickLink('EN', 1);
 
     // Edit the system site information.
     $edit = ['site_name' => 'Llamas are cool'];
-    $this->drupalPostForm('/admin/config/system/site-information', $edit, t('Save configuration'));
+    $this->drupalGet('/admin/config/system/site-information');
+    $this->submitForm($edit, t('Save configuration'));
 
     \Drupal::state()->set('lingotek.must_error_in_upload', TRUE);
 
@@ -509,7 +511,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Update the document, which must fail.
     $this->clickLink('EN', 1);
-    $this->assertText('System information update failed. Please try again.');
+    $this->assertSession()->pageTextContains('System information update failed. Please try again.');
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_ERROR);
@@ -521,12 +523,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_error_in_upload', FALSE);
     $this->clickLink('EN', 1);
-    $this->assertText('System information has been updated.');
+    $this->assertSession()->pageTextContains('System information has been updated.');
   }
 
   /**
@@ -537,14 +539,15 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Upload the document, which must succeed.
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
 
     // Check upload.
     $this->clickLink('EN', 1);
 
     // Edit the system site information.
     $edit = ['site_name' => 'Llamas are cool'];
-    $this->drupalPostForm('/admin/config/system/site-information', $edit, t('Save configuration'));
+    $this->drupalGet('/admin/config/system/site-information');
+    $this->submitForm($edit, t('Save configuration'));
 
     \Drupal::state()->set('lingotek.must_payment_required_error_in_update', TRUE);
 
@@ -552,7 +555,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Update the document, which must fail.
     $this->clickLink('EN', 1);
-    $this->assertText('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
+    $this->assertSession()->pageTextContains('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_ERROR);
@@ -564,12 +567,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_payment_required_error_in_update', FALSE);
     $this->clickLink('EN', 1);
-    $this->assertText('System information has been updated.');
+    $this->assertSession()->pageTextContains('System information has been updated.');
   }
 
   /**
@@ -580,14 +583,15 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Upload the document, which must succeed.
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
 
     // Check upload.
     $this->clickLink('EN', 1);
 
     // Edit the system site information.
     $edit = ['site_name' => 'Llamas are cool'];
-    $this->drupalPostForm('/admin/config/system/site-information', $edit, t('Save configuration'));
+    $this->drupalGet('/admin/config/system/site-information');
+    $this->submitForm($edit, t('Save configuration'));
 
     \Drupal::state()->set('lingotek.must_processed_words_limit_error_in_update', TRUE);
 
@@ -595,7 +599,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Update the document, which must fail.
     $this->clickLink('EN', 1);
-    $this->assertText('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
+    $this->assertSession()->pageTextContains('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_ERROR);
@@ -607,12 +611,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_process_words_limit_error_in_update', FALSE);
     $this->clickLink('EN', 1);
-    $this->assertText('System information has been updated.');
+    $this->assertSession()->pageTextContains('System information has been updated.');
   }
 
   /**
@@ -623,14 +627,15 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Upload the document, which must succeed.
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
 
     // Check upload.
     $this->clickLink('EN', 1);
 
     // Edit the system site information.
     $edit = ['site_name' => 'Llamas are cool'];
-    $this->drupalPostForm('/admin/config/system/site-information', $edit, t('Save configuration'));
+    $this->drupalGet('/admin/config/system/site-information');
+    $this->submitForm($edit, t('Save configuration'));
 
     \Drupal::state()->set('lingotek.must_document_not_found_error_in_update', TRUE);
 
@@ -638,7 +643,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Update the document, which must fail.
     $this->clickLink('EN', 1);
-    $this->assertText('Document System information was not found. Please upload again.');
+    $this->assertSession()->pageTextContains('Document System information was not found. Please upload again.');
 
     // Check the right class is added.
     // We cannot use assertSourceStatus() as there are 4 elements by default with that status.
@@ -651,12 +656,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_UNTRACKED, $source_status, 'The system information has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_UNTRACKED, $source_status, 'The system information has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_document_not_found_error_in_update', FALSE);
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
   }
 
   /**
@@ -667,14 +672,15 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Upload the document, which must succeed.
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
 
     // Check upload.
     $this->clickLink('EN', 1);
 
     // Edit the system site information.
     $edit = ['site_name' => 'Llamas are cool'];
-    $this->drupalPostForm('/admin/config/system/site-information', $edit, t('Save configuration'));
+    $this->drupalGet('/admin/config/system/site-information');
+    $this->submitForm($edit, t('Save configuration'));
 
     \Drupal::state()->set('lingotek.must_document_archived_error_in_update', TRUE);
 
@@ -682,7 +688,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Update the document, which must fail, but will retry.
     $this->clickLink('EN', 1);
-    $this->assertText('Document System information has been archived. Uploading again.');
+    $this->assertSession()->pageTextContains('Document System information has been archived. Uploading again.');
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_IMPORTING);
@@ -699,7 +705,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_document_archived_error_in_update', FALSE);
     $this->clickLink('EN', 1);
-    $this->assertText('System information status checked successfully');
+    $this->assertSession()->pageTextContains('System information status checked successfully');
   }
 
   /**
@@ -710,14 +716,15 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Upload the document, which must succeed.
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
 
     // Check upload.
     $this->clickLink('EN', 1);
 
     // Edit the system site information.
     $edit = ['site_name' => 'Llamas are cool'];
-    $this->drupalPostForm('/admin/config/system/site-information', $edit, t('Save configuration'));
+    $this->drupalGet('/admin/config/system/site-information');
+    $this->submitForm($edit, t('Save configuration'));
 
     \Drupal::state()->set('lingotek.must_document_locked_error_in_update', TRUE);
 
@@ -725,7 +732,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Update the document, which must fail.
     $this->clickLink('EN', 1);
-    $this->assertText('Document System information has a new version. The document id has been updated for all future interactions. Please try again.');
+    $this->assertSession()->pageTextContains('Document System information has a new version. The document id has been updated for all future interactions. Please try again.');
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_EDITED);
@@ -737,12 +744,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_EDITED, $source_status, 'The system information has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_EDITED, $source_status, 'The system information has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_document_locked_error_in_update', FALSE);
     $this->clickLink('EN', 1);
-    $this->assertText('System information has been updated.');
+    $this->assertSession()->pageTextContains('System information has been updated.');
   }
 
   /**
@@ -762,8 +769,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertText('System information upload failed. Please try again.');
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSession()->pageTextContains('System information upload failed. Please try again.');
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_ERROR);
@@ -775,12 +782,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_error_in_upload', FALSE);
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
   }
 
   /**
@@ -799,8 +806,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertText('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSession()->pageTextContains('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_ERROR);
@@ -812,12 +819,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_payment_required_error_in_upload', FALSE);
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
   }
 
   /**
@@ -836,8 +843,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertText('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSession()->pageTextContains('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_ERROR);
@@ -849,12 +856,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_process_words_limit_error_in_upload', FALSE);
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
   }
 
   /**
@@ -871,15 +878,16 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertText('Operations completed.');
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     // Check upload.
     $this->clickLink('EN', 1);
 
     // Edit the system site information.
     $edit = ['site_name' => 'Llamas are cool'];
-    $this->drupalPostForm('/admin/config/system/site-information', $edit, t('Save configuration'));
+    $this->drupalGet('/admin/config/system/site-information');
+    $this->submitForm($edit, t('Save configuration'));
 
     \Drupal::state()->set('lingotek.must_error_in_upload', TRUE);
 
@@ -888,9 +896,9 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertText('System information update failed. Please try again.');
+    $this->assertSession()->pageTextContains('System information update failed. Please try again.');
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_ERROR);
@@ -902,12 +910,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_error_in_upload', FALSE);
     $this->clickLink('EN', 1);
-    $this->assertText('System information has been updated.');
+    $this->assertSession()->pageTextContains('System information has been updated.');
   }
 
   /**
@@ -924,15 +932,16 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertText('Operations completed.');
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     // Check upload.
     $this->clickLink('EN', 1);
 
     // Edit the system site information.
     $edit = ['site_name' => 'Llamas are cool'];
-    $this->drupalPostForm('/admin/config/system/site-information', $edit, t('Save configuration'));
+    $this->drupalGet('/admin/config/system/site-information');
+    $this->submitForm($edit, t('Save configuration'));
 
     \Drupal::state()->set('lingotek.must_payment_required_error_in_update', TRUE);
 
@@ -941,9 +950,9 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertText('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
+    $this->assertSession()->pageTextContains('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_ERROR);
@@ -955,12 +964,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_payment_required_error_in_update', FALSE);
     $this->clickLink('EN', 1);
-    $this->assertText('System information has been updated.');
+    $this->assertSession()->pageTextContains('System information has been updated.');
   }
 
   /**
@@ -977,15 +986,16 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertText('Operations completed.');
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     // Check upload.
     $this->clickLink('EN', 1);
 
     // Edit the system site information.
     $edit = ['site_name' => 'Llamas are cool'];
-    $this->drupalPostForm('/admin/config/system/site-information', $edit, t('Save configuration'));
+    $this->drupalGet('/admin/config/system/site-information');
+    $this->submitForm($edit, t('Save configuration'));
 
     \Drupal::state()->set('lingotek.must_processed_words_limit_error_in_update', TRUE);
 
@@ -994,9 +1004,9 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertText('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
+    $this->assertSession()->pageTextContains('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_ERROR);
@@ -1008,12 +1018,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The system information has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_processed_words_limit_error_in_update', FALSE);
     $this->clickLink('EN', 1);
-    $this->assertText('System information has been updated.');
+    $this->assertSession()->pageTextContains('System information has been updated.');
   }
 
   /**
@@ -1030,15 +1040,16 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertText('Operations completed.');
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     // Check upload.
     $this->clickLink('EN', 1);
 
     // Edit the system site information.
     $edit = ['site_name' => 'Llamas are cool'];
-    $this->drupalPostForm('/admin/config/system/site-information', $edit, t('Save configuration'));
+    $this->drupalGet('/admin/config/system/site-information');
+    $this->submitForm($edit, t('Save configuration'));
 
     \Drupal::state()->set('lingotek.must_document_not_found_error_in_update', TRUE);
 
@@ -1047,9 +1058,9 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertText('Document System information was not found. Please upload again.');
+    $this->assertSession()->pageTextContains('Document System information was not found. Please upload again.');
 
     // Check the right class is added.
     // We cannot use assertSourceStatus() as there are 4 elements by default with that status.
@@ -1062,12 +1073,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_UNTRACKED, $source_status, 'The system information has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_UNTRACKED, $source_status, 'The system information has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_document_not_found_error_in_update', FALSE);
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
   }
 
   /**
@@ -1084,15 +1095,16 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertText('Operations completed.');
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     // Check upload.
     $this->clickLink('EN', 1);
 
     // Edit the system site information.
     $edit = ['site_name' => 'Llamas are cool'];
-    $this->drupalPostForm('/admin/config/system/site-information', $edit, t('Save configuration'));
+    $this->drupalGet('/admin/config/system/site-information');
+    $this->submitForm($edit, t('Save configuration'));
 
     \Drupal::state()->set('lingotek.must_document_locked_error_in_update', TRUE);
 
@@ -1101,9 +1113,9 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertText('Document System information has a new version. The document id has been updated for all future interactions. Please try again.');
+    $this->assertSession()->pageTextContains('Document System information has a new version. The document id has been updated for all future interactions. Please try again.');
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_EDITED);
@@ -1115,12 +1127,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getConfigSourceStatus($mapper);
-    $this->assertEqual(Lingotek::STATUS_EDITED, $source_status, 'The system information has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_EDITED, $source_status, 'The system information has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_document_locked_error_in_update', FALSE);
     $this->clickLink('EN', 1);
-    $this->assertText('System information has been updated.');
+    $this->assertSession()->pageTextContains('System information has been updated.');
   }
 
   /**
@@ -1137,15 +1149,16 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertText('Operations completed.');
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSession()->pageTextContains('Operations completed.');
 
     // Check upload.
     $this->clickLink('EN', 1);
 
     // Edit the system site information.
     $edit = ['site_name' => 'Llamas are cool'];
-    $this->drupalPostForm('/admin/config/system/site-information', $edit, t('Save configuration'));
+    $this->drupalGet('/admin/config/system/site-information');
+    $this->submitForm($edit, t('Save configuration'));
 
     \Drupal::state()->set('lingotek.must_document_archived_error_in_update', TRUE);
 
@@ -1154,9 +1167,9 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertText('Document System information has been archived. Uploading again.');
+    $this->assertSession()->pageTextContains('Document System information has been archived. Uploading again.');
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_IMPORTING);
@@ -1171,7 +1184,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     \Drupal::state()->set('lingotek.must_document_archived_error_in_update', FALSE);
     $this->clickLink('EN', 1);
-    $this->assertText('System information status checked successfully');
+    $this->assertSession()->pageTextContains('System information status checked successfully');
   }
 
   /**
@@ -1192,34 +1205,34 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     // And we cannot request yet a translation.
     $assert_session->linkByHrefNotExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // There is a link for checking status.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_upload/system.site_information_settings/system.site_information_settings?destination=' . $basepath . '/admin/lingotek/config/manage');
     // And we can already request a translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('EN', 1);
-    $this->assertText('System information status checked successfully');
+    $this->assertSession()->pageTextContains('System information status checked successfully');
 
     // Request the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertText("Translation to es_MX requested successfully");
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains("Translation to es_MX requested successfully");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_download/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText("Translation to es_MX checked successfully");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains("Translation to es_MX checked successfully");
 
     \Drupal::state()->set('lingotek.must_error_in_download', TRUE);
     // Download the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/download/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertText('System information es_MX translation download failed. Please try again.');
-    $this->assertIdentical(NULL, \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->assertSession()->pageTextContains('System information es_MX translation download failed. Please try again.');
+    $this->assertSame(NULL, \Drupal::state()->get('lingotek.downloaded_locale'));
 
     $this->goToConfigBulkManagementForm();
     // Check the right class is added.
@@ -1232,14 +1245,14 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $target_status = $translation_service->getConfigTargetStatus($mapper, 'es');
-    $this->assertEqual(Lingotek::STATUS_ERROR, $target_status, 'The system information has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $target_status, 'The system information has been marked as error.');
 
     \Drupal::state()->set('lingotek.must_error_in_download', FALSE);
     // Download the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/download/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertText('Translation to es_MX downloaded successfully');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->assertSession()->pageTextContains('Translation to es_MX downloaded successfully');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
   }
 
   /**
@@ -1260,27 +1273,27 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     // And we cannot request yet a translation.
     $assert_session->linkByHrefNotExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // There is a link for checking status.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_upload/system.site_information_settings/system.site_information_settings?destination=' . $basepath . '/admin/lingotek/config/manage');
     // And we can already request a translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('EN', 1);
-    $this->assertText('System information status checked successfully');
+    $this->assertSession()->pageTextContains('System information status checked successfully');
 
     // Request the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertText("Translation to es_MX requested successfully");
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains("Translation to es_MX requested successfully");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_download/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText("Translation to es_MX checked successfully");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains("Translation to es_MX checked successfully");
 
     \Drupal::state()->set('lingotek.must_document_not_found_error_download', TRUE);
     // Download the Spanish translation.
@@ -1302,7 +1315,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     $this->assertSourceStatusStateCount(Lingotek::STATUS_UNTRACKED, 'EN', 4);
 
     $this->assertNoLingotekRequestTranslationLink('es_MX');
-    $this->assertText('Document System information was not found. Please upload again.');
+    $this->assertSession()->pageTextContains('Document System information was not found. Please upload again.');
   }
 
   /**
@@ -1328,8 +1341,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // I can check current status.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_upload/system.site_information_settings/system.site_information_settings?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -1337,7 +1350,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'check_upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Assert that I could request translations.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/de_AT?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -1347,7 +1360,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'check_translations',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Now Drupal knows that there are translations ready.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/download/system.site_information_settings/system.site_information_settings/de_AT?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -1355,12 +1368,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     // Even if I just add a new language.
     ConfigurableLanguage::createFromLangcode('de')->setThirdPartySetting('lingotek', 'locale', 'de_DE')->save();
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/download/system.site_information_settings/system.site_information_settings/de_AT?destination=' . $basepath . '/admin/lingotek/config/manage');
 
     // Ensure locales are handled correctly by setting manual values.
     \Drupal::state()->set('lingotek.document_completion_statuses', ['de-AT' => 50, 'de-DE' => 100, 'es-MX' => 10]);
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Now Drupal knows which translations are ready.
     $assert_session->linkByHrefNotExists($basepath . '/admin/lingotek/config/download/system.site_information_settings/system.site_information_settings/de_AT?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -1371,7 +1384,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     \Drupal::state()->set('lingotek.document_completion_statuses', ['it-IT' => 100, 'de-DE' => 50, 'es-MX' => 10]);
     // Check all statuses again.
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // All translations must be updated according exclusively with the
     // information from the TMS.
@@ -1403,8 +1416,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // I can check current status.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_upload/system.site_information_settings/system.site_information_settings?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -1412,19 +1425,19 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'check_upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Request the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertText("Translation to es_MX requested successfully");
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains("Translation to es_MX requested successfully");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_download/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText("Translation to es_MX checked successfully");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains("Translation to es_MX checked successfully");
 
     // Download all the translations.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/download/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -1432,7 +1445,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'download_translations',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // The translations not requested shouldn't change its status.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/de_DE?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -1465,8 +1478,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -1475,13 +1488,13 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'check_upload',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Request the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertText("Translation to es_MX requested successfully");
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSession()->pageTextContains("Translation to es_MX requested successfully");
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.added_target_locale'));
 
     \Drupal::state()->resetCache();
@@ -1489,23 +1502,23 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     // Request italian.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/it_IT?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('IT');
-    $this->assertText("Translation to it_IT requested successfully");
-    $this->assertIdentical('it_IT', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains("Translation to it_IT requested successfully");
+    $this->assertSame('it_IT', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_download/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.checked_target_locale'));
-    $this->assertText("Translation to es_MX checked successfully");
+    $this->assertSession()->pageTextContains("Translation to es_MX checked successfully");
 
     \Drupal::state()->resetCache();
 
     // Check status of the Italian translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_download/system.site_information_settings/system.site_information_settings/it_IT?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('IT');
-    $this->assertIdentical('it_IT', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText("Translation to it_IT checked successfully");
+    $this->assertSame('it_IT', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains("Translation to it_IT checked successfully");
 
     // Download all the translations.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/download/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -1513,7 +1526,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'download_translations',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // They are marked with the right status.
     $this->assertTargetStatus('ES', 'current');
@@ -1526,7 +1539,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       'table[system.site_information_settings]' => TRUE,
       $this->getBulkOperationFormName() => 'check_translations',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // And statuses should remain the same.
     $this->assertTargetStatus('ES', 'current');
@@ -1555,39 +1568,39 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     // And we cannot request yet a translation.
     $assert_session->linkByHrefNotExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('EN', 1);
-    $this->assertText(t('System information uploaded successfully'));
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // There is a link for checking status.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_upload/system.site_information_settings/system.site_information_settings?destination=' . $basepath . '/admin/lingotek/config/manage');
     // And we can already request a translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('EN', 1);
-    $this->assertText('System information status checked successfully');
+    $this->assertSession()->pageTextContains('System information status checked successfully');
 
     // Request the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertText("Translation to es_MX requested successfully");
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains("Translation to es_MX requested successfully");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_download/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText("Translation to es_MX checked successfully");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains("Translation to es_MX checked successfully");
 
     // Download the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/download/system.site_information_settings/system.site_information_settings/es_MX?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertText('Translation to es_MX downloaded successfully');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->assertSession()->pageTextContains('Translation to es_MX downloaded successfully');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
 
     // Let's edit the translation and assert the html decoded values.
     $this->drupalGet('/admin/config/system/site-information/translate');
     $this->clickLink('Edit');
-    $this->assertFieldByName('translation[config_names][system.site][name]', '"Durpal"');
-    $this->assertFieldByName('translation[config_names][system.site][slogan]', '"Las llamas" son muy chulas');
+    $this->assertSession()->fieldValueEquals('translation[config_names][system.site][name]', '"Durpal"');
+    $this->assertSession()->fieldValueEquals('translation[config_names][system.site][slogan]', '"Las llamas" son muy chulas');
   }
 
   /**
@@ -1601,7 +1614,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     $this->drupalGet('/admin/config/system/site-information/translate');
     $this->clickLink('Delete');
-    $this->drupalPostForm(NULL, [], t('Delete'));
+    $this->submitForm([], t('Delete'));
 
     $this->goToConfigBulkManagementForm();
     $this->assertTargetStatus('DE', Lingotek::STATUS_READY);
@@ -1622,8 +1635,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -1636,12 +1649,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslations('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // We failed at requesting a translation, but we don't know what happened.
     // So we don't mark as error but keep it on request.
     $this->assertTargetStatus('ES', Lingotek::STATUS_REQUEST);
-    $this->assertText('System information translations request failed. Please try again.');
+    $this->assertSession()->pageTextContains('System information translations request failed. Please try again.');
   }
 
   /**
@@ -1659,8 +1672,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -1673,13 +1686,13 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslations('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_IMPORTING);
 
     $this->assertNoLingotekRequestTranslationLink('es_MX');
-    $this->assertText('Document System information has been archived. Uploading again.');
+    $this->assertSession()->pageTextContains('Document System information has been archived. Uploading again.');
   }
 
   /**
@@ -1697,8 +1710,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -1711,14 +1724,14 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslations('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check the right class is added.
     // We cannot use assertSourceStatus() as there are 4 elements by default with that status.
     $this->assertSourceStatusStateCount(Lingotek::STATUS_UNTRACKED, 'EN', 4);
 
     $this->assertNoLingotekRequestTranslationLink('es_MX');
-    $this->assertText('Document System information was not found. Please upload again.');
+    $this->assertSession()->pageTextContains('Document System information was not found. Please upload again.');
   }
 
   /**
@@ -1736,8 +1749,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -1750,11 +1763,11 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslations('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $this->assertSourceStatus('EN', Lingotek::STATUS_IMPORTING);
     $this->assertTargetStatus('ES', Lingotek::STATUS_REQUEST);
-    $this->assertText('Document System information has a new version. The document id has been updated for all future interactions. Please try again.');
+    $this->assertSession()->pageTextContains('Document System information has a new version. The document id has been updated for all future interactions. Please try again.');
   }
 
   /**
@@ -1772,8 +1785,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -1786,11 +1799,11 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslations('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $this->assertSourceStatus('EN', Lingotek::STATUS_IMPORTING);
     $this->assertTargetStatus('ES', Lingotek::STATUS_REQUEST);
-    $this->assertText('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
+    $this->assertSession()->pageTextContains('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
   }
 
   /**
@@ -1808,8 +1821,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -1822,11 +1835,11 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslations('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $this->assertSourceStatus('EN', Lingotek::STATUS_IMPORTING);
     $this->assertTargetStatus('ES', Lingotek::STATUS_REQUEST);
-    $this->assertText('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
+    $this->assertSession()->pageTextContains('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
   }
 
   /**
@@ -1844,8 +1857,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -1859,7 +1872,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     // We failed at requesting a translation, but we don't know what happened.
     // So we don't mark as error but keep it on request.
     $this->assertTargetStatus('ES', Lingotek::STATUS_REQUEST);
-    $this->assertText('System information es_MX translation request failed. Please try again.');
+    $this->assertSession()->pageTextContains('System information es_MX translation request failed. Please try again.');
   }
 
   /**
@@ -1877,8 +1890,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -1891,7 +1904,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     $this->assertSourceStatus('EN', Lingotek::STATUS_IMPORTING);
     $this->assertTargetStatus('ES', Lingotek::STATUS_REQUEST);
-    $this->assertText('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
+    $this->assertSession()->pageTextContains('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
   }
 
   /**
@@ -1909,8 +1922,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -1923,7 +1936,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     $this->assertSourceStatus('EN', Lingotek::STATUS_IMPORTING);
     $this->assertTargetStatus('ES', Lingotek::STATUS_REQUEST);
-    $this->assertText('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
+    $this->assertSession()->pageTextContains('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
   }
 
   /**
@@ -1941,8 +1954,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -1957,7 +1970,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     $this->assertSourceStatus('EN', Lingotek::STATUS_IMPORTING);
 
     $this->assertLingotekRequestTranslationLink('es_MX');
-    $this->assertText('Document System information has been archived. Uploading again.');
+    $this->assertSession()->pageTextContains('Document System information has been archived. Uploading again.');
   }
 
   /**
@@ -1975,8 +1988,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -1992,7 +2005,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
     $this->assertSourceStatusStateCount(Lingotek::STATUS_UNTRACKED, 'EN', 4);
 
     $this->assertNoLingotekRequestTranslationLink('es_MX');
-    $this->assertText('Document System information was not found. Please upload again.');
+    $this->assertSession()->pageTextContains('Document System information was not found. Please upload again.');
   }
 
   /**
@@ -2010,8 +2023,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -2024,7 +2037,7 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
 
     $this->assertSourceStatus('EN', Lingotek::STATUS_IMPORTING);
     $this->assertTargetStatus('ES', Lingotek::STATUS_REQUEST);
-    $this->assertText('Document System information has a new version. The document id has been updated for all future interactions. Please try again.');
+    $this->assertSession()->pageTextContains('Document System information has a new version. The document id has been updated for all future interactions. Please try again.');
   }
 
   /**
@@ -2042,8 +2055,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -2056,12 +2069,12 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslation('es', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // We failed at requesting a translation, but we don't know what happened.
     // So we don't mark as error but keep it on request.
     $this->assertTargetStatus('ES', Lingotek::STATUS_REQUEST);
-    $this->assertText('Document System information es_MX translation request failed. Please try again.');
+    $this->assertSession()->pageTextContains('Document System information es_MX translation request failed. Please try again.');
   }
 
   /**
@@ -2079,8 +2092,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -2093,13 +2106,13 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslation('es', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check the right class is added.
     $this->assertSourceStatus('EN', Lingotek::STATUS_IMPORTING);
 
     $this->assertNoLingotekRequestTranslationLink('es_MX');
-    $this->assertText('Document System information has been archived. Uploading again.');
+    $this->assertSession()->pageTextContains('Document System information has been archived. Uploading again.');
   }
 
   /**
@@ -2117,8 +2130,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -2131,14 +2144,14 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslation('es', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check the right class is added.
     // We cannot use assertSourceStatus() as there are 4 elements by default with that status.
     $this->assertSourceStatusStateCount(Lingotek::STATUS_UNTRACKED, 'EN', 4);
 
     $this->assertNoLingotekRequestTranslationLink('es_MX');
-    $this->assertText('Document System information was not found. Please upload again.');
+    $this->assertSession()->pageTextContains('Document System information was not found. Please upload again.');
   }
 
   /**
@@ -2156,8 +2169,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -2170,11 +2183,11 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslation('es', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $this->assertSourceStatus('EN', Lingotek::STATUS_IMPORTING);
     $this->assertTargetStatus('ES', Lingotek::STATUS_REQUEST);
-    $this->assertText('Document System information has a new version. The document id has been updated for all future interactions. Please try again.');
+    $this->assertSession()->pageTextContains('Document System information has a new version. The document id has been updated for all future interactions. Please try again.');
   }
 
   /**
@@ -2192,8 +2205,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -2206,11 +2219,11 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslation('es', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $this->assertSourceStatus('EN', Lingotek::STATUS_IMPORTING);
     $this->assertTargetStatus('ES', Lingotek::STATUS_REQUEST);
-    $this->assertText('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
+    $this->assertSession()->pageTextContains('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
   }
 
   /**
@@ -2228,8 +2241,8 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -2242,11 +2255,11 @@ class LingotekSystemSiteBulkTranslationTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslation('es', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $this->assertSourceStatus('EN', Lingotek::STATUS_IMPORTING);
     $this->assertTargetStatus('ES', Lingotek::STATUS_REQUEST);
-    $this->assertText('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
+    $this->assertSession()->pageTextContains('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
   }
 
   protected function getBulkSelectionKey($langcode, $revision_id, $entity_type_id = 'system.site_information_settings') {

@@ -10,7 +10,7 @@ use Drupal\language\Entity\ContentLanguageSettings;
  */
 class LingotekSettingsContentSingleFormTest extends LingotekFunctionalJavascriptTestBase {
 
-  public static $modules = ['block', 'node', 'field_ui', 'image'];
+  protected static $modules = ['block', 'node', 'field_ui', 'image'];
 
   protected function setUp(): void {
     parent::setUp();
@@ -59,39 +59,39 @@ class LingotekSettingsContentSingleFormTest extends LingotekFunctionalJavascript
 
     $page = $this->getSession()->getPage();
 
-    $this->assertNoFieldChecked('edit-node-article-enabled');
-    $this->assertNoFieldChecked('edit-node-article-fields-title');
-    $this->assertNoFieldChecked('edit-node-article-fields-body');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-image');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-file');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-enabled');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-title');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-body');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-image');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-file');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-title');
 
     $fieldEnabled = $page->find('css', '#edit-node-article-enabled');
     $fieldEnabled->click();
 
     $this->assertSession()->assertWaitOnAjaxRequest();
 
-    $this->assertFieldChecked('edit-node-article-enabled');
-    $this->assertFieldChecked('edit-node-article-fields-title');
-    $this->assertFieldChecked('edit-node-article-fields-body');
-    $this->assertFieldChecked('edit-node-article-fields-field-image');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-file');
-    $this->assertFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertFieldChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-enabled');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-body');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-image');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-file');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-imageproperties-title');
 
-    $this->drupalPostForm(NULL, [], 'Save', [], 'lingoteksettings-content-single-form');
+    $this->submitForm([], 'Save', 'lingoteksettings-content-single-form');
 
     $this->assertSession()
       ->elementTextContains('css', '.messages.messages--status', 'The configuration options have been saved.');
 
-    $this->assertFieldChecked('edit-node-article-enabled');
-    $this->assertFieldChecked('edit-node-article-fields-title');
-    $this->assertFieldChecked('edit-node-article-fields-body');
-    $this->assertFieldChecked('edit-node-article-fields-field-image');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-file');
-    $this->assertFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertFieldChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-enabled');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-body');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-image');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-file');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-imageproperties-title');
   }
 
   public function testWhenDisabledAndEnabledBackNodeArticleFieldsAreKept() {
@@ -112,36 +112,36 @@ class LingotekSettingsContentSingleFormTest extends LingotekFunctionalJavascript
 
     $page = $this->getSession()->getPage();
 
-    $this->assertFieldChecked('edit-node-article-enabled');
-    $this->assertFieldChecked('edit-node-article-fields-title');
-    $this->assertNoFieldChecked('edit-node-article-fields-body');
-    $this->assertFieldChecked('edit-node-article-fields-uid');
-    $this->assertFieldChecked('edit-node-article-fields-field-image');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-file');
-    $this->assertFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-enabled');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-title');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-body');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-uid');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-image');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-file');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-title');
 
     $fieldEnabled = $page->find('css', '#edit-node-article-enabled');
     $fieldEnabled->click();
 
     $this->assertSession()->assertWaitOnAjaxRequest();
 
-    $this->assertNoFieldChecked('edit-node-article-enabled');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-enabled');
 
     $fieldEnabled = $page->find('css', '#edit-node-article-enabled');
     $fieldEnabled->click();
 
     $this->assertSession()->assertWaitOnAjaxRequest();
 
-    $this->assertFieldChecked('edit-node-article-enabled');
-    $this->assertFieldChecked('edit-node-article-fields-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-enabled');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-title');
     // We marked body and kept the others as they were.
-    $this->assertFieldChecked('edit-node-article-fields-body');
-    $this->assertFieldChecked('edit-node-article-fields-uid');
-    $this->assertFieldChecked('edit-node-article-fields-field-image');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-file');
-    $this->assertFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-body');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-uid');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-image');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-file');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-title');
   }
 
   public function testFieldPropertiesDisabledIfFieldDisabled() {
@@ -149,21 +149,21 @@ class LingotekSettingsContentSingleFormTest extends LingotekFunctionalJavascript
 
     $page = $this->getSession()->getPage();
 
-    $this->assertNoFieldChecked('edit-node-article-enabled');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-image');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-file');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-enabled');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-image');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-file');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-title');
 
     $imageCheckbox = $page->find('css', '#edit-node-article-fields-field-image');
     $imageCheckbox->click();
 
     $this->assertSession()->assertWaitOnAjaxRequest();
 
-    $this->assertFieldChecked('edit-node-article-fields-field-image');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-file');
-    $this->assertFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertFieldChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-image');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-file');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-imageproperties-title');
   }
 
 }

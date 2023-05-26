@@ -10,7 +10,7 @@ use Drupal\language\Entity\ContentLanguageSettings;
  */
 class LingotekSettingsTabContentFormWithLotsOfContentTest extends LingotekFunctionalJavascriptTestBase {
 
-  public static $modules = ['block', 'node', 'field_ui', 'image'];
+  protected static $modules = ['block', 'node', 'field_ui', 'image'];
 
   protected function setUp(): void {
     parent::setUp();
@@ -79,13 +79,13 @@ class LingotekSettingsTabContentFormWithLotsOfContentTest extends LingotekFuncti
     $nodeTabDetails = $page->find('css', '#edit-entity-node');
     $nodeTabDetails->click();
 
-    $this->assertNoFieldChecked('edit-node-article-readonly-enabled');
-    $this->assertNoFieldChecked('edit-node-article-readonly-fields-title');
-    $this->assertNoFieldChecked('edit-node-article-readonly-fields-body');
-    $this->assertNoFieldChecked('edit-node-article-readonly-fields-field-image');
-    $this->assertNoFieldChecked('edit-node-article-readonly-fields-field-imageproperties-file');
-    $this->assertNoFieldChecked('edit-node-article-readonly-fields-field-imageproperties-alt');
-    $this->assertNoFieldChecked('edit-node-article-readonly-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-readonly-enabled');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-readonly-fields-title');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-readonly-fields-body');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-readonly-fields-field-image');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-readonly-fields-field-imageproperties-file');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-readonly-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-readonly-fields-field-imageproperties-title');
 
     $this->assertSession()->fieldDisabled('edit-node-article-readonly-enabled');
     $this->assertSession()->fieldDisabled('edit-node-article-readonly-fields-title');
@@ -101,26 +101,26 @@ class LingotekSettingsTabContentFormWithLotsOfContentTest extends LingotekFuncti
     $this->assertSession()->assertWaitOnAjaxRequest();
     $this->assertSession()->waitForElementVisible('css', '#drupal-modal');
 
-    $this->assertNoFieldChecked('node[article][enabled]');
-    $this->assertNoFieldChecked('node[article][fields][title]');
-    $this->assertNoFieldChecked('node[article][fields][body]');
-    $this->assertNoFieldChecked('node[article][fields][field_image]');
-    $this->assertNoFieldChecked('node[article][fields][field_image:properties][file]');
-    $this->assertNoFieldChecked('node[article][fields][field_image:properties][alt]');
-    $this->assertNoFieldChecked('node[article][fields][field_image:properties][title]');
+    $this->assertSession()->checkboxNotChecked('node[article][enabled]');
+    $this->assertSession()->checkboxNotChecked('node[article][fields][title]');
+    $this->assertSession()->checkboxNotChecked('node[article][fields][body]');
+    $this->assertSession()->checkboxNotChecked('node[article][fields][field_image]');
+    $this->assertSession()->checkboxNotChecked('node[article][fields][field_image:properties][file]');
+    $this->assertSession()->checkboxNotChecked('node[article][fields][field_image:properties][alt]');
+    $this->assertSession()->checkboxNotChecked('node[article][fields][field_image:properties][title]');
 
     $fieldEnabled = $page->find('css', 'input[name="node[article][enabled]"]');
     $fieldEnabled->click();
 
     $this->assertSession()->assertWaitOnAjaxRequest();
 
-    $this->assertFieldChecked('node[article][enabled]');
-    $this->assertFieldChecked('node[article][fields][title]');
-    $this->assertFieldChecked('node[article][fields][body]');
-    $this->assertFieldChecked('node[article][fields][field_image]');
-    $this->assertNoFieldChecked('node[article][fields][field_image:properties][file]');
-    $this->assertFieldChecked('node[article][fields][field_image:properties][alt]');
-    $this->assertFieldChecked('node[article][fields][field_image:properties][title]');
+    $this->assertSession()->checkboxChecked('node[article][enabled]');
+    $this->assertSession()->checkboxChecked('node[article][fields][title]');
+    $this->assertSession()->checkboxChecked('node[article][fields][body]');
+    $this->assertSession()->checkboxChecked('node[article][fields][field_image]');
+    $this->assertSession()->checkboxNotChecked('node[article][fields][field_image:properties][file]');
+    $this->assertSession()->checkboxChecked('node[article][fields][field_image:properties][alt]');
+    $this->assertSession()->checkboxChecked('node[article][fields][field_image:properties][title]');
 
     $button_pane_buttons = $this->getSession()->getPage()->findAll('css', '.ui-dialog-buttonpane button');
     $this->assertCount(1, $button_pane_buttons);
@@ -136,13 +136,13 @@ class LingotekSettingsTabContentFormWithLotsOfContentTest extends LingotekFuncti
     $nodeTabDetails = $page->find('css', '#edit-entity-node');
     $nodeTabDetails->click();
 
-    $this->assertFieldChecked('edit-node-article-readonly-enabled');
-    $this->assertFieldChecked('edit-node-article-readonly-fields-title');
-    $this->assertFieldChecked('edit-node-article-readonly-fields-body');
-    $this->assertFieldChecked('edit-node-article-readonly-fields-field-image');
-    $this->assertNoFieldChecked('edit-node-article-readonly-fields-field-imageproperties-file');
-    $this->assertFieldChecked('edit-node-article-readonly-fields-field-imageproperties-alt');
-    $this->assertFieldChecked('edit-node-article-readonly-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-readonly-enabled');
+    $this->assertSession()->checkboxChecked('edit-node-article-readonly-fields-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-readonly-fields-body');
+    $this->assertSession()->checkboxChecked('edit-node-article-readonly-fields-field-image');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-readonly-fields-field-imageproperties-file');
+    $this->assertSession()->checkboxChecked('edit-node-article-readonly-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxChecked('edit-node-article-readonly-fields-field-imageproperties-title');
 
     $this->assertSession()->fieldDisabled('edit-node-article-readonly-enabled');
     $this->assertSession()->fieldDisabled('edit-node-article-readonly-fields-title');

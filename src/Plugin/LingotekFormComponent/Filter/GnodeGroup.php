@@ -85,10 +85,7 @@ class GnodeGroup extends LingotekFormComponentFilterBase {
    * {@inheritdoc}
    */
   public function isApplicable(array $arguments = []) {
-    /**
-     * @var string $form_id
-     * @var string $entity_type_id
-     */
+    /** @var string $entity_type_id */
     $entity_type_id = isset($arguments['entity_type_id']) ? $arguments['entity_type_id'] : NULL;
     return $this->moduleHandler->moduleExists('gnode') && $entity_type_id === 'node';
   }
@@ -112,9 +109,9 @@ class GnodeGroup extends LingotekFormComponentFilterBase {
     if ($value) {
       parent::filter($entity_type_id, $entities, $value, $query);
       $entity_type = $this->getEntityType($entity_type_id);
-      /** @var \Drupal\group\Plugin\GroupContentEnablerManagerInterface $groupContentEnablers */
       $group = $this->entityTypeManager->getStorage('group')->load($value);
       $groupType = $group->getGroupType();
+      /** @var \Drupal\group\Plugin\GroupContentEnablerManagerInterface $groupContentEnablers */
       $groupContentEnablers = \Drupal::service('plugin.manager.group_content_enabler');
       $definitions = $groupContentEnablers->getDefinitions();
       $definitions = array_filter($definitions, function ($definition) {

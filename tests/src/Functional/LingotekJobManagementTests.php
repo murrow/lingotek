@@ -26,7 +26,7 @@ class LingotekJobManagementTests extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'taxonomy'];
+  protected static $modules = ['block', 'node', 'taxonomy'];
 
   /**
    * @var \Drupal\taxonomy\VocabularyInterface
@@ -113,7 +113,7 @@ class LingotekJobManagementTests extends LingotekTestBase {
     $assert_session->linkExists('Translation Jobs');
     $this->clickLink('Translation Jobs');
 
-    $this->assertText('There are no translation jobs. Use the Content or Config tabs to assign them.');
+    $this->assertSession()->pageTextContains('There are no translation jobs. Use the Content or Config tabs to assign them.');
   }
 
   public function testJobTranslationTab() {
@@ -124,13 +124,13 @@ class LingotekJobManagementTests extends LingotekTestBase {
     $assert_session->linkExists('Translation Jobs');
     $this->clickLink('Translation Jobs');
 
-    $this->assertText('my-test-job-id-1');
-    $this->assertText('3 content items, 1 config items');
+    $this->assertSession()->pageTextContains('my-test-job-id-1');
+    $this->assertSession()->pageTextContains('3 content items, 1 config items');
     $assert_session->linkExists('View translation job', 0);
-    $this->assertLinkByHref('/admin/lingotek/job/my-test-job-id-1');
+    $this->assertSession()->linkByHrefExists('/admin/lingotek/job/my-test-job-id-1');
 
-    $this->assertText('my-test-job-id-2');
-    $this->assertText('1 content items, 0 config items');
+    $this->assertSession()->pageTextContains('my-test-job-id-2');
+    $this->assertSession()->pageTextContains('1 content items, 0 config items');
     $assert_session->linkExists('View translation job', 1);
     $assert_session->linkByHrefExists('/admin/lingotek/job/my-test-job-id-2');
   }
@@ -158,8 +158,8 @@ class LingotekJobManagementTests extends LingotekTestBase {
     $assert_session->linkNotExists('Awesome');
 
     // Assert the fields are not there.
-    $this->assertNoField('show_advanced');
-    $this->assertNoField('job_id');
+    $this->assertSession()->fieldNotExists('show_advanced');
+    $this->assertSession()->fieldNotExists('job_id');
   }
 
   public function testJobTranslationConfigTab() {
@@ -178,12 +178,12 @@ class LingotekJobManagementTests extends LingotekTestBase {
     $this->assertSame('Job my-test-job-id-1 Configuration', $this->xpath('//h1')[0]->getText());
 
     // Assert config listed.
-    $this->assertText('System information');
-    $this->assertNoText('Account settings');
+    $this->assertSession()->pageTextContains('System information');
+    $this->assertSession()->pageTextNotContains('Account settings');
 
     // Assert the fields are not there.
-    $this->assertNoField('filters[wrapper][job_id]');
-    $this->assertNoField('job_id');
+    $this->assertSession()->fieldNotExists('filters[wrapper][job_id]');
+    $this->assertSession()->fieldNotExists('job_id');
   }
 
   public function testJobTranslationContentTabHasOwnFilter() {
@@ -205,8 +205,8 @@ class LingotekJobManagementTests extends LingotekTestBase {
 
     // Let's see the differences in the regular config tab.
     $this->goToConfigBulkManagementForm();
-    $this->assertText('System information');
-    $this->assertText('Account settings');
+    $this->assertSession()->pageTextContains('System information');
+    $this->assertSession()->pageTextContains('Account settings');
   }
 
   protected function createContent() {

@@ -16,7 +16,7 @@ class LingotekNodeNestedTranslatableParagraphsAsymmetricTranslationTest extends 
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['paragraphs_asymmetric_translation_widgets'];
+  protected static $modules = ['paragraphs_asymmetric_translation_widgets'];
 
   /**
    * {@inheritdoc}

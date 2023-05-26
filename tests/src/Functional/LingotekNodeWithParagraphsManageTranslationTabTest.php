@@ -21,7 +21,7 @@ class LingotekNodeWithParagraphsManageTranslationTabTest extends LingotekTestBas
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'image', 'paragraphs', 'lingotek_paragraphs_test'];
+  protected static $modules = ['block', 'node', 'image', 'paragraphs', 'lingotek_paragraphs_test'];
 
   protected function setUp(): void {
     parent::setUp();
@@ -86,7 +86,7 @@ class LingotekNodeWithParagraphsManageTranslationTabTest extends LingotekTestBas
     // Add paragraphed content.
     $this->drupalGet('node/add/paragraphed_content_demo');
 
-    $this->drupalPostForm(NULL, NULL, t('Add Image + Text'));
+    $this->submitForm(NULL, t('Add Image + Text'));
 
     $edit = [];
     $edit['title[0][value]'] = 'Llamas are cool';
@@ -112,33 +112,33 @@ class LingotekNodeWithParagraphsManageTranslationTabTest extends LingotekTestBas
     // And we cannot request yet a translation.
     $this->assertNoLingotekRequestTranslationLink('es_MX');
     $this->clickLink('EN');
-    $this->assertText('Node Llamas are cool has been uploaded.');
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSession()->pageTextContains('Node Llamas are cool has been uploaded.');
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // There is a link for checking status.
     $this->assertLingotekCheckSourceStatusLink();
     // And we can already request a translation.
     $this->assertLingotekRequestTranslationLink('es_MX');
     $this->clickLink('EN');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request the Spanish translation.
     $this->assertLingotekRequestTranslationLink('es_MX');
     $this->clickLink('ES');
-    $this->assertText("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $this->assertLingotekCheckTargetStatusLink('es_MX');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText('The es_MX translation for node Llamas are cool is ready for download.');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains('The es_MX translation for node Llamas are cool is ready for download.');
 
     // Download the Spanish translation.
     $this->assertLingotekDownloadTargetLink('es_MX');
     $this->clickLink('ES');
-    $this->assertText('The translation of node Llamas are cool into es_MX has been downloaded.');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_MX has been downloaded.');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
 
     // Now the link is to the workbench, and it opens in a new tab.
     $this->assertLingotekWorkbenchLink('es_MX', 'dummy-document-hash-id', 'ES');
@@ -159,7 +159,7 @@ class LingotekNodeWithParagraphsManageTranslationTabTest extends LingotekTestBas
     // Add paragraphed content.
     $this->drupalGet('node/add/paragraphed_content_demo');
 
-    $this->drupalPostForm(NULL, NULL, t('Add Image + Text'));
+    $this->submitForm(NULL, t('Add Image + Text'));
 
     $edit = [];
     $edit['title[0][value]'] = 'Llamas are cool';
@@ -186,8 +186,8 @@ class LingotekNodeWithParagraphsManageTranslationTabTest extends LingotekTestBas
       'table[node:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // I can check current status.
     $this->assertLingotekCheckSourceStatusLink();
@@ -195,7 +195,7 @@ class LingotekNodeWithParagraphsManageTranslationTabTest extends LingotekTestBas
       'table[node:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckUpload('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Request the German (AT) translation.
     $this->assertLingotekRequestTranslationLink('de_AT');
@@ -203,8 +203,8 @@ class LingotekNodeWithParagraphsManageTranslationTabTest extends LingotekTestBas
       'table[node:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslation('de', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('de_AT', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('de_AT', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $this->assertLingotekCheckTargetStatusLink('de_AT');
@@ -212,8 +212,8 @@ class LingotekNodeWithParagraphsManageTranslationTabTest extends LingotekTestBas
       'table[node:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCheckTranslation('de', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('de_AT', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('de_AT', \Drupal::state()->get('lingotek.checked_target_locale'));
 
     // Download the Spanish translation.
     $this->assertLingotekDownloadTargetLink('de_AT');
@@ -221,8 +221,8 @@ class LingotekNodeWithParagraphsManageTranslationTabTest extends LingotekTestBas
       'table[node:1]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForDownloadTranslation('de', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('de_AT', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('de_AT', \Drupal::state()->get('lingotek.downloaded_locale'));
 
     // Now the link is to the workbench, and it opens in a new tab.
     $this->assertLingotekWorkbenchLink('de_AT', 'dummy-document-hash-id', 'DE');
@@ -236,7 +236,7 @@ class LingotekNodeWithParagraphsManageTranslationTabTest extends LingotekTestBas
     // Add paragraphed content.
     $this->drupalGet('node/add/paragraphed_content_demo');
 
-    $this->drupalPostForm(NULL, NULL, t('Add Image + Text'));
+    $this->submitForm(NULL, t('Add Image + Text'));
 
     $edit = [];
     $edit['title[0][value]'] = 'Llamas are cool';
@@ -268,7 +268,8 @@ class LingotekNodeWithParagraphsManageTranslationTabTest extends LingotekTestBas
     $edit = [];
     $edit['settings[node][paragraphed_content_demo][fields][field_paragraphs_demo]'] = 1;
     $edit['settings[paragraph][image_text][fields][field_text_demo]'] = 1;
-    $this->drupalPostForm('/admin/config/regional/content-language', $edit, 'Save configuration');
+    $this->drupalGet('/admin/config/regional/content-language');
+    $this->submitForm($edit, 'Save configuration');
     $this->assertSession()->responseContains('Settings successfully updated.');
   }
 

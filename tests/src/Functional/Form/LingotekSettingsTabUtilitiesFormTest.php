@@ -15,7 +15,7 @@ class LingotekSettingsTabUtilitiesFormTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['node'];
+  protected static $modules = ['node'];
 
   /**
    * {@inheritdoc}
@@ -37,7 +37,7 @@ class LingotekSettingsTabUtilitiesFormTest extends LingotekTestBase {
 
     // Activate the settings tab.
     $this->drupalGet('admin/lingotek/settings');
-    $this->drupalPostForm(NULL, [], 'Refresh', [], 'lingoteksettings-tab-utilities-form');
+    $this->submitForm([], 'Refresh', 'lingoteksettings-tab-utilities-form');
     $assert_session->responseContains('Project, workflow, vault, and filter information have been refreshed.');
 
     $config = \Drupal::configFactory()->getEditable('lingotek.account');

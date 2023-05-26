@@ -16,7 +16,7 @@ class LingotekNodeBulkViewsCancelTest extends LingotekNodeBulkCancelTest {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'views'];
+  protected static $modules = ['block', 'node', 'views'];
 
   /**
    * {@inheritdoc}

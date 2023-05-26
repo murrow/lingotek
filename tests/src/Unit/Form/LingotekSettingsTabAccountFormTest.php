@@ -23,35 +23,35 @@ class LingotekSettingsTabAccountFormTest extends UnitTestCase {
   /**
    * The Lingotek service
    *
-   * @var \Drupal\lingotek\LingotekInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\lingotek\LingotekInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $lingotek;
 
   /**
    * The config factory.
    *
-   * @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $configFactory;
 
   /**
    * The Lingotek Filter manager.
    *
-   * @var \Drupal\lingotek\LingotekFilterManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\lingotek\LingotekFilterManagerInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $lingotekFilterManager;
 
   /**
    * The url generator.
    *
-   * @var \Drupal\Core\Routing\UrlGeneratorInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Routing\UrlGeneratorInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $urlGenerator;
 
   /**
    * The link generator.
    *
-   * @var \Drupal\Core\Utility\LinkGeneratorInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Utility\LinkGeneratorInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $linkGenerator;
 

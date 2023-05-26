@@ -16,7 +16,7 @@ class LingotekSourceStatusFormatterTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['node', 'lingotek_visitable_metadata'];
+  protected static $modules = ['node', 'lingotek_visitable_metadata'];
 
   /**
    * {@inheritdoc}

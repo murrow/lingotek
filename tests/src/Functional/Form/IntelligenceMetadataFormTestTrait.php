@@ -13,45 +13,45 @@ trait IntelligenceMetadataFormTestTrait {
    * Assert field defaults are correct.
    */
   protected function assertIntelligenceFieldDefaults() {
-    $this->assertFieldChecked('edit-intelligence-metadata-use-author');
-    $this->assertFieldChecked('edit-intelligence-metadata-use-author-email');
-    $this->assertNoFieldChecked('edit-intelligence-metadata-use-contact-email-for-author');
+    $this->assertSession()->checkboxChecked('edit-intelligence-metadata-use-author');
+    $this->assertSession()->checkboxChecked('edit-intelligence-metadata-use-author-email');
+    $this->assertSession()->checkboxNotChecked('edit-intelligence-metadata-use-contact-email-for-author');
 
-    $this->assertFieldChecked('edit-intelligence-metadata-use-business-unit');
-    $this->assertFieldByName('intelligence_metadata[business_unit]', '');
+    $this->assertSession()->checkboxChecked('edit-intelligence-metadata-use-business-unit');
+    $this->assertSession()->fieldExists('intelligence_metadata[business_unit]', '');
 
-    $this->assertFieldChecked('edit-intelligence-metadata-use-business-division');
-    $this->assertFieldByName('intelligence_metadata[business_division]', '');
+    $this->assertSession()->checkboxChecked('edit-intelligence-metadata-use-business-division');
+    $this->assertSession()->fieldExists('intelligence_metadata[business_division]', '');
 
-    $this->assertFieldChecked('edit-intelligence-metadata-use-campaign-id');
-    $this->assertFieldByName('intelligence_metadata[campaign_id]', '');
+    $this->assertSession()->checkboxChecked('edit-intelligence-metadata-use-campaign-id');
+    $this->assertSession()->fieldExists('intelligence_metadata[campaign_id]', '');
 
-    $this->assertFieldChecked('edit-intelligence-metadata-use-campaign-rating');
-    $this->assertFieldByName('intelligence_metadata[campaign_rating]', '0');
+    $this->assertSession()->checkboxChecked('edit-intelligence-metadata-use-campaign-rating');
+    $this->assertSession()->fieldExists('intelligence_metadata[campaign_rating]', '0');
 
-    $this->assertFieldChecked('edit-intelligence-metadata-use-channel');
-    $this->assertFieldByName('intelligence_metadata[channel]', '');
+    $this->assertSession()->checkboxChecked('edit-intelligence-metadata-use-channel');
+    $this->assertSession()->fieldExists('intelligence_metadata[channel]', '');
 
-    $this->assertFieldChecked('edit-intelligence-metadata-use-contact-name');
-    $this->assertFieldByName('intelligence_metadata[contact_name]', '');
+    $this->assertSession()->checkboxChecked('edit-intelligence-metadata-use-contact-name');
+    $this->assertSession()->fieldExists('intelligence_metadata[contact_name]', '');
 
-    $this->assertFieldChecked('edit-intelligence-metadata-use-contact-email');
-    $this->assertFieldByName('intelligence_metadata[contact_email]', '');
+    $this->assertSession()->checkboxChecked('edit-intelligence-metadata-use-contact-email');
+    $this->assertSession()->fieldExists('intelligence_metadata[contact_email]', '');
 
-    $this->assertFieldChecked('edit-intelligence-metadata-use-content-description');
-    $this->assertFieldByName('intelligence_metadata[content_description]', '');
+    $this->assertSession()->checkboxChecked('edit-intelligence-metadata-use-content-description');
+    $this->assertSession()->fieldExists('intelligence_metadata[content_description]', '');
 
-    $this->assertFieldChecked('edit-intelligence-metadata-use-base-domain');
-    $this->assertFieldChecked('edit-intelligence-metadata-use-reference-url');
+    $this->assertSession()->checkboxChecked('edit-intelligence-metadata-use-base-domain');
+    $this->assertSession()->checkboxChecked('edit-intelligence-metadata-use-reference-url');
 
-    $this->assertFieldChecked('edit-intelligence-metadata-use-external-style-id');
-    $this->assertFieldByName('intelligence_metadata[external_style_id]', '');
+    $this->assertSession()->checkboxChecked('edit-intelligence-metadata-use-external-style-id');
+    $this->assertSession()->fieldExists('intelligence_metadata[external_style_id]', '');
 
-    $this->assertFieldChecked('edit-intelligence-metadata-use-purchase-order');
-    $this->assertFieldByName('intelligence_metadata[purchase_order]', '');
+    $this->assertSession()->checkboxChecked('edit-intelligence-metadata-use-purchase-order');
+    $this->assertSession()->fieldExists('intelligence_metadata[purchase_order]', '');
 
-    $this->assertFieldChecked('edit-intelligence-metadata-use-region');
-    $this->assertFieldByName('intelligence_metadata[region]', '');
+    $this->assertSession()->checkboxChecked('edit-intelligence-metadata-use-region');
+    $this->assertSession()->fieldExists('intelligence_metadata[region]', '');
   }
 
 }

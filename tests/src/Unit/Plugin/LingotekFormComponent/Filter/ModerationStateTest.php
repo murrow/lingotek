@@ -40,7 +40,7 @@ class ModerationStateTest extends UnitTestCase {
   /**
    * The connection object on which to run queries.
    *
-   * @var \Drupal\Core\Database\Connection|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Database\Connection|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $connection;
 
@@ -106,9 +106,7 @@ class ModerationStateTest extends UnitTestCase {
   protected function setUp(): void {
     parent::setUp();
 
-    $this->connection = $this->getMockBuilder(Connection::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->connection = $this->createMock(Connection::class);
 
     $this->entityType = $this->createMock(ContentEntityTypeInterface::class);
     $this->entityType->expects($this->any())
@@ -243,9 +241,9 @@ class ModerationStateTest extends UnitTestCase {
       ->with('content_moderation_state')
       ->willReturn($content_moderation_type);
 
-    $unionQuery = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $unionQuery = $this->createMock(PagerSelectExtender::class);
 
-    $select = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $select = $this->createMock(PagerSelectExtender::class);
     $select->expects($this->once())
       ->method('innerJoin')
       ->with('content_moderation_state_field_data', 'content_moderation_data', "entity_table.entity_id= content_moderation_data.content_entity_id")

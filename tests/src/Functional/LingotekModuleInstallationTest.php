@@ -27,18 +27,18 @@ class LingotekModuleInstallationTest extends BrowserTestBase {
     $this->drupalGet('/admin/modules');
 
     // Ensure the module is not enabled yet.
-    $this->assertNoFieldChecked('edit-modules-lingotek-enable');
+    $this->assertSession()->checkboxNotChecked('edit-modules-lingotek-enable');
 
     // Post the form enabling the lingotek module.
     $edit = ['modules[lingotek][enable]' => '1'];
-    $this->drupalPostForm(NULL, $edit, 'Install');
+    $this->submitForm($edit, 'Install');
 
     // Dependencies installation is requested.
-    $this->assertText('Some required modules must be enabled');
-    $this->drupalPostForm(NULL, [], 'Continue');
+    $this->assertSession()->pageTextContains('Some required modules must be enabled');
+    $this->submitForm([], 'Continue');
 
     // The module is enabled successfully with its dependencies.
-    $this->assertText('modules have been enabled: Lingotek Translation');
+    $this->assertSession()->pageTextContains('modules have been enabled: Lingotek Translation');
   }
 
   /**

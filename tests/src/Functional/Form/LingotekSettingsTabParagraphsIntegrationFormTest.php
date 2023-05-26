@@ -27,7 +27,7 @@ class LingotekSettingsTabParagraphsIntegrationFormTest extends LingotekTestBase 
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'block',
     'node',
     'image',
@@ -113,9 +113,9 @@ class LingotekSettingsTabParagraphsIntegrationFormTest extends LingotekTestBase 
    */
   public function testTabShownIfThereAreSettings() {
     $this->drupalGet('admin/lingotek/settings');
-    $this->assertText('Integrations Settings');
-    $this->assertText('Paragraphs');
-    $this->assertText('Enable paragraphs to be managed individually instead of embedded in their parent entity.');
+    $this->assertSession()->pageTextContains('Integrations Settings');
+    $this->assertSession()->pageTextContains('Paragraphs');
+    $this->assertSession()->pageTextContains('Enable paragraphs to be managed individually instead of embedded in their parent entity.');
   }
 
   /**
@@ -137,16 +137,16 @@ class LingotekSettingsTabParagraphsIntegrationFormTest extends LingotekTestBase 
     // Activate the settings tab.
     $this->drupalGet('admin/lingotek/settings');
     $edit = ['contrib[paragraphs][enable_bulk_management]' => 1];
-    $this->drupalPostForm(NULL, $edit, 'Save settings', [], 'lingoteksettings-integrations-form');
-    $this->assertText('The configuration options have been saved.');
+    $this->submitForm($edit, 'Save settings', 'lingoteksettings-integrations-form');
+    $this->assertSession()->pageTextContains('The configuration options have been saved.');
 
     // Now the tab is active.
     $this->goToContentBulkManagementForm();
     $assert_session->linkExists('Paragraph');
 
     $this->clickLink('Paragraph');
-    $this->assertText('Manage Translations');
-    $this->assertText('No content available');
+    $this->assertSession()->pageTextContains('Manage Translations');
+    $this->assertSession()->pageTextContains('No content available');
   }
 
   /**
@@ -161,8 +161,8 @@ class LingotekSettingsTabParagraphsIntegrationFormTest extends LingotekTestBase 
     // Disable the settings tab.
     $this->drupalGet('admin/lingotek/settings');
     $edit = ['contrib[paragraphs][enable_bulk_management]' => FALSE];
-    $this->drupalPostForm(NULL, $edit, 'Save settings', [], 'lingoteksettings-integrations-form');
-    $this->assertText('The configuration options have been saved.');
+    $this->submitForm($edit, 'Save settings', 'lingoteksettings-integrations-form');
+    $this->assertSession()->pageTextContains('The configuration options have been saved.');
 
     // Now the tab is not shown.
     $this->goToContentBulkManagementForm();
@@ -208,14 +208,14 @@ class LingotekSettingsTabParagraphsIntegrationFormTest extends LingotekTestBase 
 
     $this->drupalGet('admin/lingotek/settings');
 
-    $this->assertNoFieldByName('paragraph[image_text][profiles]', NULL, 'The profile is not selectable for paragraphs by default.');
+    $this->assertSession()->fieldNotExists('paragraph[image_text][profiles]');
 
     $edit = ['contrib[paragraphs][enable_bulk_management]' => 1];
-    $this->drupalPostForm(NULL, $edit, 'Save settings', [], 'lingoteksettings-integrations-form');
-    $this->assertText('The configuration options have been saved.');
+    $this->submitForm($edit, 'Save settings', 'lingoteksettings-integrations-form');
+    $this->assertSession()->pageTextContains('The configuration options have been saved.');
 
-    $this->assertFieldByName('paragraph[image_text][profiles]', NULL, 'The profile can be assigned to a paragraph if they are managed individually.');
-    $this->assertFieldByName('paragraph[image_text][profiles]', Lingotek::PROFILE_DISABLED, 'The default profile is disabled for paragraphs if they are managed individually.');
+    $this->assertSession()->fieldExists('paragraph[image_text][profiles]');
+    $this->assertSession()->fieldValueEquals('paragraph[image_text][profiles]', Lingotek::PROFILE_DISABLED);
   }
 
 }

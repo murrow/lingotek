@@ -16,7 +16,7 @@ class LingotekNodeMissingProfileTranslationTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node'];
+  protected static $modules = ['block', 'node'];
 
   /**
    * A node.
@@ -81,16 +81,16 @@ class LingotekNodeMissingProfileTranslationTest extends LingotekTestBase {
     $this->assertNoLingotekRequestTranslationLink('es_MX');
 
     $this->clickLink('EN');
-    $this->assertText('Node Llamas are cool has been uploaded.');
+    $this->assertSession()->pageTextContains('Node Llamas are cool has been uploaded.');
 
     // Check that only the configured fields have been uploaded.
     $data = json_decode(\Drupal::state()
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 2);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // There is a link for checking status.
@@ -99,27 +99,27 @@ class LingotekNodeMissingProfileTranslationTest extends LingotekTestBase {
     $this->assertLingotekRequestTranslationLink('es_MX');
 
     $this->clickLink('EN');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request the Spanish translation.
     $this->assertLingotekRequestTranslationLink('es_MX');
     $this->clickLink('ES');
-    $this->assertText("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSession()->pageTextContains("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $this->assertLingotekCheckTargetStatusLink('es_MX');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.checked_target_locale'));
-    $this->assertText('The es_MX translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_MX translation for node Llamas are cool is ready for download.');
 
     // Download the Spanish translation.
     $this->assertLingotekDownloadTargetLink('es_MX');
     $this->clickLink('ES');
-    $this->assertText('The translation of node Llamas are cool into es_MX has been downloaded.');
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_MX has been downloaded.');
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.downloaded_locale'));
 
     // Now the link is to the workbench, and it opens in a new tab.
@@ -134,9 +134,9 @@ class LingotekNodeMissingProfileTranslationTest extends LingotekTestBase {
     $this->saveAndPublishNodeForm($edit, NULL);
 
     // No errors on saving even if the profile was missing.
-    $this->assertText('Article Cats are cool has been updated.');
+    $this->assertSession()->pageTextContains('Article Cats are cool has been updated.');
     // Automatic profile wasn't being used automatically.
-    $this->assertNoText('Cats are cool was updated and sent to Lingotek successfully.');
+    $this->assertSession()->pageTextNotContains('Cats are cool was updated and sent to Lingotek successfully.');
   }
 
   /**
@@ -163,16 +163,16 @@ class LingotekNodeMissingProfileTranslationTest extends LingotekTestBase {
     $this->assertNoLingotekRequestTranslationLink('es_MX');
 
     $this->clickLink('EN');
-    $this->assertText('Node Llamas are cool has been uploaded.');
+    $this->assertSession()->pageTextContains('Node Llamas are cool has been uploaded.');
 
     // Check that only the configured fields have been uploaded.
     $data = json_decode(\Drupal::state()
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 2);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // There is a link for checking status.
@@ -181,27 +181,27 @@ class LingotekNodeMissingProfileTranslationTest extends LingotekTestBase {
     $this->assertLingotekRequestTranslationLink('es_MX');
 
     $this->clickLink('EN');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request the Spanish translation.
     $this->assertLingotekRequestTranslationLink('es_MX');
     $this->clickLink('ES');
-    $this->assertText("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSession()->pageTextContains("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $this->assertLingotekCheckTargetStatusLink('es_MX');
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.checked_target_locale'));
-    $this->assertText('The es_MX translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_MX translation for node Llamas are cool is ready for download.');
 
     // Download the Spanish translation.
     $this->assertLingotekDownloadTargetLink('es_MX');
     $this->clickLink('ES');
-    $this->assertText('The translation of node Llamas are cool into es_MX has been downloaded.');
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_MX has been downloaded.');
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.downloaded_locale'));
 
     // Now the link is to the workbench, and it opens in a new tab.
@@ -213,9 +213,9 @@ class LingotekNodeMissingProfileTranslationTest extends LingotekTestBase {
     $this->saveAndPublishNodeForm($edit, NULL);
 
     // No errors on saving even if the profile was missing.
-    $this->assertText('Article Cats are cool has been updated.');
+    $this->assertSession()->pageTextContains('Article Cats are cool has been updated.');
     // Automatic profile wasn't being used automatically.
-    $this->assertNoText('Cats are cool was updated and sent to Lingotek successfully.');
+    $this->assertSession()->pageTextNotContains('Cats are cool was updated and sent to Lingotek successfully.');
   }
 
 }

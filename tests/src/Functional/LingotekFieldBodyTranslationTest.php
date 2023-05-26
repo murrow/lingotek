@@ -19,10 +19,10 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'field_ui'];
+  protected static $modules = ['block', 'node', 'field_ui'];
 
   /**
-   * @var \Drupal\node\Entity\NodeInterface
+   * @var \Drupal\node\NodeInterface
    */
   protected $node;
 
@@ -68,31 +68,31 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     $this->clickLink(t('Translate'));
 
     $this->clickLink(t('Upload'));
-    $this->assertText(t('Body uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('Body uploaded successfully'));
 
     // Check that only the translatable fields have been uploaded.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->verbose(var_export($data, TRUE));
+    dump(var_export($data, TRUE));
     $this->assertTrue(array_key_exists('label', $data['field.field.node.article.body']));
     // Cannot use isset, the key exists but we are not providing values, so NULL.
     $this->assertTrue(array_key_exists('description', $data['field.field.node.article.body']));
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
     $this->clickLink(t('Check upload status'));
-    $this->assertText('Body status checked successfully');
+    $this->assertSession()->pageTextContains('Body status checked successfully');
 
     $this->clickLink(t('Request translation'));
-    $this->assertText(t('Translation to es_MX requested successfully'));
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains(t('Translation to es_MX requested successfully'));
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     $this->clickLink(t('Check Download'));
-    $this->assertText(t('Translation to es_MX status checked successfully'));
+    $this->assertSession()->pageTextContains(t('Translation to es_MX status checked successfully'));
 
     $this->clickLink('Download');
-    $this->assertText(t('Translation to es_MX downloaded successfully'));
+    $this->assertSession()->pageTextContains(t('Translation to es_MX downloaded successfully'));
 
     // Check that the edit link is there.
     $basepath = \Drupal::request()->getBasePath();
@@ -103,8 +103,8 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // and this alters the order. See https://www.drupal.org/project/drupal/issues/3257407.
     $index = version_compare(\Drupal::VERSION, '9.4', '>=') ? 2 : 1;
     $this->clickLink('Edit', $index);
-    $this->assertFieldByName('translation[config_names][field.field.node.article.body][label]', 'Cuerpo');
-    $this->assertFieldByName('translation[config_names][field.field.node.article.body][description]', 'Cuerpo del contenido');
+    $this->assertSession()->fieldValueEquals('translation[config_names][field.field.node.article.body][label]', 'Cuerpo');
+    $this->assertSession()->fieldValueEquals('translation[config_names][field.field.node.article.body][description]', 'Cuerpo del contenido');
   }
 
   /**
@@ -122,8 +122,9 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
 
     // Edit the field.
     $edit = ['label' => 'Contents'];
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/node.article.body', $edit, t('Save settings'));
-    $this->assertText('Saved Contents configuration.');
+    $this->drupalGet('/admin/structure/types/manage/article/fields/node.article.body');
+    $this->submitForm($edit, t('Save settings'));
+    $this->assertSession()->pageTextContains('Saved Contents configuration.');
 
     $this->clickLink(t('Translate'));
 
@@ -134,11 +135,11 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
 
     // Recheck status.
     $this->clickLink('Check Download');
-    $this->assertText('Translation to es_MX status checked successfully');
+    $this->assertSession()->pageTextContains('Translation to es_MX status checked successfully');
 
     // Download the translation.
     $this->clickLink('Download');
-    $this->assertText('Translation to es_MX downloaded successfully');
+    $this->assertSession()->pageTextContains('Translation to es_MX downloaded successfully');
   }
 
   /**
@@ -160,26 +161,26 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     $this->clickLink(t('Translate'));
 
     $this->clickLink(t('Upload'));
-    $this->assertText(t('Body uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('Body uploaded successfully'));
 
     // Check that only the translatable fields have been uploaded.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->verbose(var_export($data, TRUE));
-    $this->assertEqual(2, count($data['field.field.node.article.body']));
+    dump(var_export($data, TRUE));
+    $this->assertEquals(2, count($data['field.field.node.article.body']));
     $this->assertTrue(array_key_exists('label', $data['field.field.node.article.body']));
     // Cannot use isset, the key exists but we are not providing values, so NULL.
     $this->assertTrue(array_key_exists('description', $data['field.field.node.article.body']));
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check upload status');
-    $this->assertText('Body status checked successfully');
+    $this->assertSession()->pageTextContains('Body status checked successfully');
 
     // There are two links for requesting translations, or we can add them
     // manually.
@@ -216,20 +217,20 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Upload the document, which must fail.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body upload failed. Please try again.');
+    $this->assertSession()->pageTextContains('Body upload failed. Please try again.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.body');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_error_in_upload', FALSE);
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body uploaded successfully');
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
   }
 
   /**
@@ -245,21 +246,21 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body uploaded successfully');
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
 
     // Check that the upload succeeded.
     $this->clickLink('Check upload status');
 
     // We failed at checking status, but we don't know what happened.
     // So we don't mark as error but keep it on importing.
-    $this->assertText('Body status check failed. Please try again.');
+    $this->assertSession()->pageTextContains('Body status check failed. Please try again.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.body');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_IMPORTING, $source_status);
+    $this->assertEquals(Lingotek::STATUS_IMPORTING, $source_status);
   }
 
   /**
@@ -273,7 +274,7 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body uploaded successfully');
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
 
     // The document has not been imported yet.
     \Drupal::state()->set('lingotek.document_status_completion', FALSE);
@@ -283,14 +284,14 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
 
     // We failed at checking status, but we don't know what happened.
     // So we don't mark as error but keep it on importing.
-    $this->assertText('The import for Body is still pending.');
+    $this->assertSession()->pageTextContains('The import for Body is still pending.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.body');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_IMPORTING, $source_status);
+    $this->assertEquals(Lingotek::STATUS_IMPORTING, $source_status);
   }
 
   /**
@@ -306,21 +307,21 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body uploaded successfully');
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
 
     // Check that the upload succeeded.
     $this->clickLink('Check upload status');
 
     // We failed at checking status, but we don't know what happened.
     // So we don't mark as error but keep it on importing.
-    $this->assertText('Document Body was not found. Please upload again.');
+    $this->assertSession()->pageTextContains('Document Body was not found. Please upload again.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.body');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_UNTRACKED, $source_status);
+    $this->assertEquals(Lingotek::STATUS_UNTRACKED, $source_status);
   }
 
   /**
@@ -334,16 +335,17 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body uploaded successfully');
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
 
     // Check that the upload succeeded.
     $this->clickLink('Check upload status');
-    $this->assertText('Body status checked successfully');
+    $this->assertSession()->pageTextContains('Body status checked successfully');
 
     // Edit the field.
     $edit = ['label' => 'Contents'];
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/node.article.body', $edit, t('Save settings'));
-    $this->assertText('Saved Contents configuration.');
+    $this->drupalGet('/admin/structure/types/manage/article/fields/node.article.body');
+    $this->submitForm($edit, t('Save settings'));
+    $this->assertSession()->pageTextContains('Saved Contents configuration.');
 
     // Go back to the form.
     $this->drupalGet('/admin/config/regional/config-translation/node_fields');
@@ -354,20 +356,20 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Re-upload. Must fail now.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Contents update failed. Please try again.');
+    $this->assertSession()->pageTextContains('Contents update failed. Please try again.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.body');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_error_in_upload', FALSE);
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Contents has been updated.');
+    $this->assertSession()->pageTextContains('Contents has been updated.');
   }
 
   /**
@@ -381,33 +383,34 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body uploaded successfully');
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
 
     // Check that the upload succeeded.
     $this->clickLink('Check upload status');
-    $this->assertText('Body status checked successfully');
+    $this->assertSession()->pageTextContains('Body status checked successfully');
 
     \Drupal::state()->set('lingotek.must_error_in_upload', TRUE);
 
     // Edit the field.
     $edit = ['label' => 'Contents'];
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/node.article.body', $edit, t('Save settings'));
-    $this->assertText('Saved Contents configuration.');
-    $this->assertText('The update for field_config Contents failed. Please try again.');
+    $this->drupalGet('/admin/structure/types/manage/article/fields/node.article.body');
+    $this->submitForm($edit, t('Save settings'));
+    $this->assertSession()->pageTextContains('Saved Contents configuration.');
+    $this->assertSession()->pageTextContains('The update for field_config Contents failed. Please try again.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.body');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_error_in_upload', FALSE);
     $this->clickLink(t('Translate'));
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Contents has been updated.');
+    $this->assertSession()->pageTextContains('Contents has been updated.');
   }
 
   /**
@@ -423,16 +426,17 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body uploaded successfully');
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
 
     // Check that the upload succeeded.
     $this->clickLink('Check upload status');
-    $this->assertText('Body status checked successfully');
+    $this->assertSession()->pageTextContains('Body status checked successfully');
 
     // Edit the field.
     $edit = ['label' => 'Contents'];
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/node.article.body', $edit, t('Save settings'));
-    $this->assertText('Saved Contents configuration.');
+    $this->drupalGet('/admin/structure/types/manage/article/fields/node.article.body');
+    $this->submitForm($edit, t('Save settings'));
+    $this->assertSession()->pageTextContains('Saved Contents configuration.');
 
     // Go back to the form.
     $this->drupalGet('/admin/config/regional/config-translation/node_fields');
@@ -443,20 +447,20 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Re-upload. Must fail now.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Document Contents has been archived. Uploading again.');
+    $this->assertSession()->pageTextContains('Document Contents has been archived. Uploading again.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.body');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_IMPORTING, $source_status);
+    $this->assertEquals(Lingotek::STATUS_IMPORTING, $source_status);
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_document_archived_error_in_update', FALSE);
     $this->clickLink('Check upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Contents status checked successfully');
+    $this->assertSession()->pageTextContains('Contents status checked successfully');
   }
 
   /**
@@ -472,32 +476,33 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body uploaded successfully');
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
 
     // Check that the upload succeeded.
     $this->clickLink('Check upload status');
-    $this->assertText('Body status checked successfully');
+    $this->assertSession()->pageTextContains('Body status checked successfully');
 
     \Drupal::state()->set('lingotek.must_document_archived_error_in_update', TRUE);
 
     // Edit the field.
     $edit = ['label' => 'Contents'];
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/node.article.body', $edit, t('Save settings'));
-    $this->assertText('Saved Contents configuration.');
-    $this->assertText('Document field_config Contents has been archived. Uploading again.');
+    $this->drupalGet('/admin/structure/types/manage/article/fields/node.article.body');
+    $this->submitForm($edit, t('Save settings'));
+    $this->assertSession()->pageTextContains('Saved Contents configuration.');
+    $this->assertSession()->pageTextContains('Document field_config Contents has been archived. Uploading again.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.body');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_IMPORTING, $source_status);
+    $this->assertEquals(Lingotek::STATUS_IMPORTING, $source_status);
 
     \Drupal::state()->set('lingotek.must_document_archived_error_in_update', FALSE);
     $this->clickLink(t('Translate'));
     $this->clickLink('Check upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Contents status checked successfully');
+    $this->assertSession()->pageTextContains('Contents status checked successfully');
   }
 
   /**
@@ -513,16 +518,17 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body uploaded successfully');
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
 
     // Check that the upload succeeded.
     $this->clickLink('Check upload status');
-    $this->assertText('Body status checked successfully');
+    $this->assertSession()->pageTextContains('Body status checked successfully');
 
     // Edit the field.
     $edit = ['label' => 'Contents'];
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/node.article.body', $edit, t('Save settings'));
-    $this->assertText('Saved Contents configuration.');
+    $this->drupalGet('/admin/structure/types/manage/article/fields/node.article.body');
+    $this->submitForm($edit, t('Save settings'));
+    $this->assertSession()->pageTextContains('Saved Contents configuration.');
 
     // Go back to the form.
     $this->drupalGet('/admin/config/regional/config-translation/node_fields');
@@ -533,20 +539,20 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Re-upload. Must fail now.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Document field_config Contents has a new version. The document id has been updated for all future interactions. Please try again.');
+    $this->assertSession()->pageTextContains('Document field_config Contents has a new version. The document id has been updated for all future interactions. Please try again.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.body');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_EDITED, $source_status, 'The field has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_EDITED, $source_status, 'The field has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_document_locked_error_in_update', FALSE);
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Contents has been updated.');
+    $this->assertSession()->pageTextContains('Contents has been updated.');
   }
 
   /**
@@ -560,33 +566,34 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body uploaded successfully');
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
 
     // Check that the upload succeeded.
     $this->clickLink('Check upload status');
-    $this->assertText('Body status checked successfully');
+    $this->assertSession()->pageTextContains('Body status checked successfully');
 
     \Drupal::state()->set('lingotek.must_document_locked_error_in_update', TRUE);
 
     // Edit the field.
     $edit = ['label' => 'Contents'];
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/node.article.body', $edit, t('Save settings'));
-    $this->assertText('Saved Contents configuration.');
-    $this->assertText('Document field_config Contents has a new version. The document id has been updated for all future interactions. Please try again.');
+    $this->drupalGet('/admin/structure/types/manage/article/fields/node.article.body');
+    $this->submitForm($edit, t('Save settings'));
+    $this->assertSession()->pageTextContains('Saved Contents configuration.');
+    $this->assertSession()->pageTextContains('Document field_config Contents has a new version. The document id has been updated for all future interactions. Please try again.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.body');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_EDITED, $source_status, 'The field has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_EDITED, $source_status, 'The field has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_document_locked_error_in_update', FALSE);
     $this->clickLink(t('Translate'));
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Contents has been updated.');
+    $this->assertSession()->pageTextContains('Contents has been updated.');
   }
 
   /**
@@ -600,16 +607,17 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body uploaded successfully');
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
 
     // Check that the upload succeeded.
     $this->clickLink('Check upload status');
-    $this->assertText('Body status checked successfully');
+    $this->assertSession()->pageTextContains('Body status checked successfully');
 
     // Edit the field.
     $edit = ['label' => 'Contents'];
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/node.article.body', $edit, t('Save settings'));
-    $this->assertText('Saved Contents configuration.');
+    $this->drupalGet('/admin/structure/types/manage/article/fields/node.article.body');
+    $this->submitForm($edit, t('Save settings'));
+    $this->assertSession()->pageTextContains('Saved Contents configuration.');
 
     // Go back to the form.
     $this->drupalGet('/admin/config/regional/config-translation/node_fields');
@@ -620,20 +628,20 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Re-upload. Must fail now.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
+    $this->assertSession()->pageTextContains('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.body');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_payment_required_error_in_update', FALSE);
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Contents has been updated.');
+    $this->assertSession()->pageTextContains('Contents has been updated.');
   }
 
   /**
@@ -647,16 +655,17 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body uploaded successfully');
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
 
     // Check that the upload succeeded.
     $this->clickLink('Check upload status');
-    $this->assertText('Body status checked successfully');
+    $this->assertSession()->pageTextContains('Body status checked successfully');
 
     // Edit the field.
     $edit = ['label' => 'Contents'];
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/node.article.body', $edit, t('Save settings'));
-    $this->assertText('Saved Contents configuration.');
+    $this->drupalGet('/admin/structure/types/manage/article/fields/node.article.body');
+    $this->submitForm($edit, t('Save settings'));
+    $this->assertSession()->pageTextContains('Saved Contents configuration.');
 
     // Go back to the form.
     $this->drupalGet('/admin/config/regional/config-translation/node_fields');
@@ -667,20 +676,20 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Re-upload. Must fail now.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
+    $this->assertSession()->pageTextContains('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.body');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_processed_words_limit_error_in_update', FALSE);
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Contents has been updated.');
+    $this->assertSession()->pageTextContains('Contents has been updated.');
   }
 
   /**
@@ -694,16 +703,17 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body uploaded successfully');
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
 
     // Check that the upload succeeded.
     $this->clickLink('Check upload status');
-    $this->assertText('Body status checked successfully');
+    $this->assertSession()->pageTextContains('Body status checked successfully');
 
     // Edit the field.
     $edit = ['label' => 'Contents'];
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/node.article.body', $edit, t('Save settings'));
-    $this->assertText('Saved Contents configuration.');
+    $this->drupalGet('/admin/structure/types/manage/article/fields/node.article.body');
+    $this->submitForm($edit, t('Save settings'));
+    $this->assertSession()->pageTextContains('Saved Contents configuration.');
 
     // Go back to the form.
     $this->drupalGet('/admin/config/regional/config-translation/node_fields');
@@ -719,14 +729,14 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_UNTRACKED, $source_status);
-    $this->assertText('Document Contents was not found. Please upload again.');
+    $this->assertEquals(Lingotek::STATUS_UNTRACKED, $source_status);
+    $this->assertSession()->pageTextContains('Document Contents was not found. Please upload again.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_document_not_found_error_in_update', FALSE);
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Contents uploaded successfully');
+    $this->assertSession()->pageTextContains('Contents uploaded successfully');
   }
 
   /**
@@ -740,33 +750,34 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body uploaded successfully');
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
 
     // Check that the upload succeeded.
     $this->clickLink('Check upload status');
-    $this->assertText('Body status checked successfully');
+    $this->assertSession()->pageTextContains('Body status checked successfully');
 
     \Drupal::state()->set('lingotek.must_payment_required_error_in_update', TRUE);
 
     // Edit the field.
     $edit = ['label' => 'Contents'];
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/node.article.body', $edit, t('Save settings'));
-    $this->assertText('Saved Contents configuration.');
-    $this->assertText('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
+    $this->drupalGet('/admin/structure/types/manage/article/fields/node.article.body');
+    $this->submitForm($edit, t('Save settings'));
+    $this->assertSession()->pageTextContains('Saved Contents configuration.');
+    $this->assertSession()->pageTextContains('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.body');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_payment_required_error_in_update', FALSE);
     $this->clickLink(t('Translate'));
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Contents has been updated.');
+    $this->assertSession()->pageTextContains('Contents has been updated.');
   }
 
   /**
@@ -780,33 +791,34 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body uploaded successfully');
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
 
     // Check that the upload succeeded.
     $this->clickLink('Check upload status');
-    $this->assertText('Body status checked successfully');
+    $this->assertSession()->pageTextContains('Body status checked successfully');
 
     \Drupal::state()->set('lingotek.must_processed_words_limit_error_in_update', TRUE);
 
     // Edit the field.
     $edit = ['label' => 'Contents'];
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/node.article.body', $edit, t('Save settings'));
-    $this->assertText('Saved Contents configuration.');
-    $this->assertText('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
+    $this->drupalGet('/admin/structure/types/manage/article/fields/node.article.body');
+    $this->submitForm($edit, t('Save settings'));
+    $this->assertSession()->pageTextContains('Saved Contents configuration.');
+    $this->assertSession()->pageTextContains('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.body');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_processed_words_limit_error_in_update', FALSE);
     $this->clickLink(t('Translate'));
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Contents has been updated.');
+    $this->assertSession()->pageTextContains('Contents has been updated.');
   }
 
   /**
@@ -820,32 +832,33 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body uploaded successfully');
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
 
     // Check that the upload succeeded.
     $this->clickLink('Check upload status');
-    $this->assertText('Body status checked successfully');
+    $this->assertSession()->pageTextContains('Body status checked successfully');
 
     \Drupal::state()->set('lingotek.must_document_not_found_error_in_update', TRUE);
 
     // Edit the field.
     $edit = ['label' => 'Contents'];
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/node.article.body', $edit, t('Save settings'));
-    $this->assertText('Saved Contents configuration.');
+    $this->drupalGet('/admin/structure/types/manage/article/fields/node.article.body');
+    $this->submitForm($edit, t('Save settings'));
+    $this->assertSession()->pageTextContains('Saved Contents configuration.');
 
     $fieldConfig = FieldConfig::load('node.article.body');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_UNTRACKED, $source_status);
-    $this->assertText('Document field_config Contents was not found. Please upload again.');
+    $this->assertEquals(Lingotek::STATUS_UNTRACKED, $source_status);
+    $this->assertSession()->pageTextContains('Document field_config Contents was not found. Please upload again.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_document_not_found_error_in_update', FALSE);
     $this->clickLink(t('Translate'));
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Contents uploaded successfully');
+    $this->assertSession()->pageTextContains('Contents uploaded successfully');
   }
 
   /**
@@ -858,17 +871,18 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
 
     // Create a field.
     $edit = ['label' => 'Excerpt', 'new_storage_type' => 'text', 'field_name' => 'excerpt'];
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/add-field', $edit, 'Save and continue');
+    $this->drupalGet('/admin/structure/types/manage/article/fields/add-field');
+    $this->submitForm($edit, 'Save and continue');
 
     // The document was uploaded automatically and failed.
-    $this->assertText('The upload for field_config Excerpt failed. Please try again.');
+    $this->assertSession()->pageTextContains('The upload for field_config Excerpt failed. Please try again.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.field_excerpt');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
   }
 
   /**
@@ -884,20 +898,20 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Upload the document, which must fail.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
+    $this->assertSession()->pageTextContains('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.body');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_payment_required_error_in_upload', FALSE);
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body uploaded successfully');
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
   }
 
   /**
@@ -913,20 +927,20 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
     // Upload the document, which must fail.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
+    $this->assertSession()->pageTextContains('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.body');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_processed_words_limit_error_in_upload', FALSE);
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Body uploaded successfully');
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
   }
 
   /**
@@ -939,17 +953,18 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
 
     // Create a field.
     $edit = ['label' => 'Excerpt', 'new_storage_type' => 'text', 'field_name' => 'excerpt'];
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/add-field', $edit, 'Save and continue');
+    $this->drupalGet('/admin/structure/types/manage/article/fields/add-field');
+    $this->submitForm($edit, 'Save and continue');
 
     // The document was uploaded automatically and failed.
-    $this->assertText('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
+    $this->assertSession()->pageTextContains('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.field_excerpt');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
   }
 
   /**
@@ -962,17 +977,18 @@ class LingotekFieldBodyTranslationTest extends LingotekTestBase {
 
     // Create a field.
     $edit = ['label' => 'Excerpt', 'new_storage_type' => 'text', 'field_name' => 'excerpt'];
-    $this->drupalPostForm('/admin/structure/types/manage/article/fields/add-field', $edit, 'Save and continue');
+    $this->drupalGet('/admin/structure/types/manage/article/fields/add-field');
+    $this->submitForm($edit, 'Save and continue');
 
     // The document was uploaded automatically and failed.
-    $this->assertText('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
+    $this->assertSession()->pageTextContains('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
 
     // The field has been marked with the error status.
     $fieldConfig = FieldConfig::load('node.article.field_excerpt');
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.config_translation');
     $source_status = $translation_service->getSourceStatus($fieldConfig);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The field has been marked as error.');
   }
 
 }

@@ -24,24 +24,24 @@ namespace Drupal\Tests\lingotek\Unit\Form {
     /**
      * The Lingotek service
      *
-     * @var \Drupal\lingotek\LingotekInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Drupal\lingotek\LingotekInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $lingotek;
 
     /**
      * The config factory.
      *
-     * @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $configFactory;
 
     /**
-     * @var \Drupal\Core\State\StateInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Drupal\Core\State\StateInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $state;
 
     /**
-     * @var \Drupal\Core\Routing\RouteBuilderInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Drupal\Core\Routing\RouteBuilderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $routeBuilder;
 
@@ -53,14 +53,14 @@ namespace Drupal\Tests\lingotek\Unit\Form {
     /**
      * The url generator.
      *
-     * @var \Drupal\Core\Routing\UrlGeneratorInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Drupal\Core\Routing\UrlGeneratorInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $urlGenerator;
 
     /**
      * The link generator.
      *
-     * @var \Drupal\Core\Utility\LinkGeneratorInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Drupal\Core\Utility\LinkGeneratorInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $linkGenerator;
 

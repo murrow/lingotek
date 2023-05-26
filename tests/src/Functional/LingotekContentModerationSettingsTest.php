@@ -20,7 +20,7 @@ class LingotekContentModerationSettingsTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['node', 'taxonomy', 'content_moderation'];
+  protected static $modules = ['node', 'taxonomy', 'content_moderation'];
 
   /**
    * Vocabulary for testing.
@@ -77,8 +77,7 @@ class LingotekContentModerationSettingsTest extends LingotekTestBase {
 
     $this->drupalGet('admin/lingotek/settings');
 
-    $this->assertNoField('content_moderation_state[content_moderation_state][enabled]',
-      'The content moderation state entity should not be available for Lingotek translation.');
+    $this->assertSession()->fieldNotExists('content_moderation_state[content_moderation_state][enabled]', 'The content moderation state entity should not be available for Lingotek translation.');
 
     // See content_moderation_entity_bundle_info_alter().
     $this->enableModerationThroughUI('article', ['draft', 'needs_review', 'published'], 'draft');
@@ -86,8 +85,7 @@ class LingotekContentModerationSettingsTest extends LingotekTestBase {
 
     $this->drupalGet('admin/lingotek/settings');
 
-    $this->assertNoField('content_moderation_state[content_moderation_state][enabled]',
-      'The content moderation state entity should not be available for Lingotek translation.');
+    $this->assertSession()->fieldNotExists('content_moderation_state[content_moderation_state][enabled]', 'The content moderation state entity should not be available for Lingotek translation.');
   }
 
   /**
@@ -100,18 +98,14 @@ class LingotekContentModerationSettingsTest extends LingotekTestBase {
 
     // We don't have any fields for configuring content moderation until it's
     // enabled.
-    $this->assertNoField('node[article][moderation][upload_status]',
-      'The field for setting the state when a content should be uploaded does not exist as content moderation is not enabled for this bundle.');
-    $this->assertNoField('node[article][moderation][download_transition]',
-      'The field for setting the transition that must happen after download does not exist as content moderation is not enabled for this bundle.');
+    $this->assertSession()->fieldNotExists('node[article][moderation][upload_status]', 'The field for setting the state when a content should be uploaded does not exist as content moderation is not enabled for this bundle.');
+    $this->assertSession()->fieldNotExists('node[article][moderation][download_transition]', 'The field for setting the transition that must happen after download does not exist as content moderation is not enabled for this bundle.');
 
-    $this->assertNoField('node[page][moderation][upload_status]',
-      'The field for setting the state when a content should be uploaded does not exist as content moderation is not enabled for this bundle.');
-    $this->assertNoField('node[page][moderation][download_transition]',
-      'The field for setting the transition that must happen after download does not exist as content moderation is not enabled for this bundle.');
+    $this->assertSession()->fieldNotExists('node[page][moderation][upload_status]', 'The field for setting the state when a content should be uploaded does not exist as content moderation is not enabled for this bundle.');
+    $this->assertSession()->fieldNotExists('node[page][moderation][download_transition]', 'The field for setting the transition that must happen after download does not exist as content moderation is not enabled for this bundle.');
 
     // We show a message and link for enabling it.
-    $this->assertText('This entity bundle is not enabled for moderation with content_moderation. You can change its settings here.');
+    $this->assertSession()->pageTextContains('This entity bundle is not enabled for moderation with content_moderation. You can change its settings here.');
 
     $assert_session->linkByHrefExists('/admin/config/workflow/workflows', 0);
     $assert_session->linkByHrefExists('/admin/config/workflow/workflows', 1);
@@ -123,19 +117,15 @@ class LingotekContentModerationSettingsTest extends LingotekTestBase {
 
     // Assert the fields for setting up the integration exist and they have
     // sensible defaults.
-    $this->assertField('node[article][moderation][upload_status]',
-      'The field for setting the state when a content should be uploaded exists.');
-    $this->assertField('node[article][moderation][download_transition]',
-      'The field for setting the transition that must happen after download exists.');
+    $this->assertSession()->fieldExists('node[article][moderation][upload_status]', 'The field for setting the state when a content should be uploaded exists.');
+    $this->assertSession()->fieldExists('node[article][moderation][download_transition]', 'The field for setting the transition that must happen after download exists.');
     $assert_session->optionExists('edit-node-article-moderation-upload-status', 'published');
     $assert_session->optionExists('edit-node-article-moderation-download-transition', 'publish');
 
     // But not for the other content types. There is still a message for configuring.
-    $this->assertNoField('node[page][moderation][upload_status]',
-      'The field for setting the state when a content should be uploaded does not exist as content moderation is not enabled for this bundle.');
-    $this->assertNoField('node[page][moderation][download_transition]',
-      'The field for setting the transition that must happen after download does not exist as content moderation is not enabled for this bundle.');
-    $this->assertText('This entity bundle is not enabled for moderation with content_moderation. You can change its settings here.');
+    $this->assertSession()->fieldNotExists('node[page][moderation][upload_status]', 'The field for setting the state when a content should be uploaded does not exist as content moderation is not enabled for this bundle.');
+    $this->assertSession()->fieldNotExists('node[page][moderation][download_transition]', 'The field for setting the transition that must happen after download does not exist as content moderation is not enabled for this bundle.');
+    $this->assertSession()->pageTextContains('This entity bundle is not enabled for moderation with content_moderation. You can change its settings here.');
 
     $assert_session->linkByHrefExists('/admin/config/workflow/workflows', 0);
 
@@ -160,16 +150,14 @@ class LingotekContentModerationSettingsTest extends LingotekTestBase {
     $assert_session->optionExists('edit-node-article-moderation-download-transition', 'archive');
 
     // It never existed for taxonomies.
-    $this->assertNoField("taxonomy_term[{$this->vocabulary->id()}][moderation][upload_status]",
-      'The field for setting the state when a content should be uploaded does not exist as content moderation is not available for this entity type.');
-    $this->assertNoField("taxonomy_term[{$this->vocabulary->id()}][moderation][download_transition]",
-      'The field for setting the transition that must happen after download does not exist as content moderation is not available for this entity type.');
+    $this->assertSession()->fieldNotExists("taxonomy_term[{$this->vocabulary->id()}][moderation][upload_status]", 'The field for setting the state when a content should be uploaded does not exist as content moderation is not available for this entity type.');
+    $this->assertSession()->fieldNotExists("taxonomy_term[{$this->vocabulary->id()}][moderation][download_transition]", 'The field for setting the transition that must happen after download does not exist as content moderation is not available for this entity type.');
     $assert_session->linkByHrefNotExists("/admin/structure/taxonomy/manage/{$this->vocabulary->id()}/moderation", 'There is no link to moderation settings in taxonomies as they cannot be moderated.');
 
     $header = $this->xpath("//details[@id='edit-entity-node']//th[text()='Content moderation']");
-    $this->assertEqual(count($header), 1, 'There is a content moderation column for content.');
+    $this->assertEquals(count($header), 1, 'There is a content moderation column for content.');
     $header = $this->xpath("//details[@id='edit-entity-taxonomy-term']//th[text()='Content moderation']");
-    $this->assertEqual(count($header), 0, 'There is no content moderation column for taxonomies.');
+    $this->assertEquals(count($header), 0, 'There is no content moderation column for taxonomies.');
 
   }
 
@@ -181,9 +169,9 @@ class LingotekContentModerationSettingsTest extends LingotekTestBase {
    */
   protected function enableModerationThroughUI($content_type_id) {
     $this->drupalGet('/admin/config/workflow/workflows/manage/editorial/type/node');
-    $this->assertFieldByName("bundles[$content_type_id]");
+    $this->assertSession()->fieldExists("bundles[$content_type_id]");
     $edit["bundles[$content_type_id]"] = TRUE;
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
   }
 
 }

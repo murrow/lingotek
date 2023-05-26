@@ -23,7 +23,7 @@ class LingotekToolbarIntegrationTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'lingotek',
     'lingotek_test',
     'node',
@@ -77,19 +77,19 @@ class LingotekToolbarIntegrationTest extends LingotekTestBase {
 
     // And there is a link for Lingotek translation in the Regional and Language section.
     $result = $this->xpath('//h3[text()="Regional and language"]/following-sibling::*//a[@href="' . $basepath . '/admin/lingotek"]/text()');
-    $this->assertEqual(1, count($result), 'There is a link in Regional Language to the dashboard.');
+    $this->assertEquals(1, count($result), 'There is a link in Regional Language to the dashboard.');
 
     $this->clickLink('Lingotek Translation');
 
     // Assert there are tabs.
     $result = $this->xpath('//nav[contains(@class,"tabs")]/ul[contains(@class,"primary")]/li[contains(@class,"is-active")]/a[@href="' . $basepath . '/admin/lingotek"]/text()');
-    $this->assertEqual(1, count($result), 'There is an active tab for the Dashboard.');
+    $this->assertEquals(1, count($result), 'There is an active tab for the Dashboard.');
     $result = $this->xpath('//nav[contains(@class,"tabs")]/ul[contains(@class,"primary")]/li/a[@href="' . $basepath . '/admin/lingotek/manage"]/text()');
-    $this->assertEqual(1, count($result), 'There is a tab for Content Bulk management.');
+    $this->assertEquals(1, count($result), 'There is a tab for Content Bulk management.');
     $result = $this->xpath('//nav[contains(@class,"tabs")]/ul[contains(@class,"primary")]/li/a[@href="' . $basepath . '/admin/lingotek/config/manage"]/text()');
-    $this->assertEqual(1, count($result), 'There is a tab for Config Bulk management.');
+    $this->assertEquals(1, count($result), 'There is a tab for Config Bulk management.');
     $result = $this->xpath('//nav[contains(@class,"tabs")]/ul[contains(@class,"primary")]/li/a[@href="' . $basepath . '/admin/lingotek/settings"]/text()');
-    $this->assertEqual(1, count($result), 'There is a tab for Settings.');
+    $this->assertEquals(1, count($result), 'There is a tab for Settings.');
 
     $settings = $this->getDrupalSettings();
     // The toolbar module defines a route '/toolbar/subtrees/{hash}' that
@@ -98,7 +98,7 @@ class LingotekToolbarIntegrationTest extends LingotekTestBase {
     $response = $this->drupalGet('/toolbar/subtrees/' . $settings['toolbar']['subtreesHash']);
     $this->assertSession()->statusCodeEquals('200');
     $response = json_decode($response, TRUE);
-    $this->assertEqual($response[0]['command'], 'setToolbarSubtrees', 'Subtrees response uses the correct command.');
+    $this->assertEquals($response[0]['command'], 'setToolbarSubtrees', 'Subtrees response uses the correct command.');
     $this->assertTrue(array_key_exists('lingotek-config-dashboard', $response[0]['subtrees']), 'There is a subtree for Lingotek config.');
 
     $html = $response[0]['subtrees']['lingotek-config-dashboard'];

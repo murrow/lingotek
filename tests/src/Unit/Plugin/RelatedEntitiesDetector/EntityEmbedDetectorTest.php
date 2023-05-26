@@ -57,7 +57,7 @@ class EntityEmbedDetectorTest extends UnitTestCase {
   protected $lingotekConfiguration;
 
   /**
-   * @var \Drupal\Core\Entity\ContentEntityTypeInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Entity\ContentEntityTypeInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $entityType;
 

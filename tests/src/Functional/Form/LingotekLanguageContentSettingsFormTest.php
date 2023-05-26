@@ -16,7 +16,7 @@ class LingotekLanguageContentSettingsFormTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node'];
+  protected static $modules = ['block', 'node'];
 
   /**
    * {@inheritdoc}
@@ -48,8 +48,8 @@ class LingotekLanguageContentSettingsFormTest extends LingotekTestBase {
   public function testLingotekMetadataFieldNotPresent() {
     $this->drupalGet('admin/config/regional/content-language');
 
-    $this->assertNoText('Lingotek translation source');
-    $this->assertNoText('Lingotek metadata');
+    $this->assertSession()->pageTextNotContains('Lingotek translation source');
+    $this->assertSession()->pageTextNotContains('Lingotek metadata');
   }
 
 }

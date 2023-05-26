@@ -31,7 +31,7 @@ class LingotekUtilitiesDisassociateAllDocumentsTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'taxonomy'];
+  protected static $modules = ['node', 'taxonomy'];
 
   protected function setUp(): void {
     parent::setUp();
@@ -127,8 +127,9 @@ class LingotekUtilitiesDisassociateAllDocumentsTest extends LingotekTestBase {
     $edit['name[0][value]'] = 'Llamas are cool';
     $edit['description[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
+    $this->drupalGet("admin/structure/taxonomy/manage/$bundle/add");
 
-    $this->drupalPostForm("admin/structure/taxonomy/manage/$bundle/add", $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
 
     $this->goToContentBulkManagementForm('taxonomy_term');
 
@@ -183,10 +184,10 @@ class LingotekUtilitiesDisassociateAllDocumentsTest extends LingotekTestBase {
 
   public function testDisassociateAllDocuments() {
     $this->drupalGet('/admin/lingotek/settings');
-    $this->drupalPostForm(NULL, [], 'Disassociate');
-    $this->assertRaw("Are you sure you want to disassociate everything from Ray Enterprise?");
-    $this->drupalPostForm(NULL, [], 'Disassociate');
-    $this->assertText('All translations have been disassociated.');
+    $this->submitForm([], 'Disassociate');
+    $this->assertSession()->responseContains("Are you sure you want to disassociate everything from Ray Enterprise?");
+    $this->submitForm([], 'Disassociate');
+    $this->assertSession()->pageTextContains('All translations have been disassociated.');
 
     $node = Node::load(1);
     $term = Term::load(1);
@@ -198,22 +199,22 @@ class LingotekUtilitiesDisassociateAllDocumentsTest extends LingotekTestBase {
 
     // Ensure we have disassociated the node.
     $this->assertNull($content_translation_service->getDocumentId($node), 'The node has been disassociated from its Lingotek Document ID');
-    $this->assertIdentical(Lingotek::STATUS_UNTRACKED, $content_translation_service->getSourceStatus($node));
+    $this->assertSame(Lingotek::STATUS_UNTRACKED, $content_translation_service->getSourceStatus($node));
 
     // Ensure we have disassociated the term.
     $this->assertNull($content_translation_service->getDocumentId($term), 'The term has been disassociated from its Lingotek Document ID');
-    $this->assertIdentical(Lingotek::STATUS_UNTRACKED, $content_translation_service->getSourceStatus($term));
+    $this->assertSame(Lingotek::STATUS_UNTRACKED, $content_translation_service->getSourceStatus($term));
 
     // Ensure we are disassociated the article type.
     $article_type = \Drupal::entityTypeManager()->getStorage('node_type')->load('article');
     $this->assertNull($config_translation_service->getDocumentId($article_type), 'The article node type has been disassociated from its Lingotek Document ID');
-    $this->assertIdentical(Lingotek::STATUS_UNTRACKED, $config_translation_service->getSourceStatus($article_type));
+    $this->assertSame(Lingotek::STATUS_UNTRACKED, $config_translation_service->getSourceStatus($article_type));
 
     // Ensure we are disassociated the config system.site.
     $mappers = \Drupal::service('plugin.manager.config_translation.mapper')->getMappers();
     $mapper = $mappers['system.site_information_settings'];
     $this->assertNull($config_translation_service->getConfigDocumentId($mapper), 'The system.site config mapper has been disassociated from its Lingotek Document ID');
-    $this->assertIdentical(Lingotek::STATUS_UNTRACKED, $config_translation_service->getConfigSourceStatus($mapper));
+    $this->assertSame(Lingotek::STATUS_UNTRACKED, $config_translation_service->getConfigSourceStatus($mapper));
 
     // Ensure the UIs show the right statuses.
     $this->goToContentBulkManagementForm('node');
@@ -257,10 +258,10 @@ class LingotekUtilitiesDisassociateAllDocumentsTest extends LingotekTestBase {
 
     // Disassociate.
     $this->drupalGet('/admin/lingotek/settings');
-    $this->drupalPostForm(NULL, [], 'Disassociate');
-    $this->assertRaw("Are you sure you want to disassociate everything from Ray Enterprise?");
-    $this->drupalPostForm(NULL, [], 'Disassociate');
-    $this->assertText('All translations have been disassociated.');
+    $this->submitForm([], 'Disassociate');
+    $this->assertSession()->responseContains("Are you sure you want to disassociate everything from Ray Enterprise?");
+    $this->submitForm([], 'Disassociate');
+    $this->assertSession()->pageTextContains('All translations have been disassociated.');
 
     $node = Node::load(1);
     $term = Term::load(1);
@@ -272,22 +273,22 @@ class LingotekUtilitiesDisassociateAllDocumentsTest extends LingotekTestBase {
 
     // Ensure we have disassociated the node.
     $this->assertNull($content_translation_service->getDocumentId($node), 'The node has been disassociated from its Lingotek Document ID');
-    $this->assertIdentical(Lingotek::STATUS_UNTRACKED, $content_translation_service->getSourceStatus($node));
+    $this->assertSame(Lingotek::STATUS_UNTRACKED, $content_translation_service->getSourceStatus($node));
 
     // Ensure we have disassociated the term.
     $this->assertNull($content_translation_service->getDocumentId($term), 'The term has been disassociated from its Lingotek Document ID');
-    $this->assertIdentical(Lingotek::STATUS_UNTRACKED, $content_translation_service->getSourceStatus($term));
+    $this->assertSame(Lingotek::STATUS_UNTRACKED, $content_translation_service->getSourceStatus($term));
 
     // Ensure we are disassociated the article type.
     $article_type = \Drupal::entityTypeManager()->getStorage('node_type')->load('article');
     $this->assertNull($config_translation_service->getDocumentId($article_type), 'The article node type has been disassociated from its Lingotek Document ID');
-    $this->assertIdentical(Lingotek::STATUS_UNTRACKED, $config_translation_service->getSourceStatus($article_type));
+    $this->assertSame(Lingotek::STATUS_UNTRACKED, $config_translation_service->getSourceStatus($article_type));
 
     // Ensure we are disassociated the config system.site.
     $mappers = \Drupal::service('plugin.manager.config_translation.mapper')->getMappers();
     $mapper = $mappers['system.site_information_settings'];
     $this->assertNull($config_translation_service->getConfigDocumentId($mapper), 'The system.site config mapper has been disassociated from its Lingotek Document ID');
-    $this->assertIdentical(Lingotek::STATUS_UNTRACKED, $config_translation_service->getConfigSourceStatus($mapper));
+    $this->assertSame(Lingotek::STATUS_UNTRACKED, $config_translation_service->getConfigSourceStatus($mapper));
 
     // Ensure the UIs show the right statuses.
     $this->goToContentBulkManagementForm('node');
@@ -321,10 +322,10 @@ class LingotekUtilitiesDisassociateAllDocumentsTest extends LingotekTestBase {
 
     // Let's try to disassociate then.
     $this->drupalGet('/admin/lingotek/settings');
-    $this->drupalPostForm('admin/lingotek/settings', [], 'Disassociate');
-    $this->assertRaw("Are you sure you want to disassociate everything from Ray Enterprise?");
-    $this->drupalPostForm(NULL, [], 'Disassociate');
-    $this->assertText('All translations have been disassociated.');
+    $this->submitForm([], 'Disassociate');
+    $this->assertSession()->responseContains("Are you sure you want to disassociate everything from Ray Enterprise?");
+    $this->submitForm([], 'Disassociate');
+    $this->assertSession()->pageTextContains('All translations have been disassociated.');
 
     // We create manually the given data for setting up an incorrect status.
     $metadata = LingotekContentMetadata::create();
@@ -335,10 +336,10 @@ class LingotekUtilitiesDisassociateAllDocumentsTest extends LingotekTestBase {
 
     // Let's try to disassociate then.
     $this->drupalGet('/admin/lingotek/settings');
-    $this->drupalPostForm('admin/lingotek/settings', [], 'Disassociate');
-    $this->assertRaw("Are you sure you want to disassociate everything from Ray Enterprise?");
-    $this->drupalPostForm(NULL, [], 'Disassociate');
-    $this->assertText('All translations have been disassociated.');
+    $this->submitForm([], 'Disassociate');
+    $this->assertSession()->responseContains("Are you sure you want to disassociate everything from Ray Enterprise?");
+    $this->submitForm([], 'Disassociate');
+    $this->assertSession()->pageTextContains('All translations have been disassociated.');
   }
 
   protected function createAndCancelANode() {
@@ -366,14 +367,15 @@ class LingotekUtilitiesDisassociateAllDocumentsTest extends LingotekTestBase {
     $edit['name[0][value]'] = 'Llamas are cool';
     $edit['description[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
+    $this->drupalGet("admin/structure/taxonomy/manage/$bundle/add");
 
-    $this->drupalPostForm("admin/structure/taxonomy/manage/$bundle/add", $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
     $this->goToContentBulkManagementForm('taxonomy_term');
     $edit = [
       'table[2]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCancel('taxonomy_term'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
   }
 
   protected function createAndCancelANodeType() {
@@ -388,7 +390,7 @@ class LingotekUtilitiesDisassociateAllDocumentsTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCancel('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
   }
 
   protected function createAndCancelAConfig() {
@@ -401,7 +403,7 @@ class LingotekUtilitiesDisassociateAllDocumentsTest extends LingotekTestBase {
       'table[system.site_maintenance_mode]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCancel('config'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
   }
 
 }

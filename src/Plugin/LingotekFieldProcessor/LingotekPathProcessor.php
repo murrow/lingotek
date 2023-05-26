@@ -93,7 +93,7 @@ class LingotekPathProcessor extends PluginBase implements LingotekFieldProcessor
   public function extract(ContentEntityInterface &$entity, string $field_name, FieldDefinitionInterface $field_definition, array &$data, array &$visited = [], string $revision_mode = LingotekContentTranslationEntityRevisionResolver::RESOLVE_LATEST_TRANSLATION_AFFECTED) {
     if ($entity->id()) {
       $source = '/' . $entity->toUrl()->getInternalPath();
-      /** @var \Drupal\Core\Entity\EntityStorageInterface $aliasStorage */
+      /** @var \Drupal\Core\Entity\EntityStorageInterface $alias_storage */
       $alias_storage = $this->entityTypeManager->getStorage('path_alias');
       /** @var \Drupal\path_alias\PathAliasInterface[] $paths */
       $paths = $alias_storage->loadByProperties([
@@ -121,7 +121,7 @@ class LingotekPathProcessor extends PluginBase implements LingotekFieldProcessor
   public function store(ContentEntityInterface &$translation, string $langcode, ContentEntityInterface &$revision, string $field_name, FieldDefinitionInterface $field_definition, array &$field_data) {
     $stored = FALSE;
     $source = '/' . $revision->toUrl()->getInternalPath();
-    /** @var \Drupal\Core\Entity\EntityStorageInterface $aliasStorage */
+    /** @var \Drupal\Core\Entity\EntityStorageInterface $alias_storage */
     $alias_storage = $this->entityTypeManager->getStorage('path_alias');
     /** @var \Drupal\path_alias\PathAliasInterface[] $original_paths */
     $original_paths = $alias_storage->loadByProperties(['path' => $source, 'langcode' => $revision->getUntranslated()->language()->getId()]);

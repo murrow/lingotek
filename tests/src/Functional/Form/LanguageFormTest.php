@@ -20,7 +20,7 @@ class LanguageFormTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['lingotek', 'lingotek_test'];
+  protected static $modules = ['lingotek', 'lingotek_test'];
 
   /**
    * {@inheritdoc}
@@ -48,13 +48,13 @@ class LanguageFormTest extends BrowserTestBase {
     $edit = [
       'predefined_langcode' => 'de',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Add language');
+    $this->submitForm($edit, 'Add language');
 
     // Click on edit for German.
     $this->clickLink('Edit', 1);
 
     // Assert that the locale is correct.
-    $this->assertFieldByName('lingotek_locale', 'de-DE', 'The Lingotek locale is set correctly.');
+    $this->assertSession()->fieldValueEquals('lingotek_locale', 'de-DE');
   }
 
   /**
@@ -67,9 +67,9 @@ class LanguageFormTest extends BrowserTestBase {
     $this->clickLink('Edit', 1);
 
     // Assert that the locale is correct.
-    $this->assertFieldByName('lingotek_locale', 'de-DE', 'The Lingotek locale is set correctly.');
-    $this->drupalPostForm(NULL, ['name' => 'German (Germany)'], 'Save language');
-    $this->assertText('German (Germany)');
+    $this->assertSession()->fieldValueEquals('lingotek_locale', 'de-DE');
+    $this->submitForm(['name' => 'German (Germany)'], 'Save language');
+    $this->assertSession()->pageTextContains('German (Germany)');
   }
 
   /**
@@ -85,10 +85,10 @@ class LanguageFormTest extends BrowserTestBase {
     $this->clickLink('Edit', 1);
 
     // Assert that the locale is correct.
-    $this->assertFieldByName('lingotek_locale', 'de-DE', 'The Lingotek locale is set correctly.');
-    $this->drupalPostForm(NULL, ['name' => 'German (Germany)'], 'Save language');
-    $this->assertText('German (Germany)');
-    $this->assertText("The Lingotek locale has not been validated.");
+    $this->assertSession()->fieldValueEquals('lingotek_locale', 'de-DE');
+    $this->submitForm(['name' => 'German (Germany)'], 'Save language');
+    $this->assertSession()->pageTextContains('German (Germany)');
+    $this->assertSession()->pageTextContains("The Lingotek locale has not been validated.");
   }
 
   /**
@@ -97,10 +97,10 @@ class LanguageFormTest extends BrowserTestBase {
   public function testAddingCustomLanguage() {
     // Check that there is a select for locales.
     $this->drupalGet('admin/config/regional/language/add');
-    $this->assertField('lingotek_locale', 'There is a field for adding the Lingotek locale.');
+    $this->assertSession()->fieldExists('lingotek_locale', 'There is a field for adding the Lingotek locale.');
 
     // Assert that the locale is empty.
-    $this->assertFieldByName('lingotek_locale', '', 'The Lingotek locale is empty by default.');
+    $this->assertSession()->fieldValueEquals('lingotek_locale', '');
     // The Lingotek locale is enabled by default.
     $this->getSession()->getPage()->hasUncheckedField('lingotek_disabled');
 
@@ -111,18 +111,18 @@ class LanguageFormTest extends BrowserTestBase {
       'direction' => 'ltr',
       'lingotek_locale' => 'es-ES',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Add custom language');
-    $this->assertText('The language Spanish (Germany) has been created and can now be used.');
+    $this->submitForm($edit, 'Add custom language');
+    $this->assertSession()->pageTextContains('The language Spanish (Germany) has been created and can now be used.');
 
     // Ensure the language is created and with the right locale.
     $language = ConfigurableLanguage::load('es-DE');
-    $this->assertEqual('es_ES', $language->getThirdPartySetting('lingotek', 'locale'), 'The Lingotek locale has been saved successfully.');
+    $this->assertEquals('es_ES', $language->getThirdPartySetting('lingotek', 'locale'), 'The Lingotek locale has been saved successfully.');
 
     // Ensure the locale and langcode are correctly mapped.
-    /** @var LanguageLocaleMapperInterface $locale_mapper */
+    /** @var \Drupal\lingotek\LanguageLocaleMapperInterface $locale_mapper */
     $locale_mapper = \Drupal::service('lingotek.language_locale_mapper');
-    $this->assertEqual('es_ES', $locale_mapper->getLocaleForLangcode('es-DE'), 'The language locale mapper correctly guesses the locale.');
-    $this->assertEqual('es-DE', $locale_mapper->getConfigurableLanguageForLocale('es_ES')->getId(), 'The language locale mapper correctly guesses the langcode.');
+    $this->assertEquals('es_ES', $locale_mapper->getLocaleForLangcode('es-DE'), 'The language locale mapper correctly guesses the locale.');
+    $this->assertEquals('es-DE', $locale_mapper->getConfigurableLanguageForLocale('es_ES')->getId(), 'The language locale mapper correctly guesses the langcode.');
   }
 
   /**
@@ -142,7 +142,7 @@ class LanguageFormTest extends BrowserTestBase {
     $edit = [
       'lingotek_disabled' => TRUE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save language');
+    $this->submitForm($edit, 'Save language');
 
     // Ensure the language is disabled.
     $language = ConfigurableLanguage::load('es-DE');
@@ -175,7 +175,7 @@ class LanguageFormTest extends BrowserTestBase {
     $edit = [
       'lingotek_disabled' => FALSE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save language');
+    $this->submitForm($edit, 'Save language');
 
     // Ensure the language is disabled.
     $language = ConfigurableLanguage::load('de-at');
@@ -200,16 +200,16 @@ class LanguageFormTest extends BrowserTestBase {
     $this->clickLink('Edit', 1);
 
     // Assert that the locale is correct.
-    $this->assertFieldByName('lingotek_locale', 'de-AT', 'The Lingotek locale is set to the right language.');
+    $this->assertSession()->fieldValueEquals('lingotek_locale', 'de-AT');
 
     // Edit the locale.
     $edit = ['lingotek_locale' => 'de-DE'];
-    $this->drupalPostForm(NULL, $edit, 'Save language');
+    $this->submitForm($edit, 'Save language');
 
     // Click again on edit for German (AT).
     $this->clickLink('Edit', 1);
     // Assert that the locale is correct.
-    $this->assertFieldByName('lingotek_locale', 'de-DE', 'The Lingotek locale is set to the right language after editing.');
+    $this->assertSession()->fieldValueEquals('lingotek_locale', 'de-DE');
   }
 
   /**
@@ -223,12 +223,12 @@ class LanguageFormTest extends BrowserTestBase {
     $this->clickLink('Edit', 1);
 
     // Assert that the locale is correct.
-    $this->assertFieldByName('lingotek_locale', 'de-AT', 'The Lingotek locale is set to the right language.');
+    $this->assertSession()->fieldValueEquals('lingotek_locale', 'de-AT');
 
     // Edit the locale.
     $edit = ['lingotek_locale' => 'de-IN'];
-    $this->drupalPostForm(NULL, $edit, 'Save language');
-    $this->assertText('The Lingotek locale de-IN does not exist.');
+    $this->submitForm($edit, 'Save language');
+    $this->assertSession()->pageTextContains('The Lingotek locale de-IN does not exist.');
   }
 
   /**
@@ -242,17 +242,17 @@ class LanguageFormTest extends BrowserTestBase {
     $this->clickLink('Edit', 1);
 
     // Assert that the locale is correct.
-    $this->assertFieldByName('lingotek_locale', 'de-AT', 'The Lingotek locale is set to the right language.');
+    $this->assertSession()->fieldValueEquals('lingotek_locale', 'de-AT');
 
     // Edit the locale.
     $edit = ['lingotek_locale' => 'de_AT'];
-    $this->drupalPostForm(NULL, $edit, 'Save language');
+    $this->submitForm($edit, 'Save language');
 
     // Click on edit for German (AT).
     $this->clickLink('Edit', 1);
 
     // Assert that the locale is correct.
-    $this->assertFieldByName('lingotek_locale', 'de-AT', 'The Lingotek locale is set to the right language.');
+    $this->assertSession()->fieldValueEquals('lingotek_locale', 'de-AT');
   }
 
   /**
@@ -267,10 +267,10 @@ class LanguageFormTest extends BrowserTestBase {
     $this->clickLink('Edit', 1);
 
     // Make sure that the autocomplete library is added.
-    $this->assertRaw('core/misc/autocomplete.js');
+    $this->assertSession()->responseContains('core/misc/autocomplete.js');
 
     // Assert that the locale is correct.
-    $this->assertFieldByName('lingotek_locale', 'de-DE', 'The Lingotek locale is set correctly.');
+    $this->assertSession()->fieldValueEquals('lingotek_locale', 'de-DE');
 
     // Check the autocomplete route.
     $result = $this->xpath('//input[@name="lingotek_locale" and contains(@data-autocomplete-path, "admin/lingotek/supported-locales-autocomplete")]');

@@ -61,6 +61,13 @@ class FieldLinkDetectorTest extends UnitTestCase {
   protected $lingotekConfiguration;
 
   /**
+   * The entityType MockOject.
+   *
+   * @var \Drupal\Core\Entity\EntityType|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $entityType;
+
+  /**
    * {@inheritdoc}
    */
   protected function setUp(): void {

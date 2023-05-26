@@ -21,7 +21,7 @@ class LingotekMediaBulkFormTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'block',
     'node',
     'image',
@@ -83,18 +83,19 @@ class LingotekMediaBulkFormTest extends LingotekTestBase {
     $edit['langcode[0][value]'] = 'en';
     $edit['files[field_media_image_0]'] = \Drupal::service('file_system')
       ->realpath($test_image->uri);
+    $this->drupalGet('media/add/image');
 
-    $this->drupalPostForm('media/add/image', $edit, 'field_media_image_0_upload_button');
+    $this->submitForm($edit, 'field_media_image_0_upload_button');
 
     unset($edit['files[field_media_image_0]']);
     $edit['field_media_image[0][alt]'] = 'Llamas are cool';
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
 
     $this->goToContentBulkManagementForm('media');
 
-    $this->assertText('Thumbnail');
+    $this->assertSession()->pageTextContains('Thumbnail');
     $elements = $this->xpath("//img[@alt='Llamas are cool']");
-    $this->assertEqual(1, count($elements), "Found thumbnail.");
+    $this->assertEquals(1, count($elements), "Found thumbnail.");
   }
 
 }

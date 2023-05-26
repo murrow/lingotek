@@ -153,6 +153,7 @@ class LingotekDashboardController extends LingotekControllerBase {
           if (isset($language, $lingotek_locale, $direction)) {
             // First, we try if there is a disabled language with that locale.
             $existingLanguage = $languageStorage->getQuery()
+              ->accessCheck(FALSE)
               ->condition('third_party_settings.lingotek.disabled', TRUE)
               ->condition('third_party_settings.lingotek.locale', $lingotek_locale)
               ->execute();
@@ -160,6 +161,7 @@ class LingotekDashboardController extends LingotekControllerBase {
               // If we didn't find it, maybe the language was the default
               // locale, and it didn't have a locale stored.
               $existingLanguage = $languageStorage->getQuery()
+                ->accessCheck(FALSE)
                 ->condition('third_party_settings.lingotek.disabled', TRUE)
                 ->condition('id', LingotekLocale::convertLingotek2Drupal($lingotek_locale, FALSE))
                 ->execute();
@@ -223,7 +225,7 @@ class LingotekDashboardController extends LingotekControllerBase {
         break;
     }
 
-    return JsonResponse::create($response, $http_status_code);
+    return (new JsonResponse($response, $http_status_code));
   }
 
   private function getLanguageDetails($lingotek_locale_requested = NULL) {
@@ -351,6 +353,7 @@ class LingotekDashboardController extends LingotekControllerBase {
 
   protected function getSourceTypeCount($langcode, $type) {
     $count = $this->entityTypeManager->getStorage($type)->getQuery()
+      ->accessCheck(FALSE)
       ->condition('langcode', $langcode)
       ->condition('default_langcode', 1)
       ->count()
@@ -369,6 +372,7 @@ class LingotekDashboardController extends LingotekControllerBase {
 
   protected function getTargetTypeCount($langcode, $type) {
     $count = $this->entityTypeManager->getStorage($type)->getQuery()
+      ->accessCheck(FALSE)
       ->condition('langcode', $langcode)
       ->condition('default_langcode', 0)
       ->count()

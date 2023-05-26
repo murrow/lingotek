@@ -16,10 +16,10 @@ class LingotekConfigEntityBulkProfileTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'node'];
+  protected static $modules = ['block', 'node'];
 
   /**
-   * @var \Drupal\node\Entity\NodeInterface
+   * @var \Drupal\node\NodeInterface
    */
   protected $node;
 
@@ -62,42 +62,42 @@ class LingotekConfigEntityBulkProfileTest extends LingotekTestBase {
       'table[article]' => TRUE,
       $this->getBulkOperationFormName() => 'change_profile:automatic',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check that there are three nodes with the Automatic Profile
     $automatic_profile = $this->xpath("//td[contains(text(), 'Automatic')]");
-    $this->assertEqual(count($automatic_profile), 1, 'Automatic Profile set');
+    $this->assertEquals(count($automatic_profile), 1, 'Automatic Profile set');
 
     $edit = [
       'table[article]' => TRUE,
       $this->getBulkOperationFormName() => 'change_profile:manual',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check that there is one node with the Manual Profile
     // Check that there are two nodes with the Automatic Profile
     $manual_profile = $this->xpath("//td[contains(text(), 'Manual')]");
-    $this->assertEqual(count($manual_profile), 1, 'Manual Profile set');
+    $this->assertEquals(count($manual_profile), 1, 'Manual Profile set');
 
     $edit = [
       'table[article]' => TRUE,
       $this->getBulkOperationFormName() => 'change_profile:disabled',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check that there are three nodes with the Disabled Profile
     $disabled_profile = $this->xpath("//td[contains(text(), 'Disabled')]");
-    $this->assertEqual(count($disabled_profile), 1, 'Disabled Profile set');
+    $this->assertEquals(count($disabled_profile), 1, 'Disabled Profile set');
 
     $edit = [
       'table[article]' => TRUE,
       $this->getBulkOperationFormName() => 'change_profile:automatic',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check that there are three nodes with the Automatic Profile
     $automatic_profile = $this->xpath("//td[contains(text(), 'Automatic')]");
-    $this->assertEqual(count($automatic_profile), 1, 'Automatic Profile set');
+    $this->assertEquals(count($automatic_profile), 1, 'Automatic Profile set');
   }
 
   /**
@@ -117,17 +117,17 @@ class LingotekConfigEntityBulkProfileTest extends LingotekTestBase {
       'table[article]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForCancel('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $edit = [
       'table[article]' => TRUE,
       $this->getBulkOperationFormName() => 'change_profile:automatic',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // Check that there are three nodes with the Automatic Profile
     $automatic_profile = $this->xpath("//td[contains(text(), 'Automatic')]");
-    $this->assertEqual(count($automatic_profile), 1, 'Automatic Profile set');
+    $this->assertEquals(count($automatic_profile), 1, 'Automatic Profile set');
   }
 
 }

@@ -15,7 +15,7 @@ class LingotekConfigSubscriberTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node'];
+  protected static $modules = ['block', 'node'];
 
   /**
    * {@inheritdoc}
@@ -60,14 +60,14 @@ class LingotekConfigSubscriberTest extends LingotekTestBase {
     $this->clickLink('EN');
 
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->verbose(var_export($data, TRUE));
-    $this->assertText('Title block uploaded successfully');
+    dump(var_export($data, TRUE));
+    $this->assertSession()->pageTextContains('Title block uploaded successfully');
 
     $this->clickLink('ES');
     $this->clickLink('ES');
     $this->clickLink('ES');
 
-    $this->assertText('Translation to es_MX downloaded successfully');
+    $this->assertSession()->pageTextContains('Translation to es_MX downloaded successfully');
 
     // Navigate to the Extend page.
     $this->drupalGet('/admin/modules');
@@ -77,16 +77,16 @@ class LingotekConfigSubscriberTest extends LingotekTestBase {
 
     // Post the form uninstalling the lingotek module.
     $edit = ['uninstall[block]' => '1'];
-    $this->drupalPostForm(NULL, $edit, 'Uninstall');
+    $this->submitForm($edit, 'Uninstall');
 
     // We get an advice and we can confirm.
-    $this->assertText('The following modules will be completely uninstalled from your site, and all data from these modules will be lost!');
+    $this->assertSession()->pageTextContains('The following modules will be completely uninstalled from your site, and all data from these modules will be lost!');
     $this->assertSession()->responseContains('Block');
     $this->assertSession()->responseContains('The listed configuration will be deleted.');
     $this->assertSession()->responseContains('Lingotek Config Metadata');
     $this->assertSession()->responseContains('block.block_1');
 
-    $this->drupalPostForm(NULL, [], 'Uninstall');
+    $this->submitForm([], 'Uninstall');
 
     $this->assertSession()->responseContains('The selected modules have been uninstalled.');
   }

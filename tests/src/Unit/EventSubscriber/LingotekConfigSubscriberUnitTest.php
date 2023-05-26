@@ -25,56 +25,56 @@ namespace Drupal\Tests\lingotek\Unit\EventSubscriber {
     /**
      * The Lingotek content translation service.
      *
-     * @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $translationService;
 
     /**
      * The mapper manager.
      *
-     * @var \Drupal\config_translation\ConfigMapperManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Drupal\config_translation\ConfigMapperManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $mapperManager;
 
     /**
      * A array of configuration mapper instances.
      *
-     * @var \Drupal\config_translation\ConfigMapperInterface[]|\PHPUnit_Framework_MockObject_MockObject[]
+     * @var \Drupal\config_translation\ConfigMapperInterface[]|\PHPUnit\Framework\MockObject\MockObject[]
      */
     protected $mappers;
 
     /**
      * A configuration mapper instance.
      *
-     * @var \Drupal\config_translation\ConfigMapperInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Drupal\config_translation\ConfigMapperInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $mapper;
 
     /**
      * The Lingotek configuration service.
      *
-     * @var \Drupal\lingotek\LingotekConfigurationServiceInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Drupal\lingotek\LingotekConfigurationServiceInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $lingotekConfiguration;
 
     /**
      * Entity manager.
      *
-     * @var \Drupal\Core\Entity\EntityTypeManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Drupal\Core\Entity\EntityTypeManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $entityTypeManager;
 
     /**
      * The entity field manager.
      *
-     * @var \Drupal\Core\Entity\EntityFieldManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Drupal\Core\Entity\EntityFieldManagerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $entityFieldManager;
 
     /**
      * The entity type bundle info.
      *
-     * @var \Drupal\Core\Entity\EntityTypeBundleInfoInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Drupal\Core\Entity\EntityTypeBundleInfoInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $entityTypeBundleInfo;
 

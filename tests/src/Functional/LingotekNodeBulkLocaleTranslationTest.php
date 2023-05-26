@@ -16,12 +16,12 @@ class LingotekNodeBulkLocaleTranslationTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['node', 'comment'];
+  protected static $modules = ['node', 'comment'];
 
   /**
    * The node.
    *
-   * @var \Drupal\node\Entity\NodeInterface
+   * @var \Drupal\node\NodeInterface
    */
   protected $node;
 
@@ -84,14 +84,14 @@ class LingotekNodeBulkLocaleTranslationTest extends LingotekTestBase {
     $this->assertLingotekRequestTranslationLink('es_ES');
     $this->assertLingotekRequestTranslationLink('es_AR');
     $this->clickLink('EN');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request the German (AT) translation.
     $this->assertLingotekRequestTranslationLink('de_AT', 'dummy-document-hash-id');
     $this->clickLink('DE-AT');
-    $this->assertText("Locale 'de_AT' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'de_AT' was added as a translation target for node Llamas are cool.");
     // Check that the requested locale is the right one.
-    $this->assertIdentical('de_AT', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSame('de_AT', \Drupal::state()->get('lingotek.added_target_locale'));
 
     \Drupal::state()->resetCache();
 
@@ -99,29 +99,29 @@ class LingotekNodeBulkLocaleTranslationTest extends LingotekTestBase {
     $this->assertLingotekRequestTranslationLink('es_ES');
     $this->assertLingotekRequestTranslationLink('es_AR');
     $this->clickLink('ES');
-    $this->assertText("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
     // Check that the requested locale is the right one.
-    $this->assertIdentical('es_AR', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSame('es_AR', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $this->assertLingotekCheckTargetStatusLink('es_AR');
     $this->clickLink('ES');
-    $this->assertText('The es_AR translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Llamas are cool is ready for download.');
 
     // Download the Spanish translation.
     $this->assertLingotekDownloadTargetLink('es_AR');
     $this->clickLink('ES');
-    $this->assertText('The translation of node Llamas are cool into es_AR has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_AR has been downloaded.');
 
     // Now the link is to the workbench, and it opens in a new tab.
     $this->assertLingotekWorkbenchLink('es_AR', 'dummy-document-hash-id', 'ES');
 
     // Check that the order of target languages is always alphabetical.
     $target_links = $this->xpath("//a[contains(@class,'language-icon')]");
-    $this->assertEqual(count($target_links), 3, 'The three languages appear as targets');
-    $this->assertEqual('DE-AT', $target_links[0]->getHtml(), 'DE-AT is the first language');
-    $this->assertEqual('ES', $target_links[1]->getHtml(), 'ES is the second language');
-    $this->assertEqual('ES-ES', $target_links[2]->getHtml(), 'ES-ES is the third language');
+    $this->assertEquals(count($target_links), 3, 'The three languages appear as targets');
+    $this->assertEquals('DE-AT', $target_links[0]->getHtml(), 'DE-AT is the first language');
+    $this->assertEquals('ES', $target_links[1]->getHtml(), 'ES is the second language');
+    $this->assertEquals('ES-ES', $target_links[2]->getHtml(), 'ES-ES is the third language');
   }
 
   /**
@@ -149,7 +149,7 @@ class LingotekNodeBulkLocaleTranslationTest extends LingotekTestBase {
     // Request the German (AT) translation.
     $this->assertLingotekRequestTranslationLink('de_AT', 'dummy-document-hash-id');
     $this->clickLink('DE-AT');
-    $this->assertText("Locale 'de_AT' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'de_AT' was added as a translation target for node Llamas are cool.");
 
     // Check that the source status has been updated.
     $this->assertNoLingotekCheckSourceStatusLink();
@@ -180,16 +180,16 @@ class LingotekNodeBulkLocaleTranslationTest extends LingotekTestBase {
     // Request the German (AT) translation.
     $this->assertLingotekRequestTranslationLink('de_AT', 'dummy-document-hash-id');
     $this->clickLink('ES-ES');
-    $this->assertText("Locale 'es_ES' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_ES' was added as a translation target for node Llamas are cool.");
     $this->clickLink('DE-AT');
-    $this->assertText("Locale 'de_AT' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'de_AT' was added as a translation target for node Llamas are cool.");
 
     $key = $this->getBulkSelectionKey('en', 1);
     $edit = [
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForDownloadTranslations('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $this->assertTargetStatus('DE-AT', Lingotek::STATUS_CURRENT);
     $this->assertTargetStatus('ES-ES', Lingotek::STATUS_CURRENT);
@@ -222,16 +222,16 @@ class LingotekNodeBulkLocaleTranslationTest extends LingotekTestBase {
     // Request the German (AT) translation.
     $this->assertLingotekRequestTranslationLink('de_AT', 'dummy-document-hash-id');
     $this->clickLink('ES-ES');
-    $this->assertText("Locale 'es_ES' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_ES' was added as a translation target for node Llamas are cool.");
     $this->clickLink('DE-AT');
-    $this->assertText("Locale 'de_AT' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'de_AT' was added as a translation target for node Llamas are cool.");
 
     $key = $this->getBulkSelectionKey('en', 1);
     $edit = [
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForDownloadTranslations('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $this->assertTargetStatus('DE-AT', Lingotek::STATUS_CURRENT);
     $this->assertTargetStatus('ES-ES', Lingotek::STATUS_CURRENT);

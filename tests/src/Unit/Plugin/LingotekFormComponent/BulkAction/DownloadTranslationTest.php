@@ -66,6 +66,13 @@ class DownloadTranslationTest extends UnitTestCase {
   protected $languageLocaleMapper;
 
   /**
+   * The mocked language manager.
+   *
+   * @var \Drupal\Core\Language\LanguageManagerInterface|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $languageManager;
+
+  /**
    * The mocked Lingotek content translation service.
    *
    * @var \Drupal\lingotek\LingotekContentTranslationServiceInterface|\PHPUnit\Framework\MockObject\MockObject

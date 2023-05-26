@@ -20,7 +20,7 @@ class LingotekNodeMultivaluedFieldTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'image', 'comment'];
+  protected static $modules = ['block', 'node', 'image', 'comment'];
 
   /**
    * The node.
@@ -124,42 +124,42 @@ class LingotekNodeMultivaluedFieldTest extends LingotekTestBase {
 
     // Check that only the translatable fields have been uploaded.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->verbose(var_export($data, TRUE));
+    dump(var_export($data, TRUE));
 
-    $this->assertIdentical($data['foo'][0]['value'], 'Llamas are very cool field 1');
-    $this->assertIdentical($data['foo'][1]['value'], 'Llamas are very cool field 2');
-    $this->assertIdentical($data['foo'][2]['value'], 'Llamas are very cool field 3');
+    $this->assertSame($data['foo'][0]['value'], 'Llamas are very cool field 1');
+    $this->assertSame($data['foo'][1]['value'], 'Llamas are very cool field 2');
+    $this->assertSame($data['foo'][2]['value'], 'Llamas are very cool field 3');
 
     $this->goToContentBulkManagementForm();
 
     // There is a link for checking status.
     $this->clickLink('EN');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request the Spanish translation.
     $this->clickLink('ES');
-    $this->assertText("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText('The es_MX translation for node Llamas are cool is ready for download.');
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains('The es_MX translation for node Llamas are cool is ready for download.');
 
     // This is a hack for avoiding writing different lingotek endpoint mocks.
     \Drupal::state()->set('lingotek.uploaded_content_type', 'node+multivalue0');
 
     // Download the Spanish translation.
     $this->clickLink('ES');
-    $this->assertText('The translation of node Llamas are cool into es_MX has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_MX has been downloaded.');
 
     $this->clickLink('Llamas are cool');
     $this->clickLink('Translate');
     $this->clickLink('Las llamas son chulas');
 
-    $this->assertNoText('Las llamas son muy chulas campo 1');
-    $this->assertNoText('Las llamas son muy chulas campo 2');
-    $this->assertNoText('Las llamas son muy chulas campo 3');
+    $this->assertSession()->pageTextNotContains('Las llamas son muy chulas campo 1');
+    $this->assertSession()->pageTextNotContains('Las llamas son muy chulas campo 2');
+    $this->assertSession()->pageTextNotContains('Las llamas son muy chulas campo 3');
 
     // This is a hack for avoiding writing different lingotek endpoint mocks.
     \Drupal::state()->set('lingotek.uploaded_content_type', 'node+multivalue1');
@@ -172,15 +172,15 @@ class LingotekNodeMultivaluedFieldTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForDownloadTranslation('es', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
 
     $this->clickLink('Llamas are cool');
     $this->clickLink('Translate');
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas campo 1');
-    $this->assertText('Las llamas son muy chulas campo 2');
-    $this->assertText('Las llamas son muy chulas campo 3');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas campo 1');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas campo 2');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas campo 3');
 
     // This is a hack for avoiding writing different lingotek endpoint mocks.
     \Drupal::state()->set('lingotek.uploaded_content_type', 'node+multivalue2');
@@ -193,16 +193,16 @@ class LingotekNodeMultivaluedFieldTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForDownloadTranslation('es', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
 
     $this->clickLink('Llamas are cool');
     $this->clickLink('Translate');
     $this->clickLink('Las llamas son chulas');
 
-    $this->assertText('Las llamas son muy chulas campo 1');
-    $this->assertText('Las llamas son muy chulas con distinto campo 2');
-    $this->assertNoText('Las llamas son muy chulas campo 3');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas campo 1');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas con distinto campo 2');
+    $this->assertSession()->pageTextNotContains('Las llamas son muy chulas campo 3');
 
     // This is a hack for avoiding writing different lingotek endpoint mocks.
     \Drupal::state()->set('lingotek.uploaded_content_type', 'node+multivalue3');
@@ -215,19 +215,19 @@ class LingotekNodeMultivaluedFieldTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForDownloadTranslation('es', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.downloaded_locale'));
 
     $this->clickLink('Llamas are cool');
     $this->clickLink('Translate');
     $this->clickLink('Las llamas son chulas');
 
-    $this->assertText('Las llamas son muy chulas campo 1');
-    $this->assertText('Las llamas son muy chulas con distinto campo 2');
-    $this->assertText('Las llamas son muy chulas con distinto campo 3');
-    $this->assertText('Las llamas son muy chulas con distinto campo 4');
-    $this->assertText('Las llamas son muy chulas con distinto campo 5');
-    $this->assertText('Las llamas son muy chulas con distinto campo 6');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas campo 1');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas con distinto campo 2');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas con distinto campo 3');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas con distinto campo 4');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas con distinto campo 5');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas con distinto campo 6');
   }
 
   /**
@@ -260,11 +260,11 @@ class LingotekNodeMultivaluedFieldTest extends LingotekTestBase {
 
     // Check that only the translatable fields have been uploaded.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->verbose(var_export($data, TRUE));
+    dump(var_export($data, TRUE));
 
-    $this->assertIdentical($data['foo'][0]['value'], '"Llamas are very cool field 1"');
-    $this->assertIdentical($data['foo'][1]['value'], '"Llamas are very cool field 2"');
-    $this->assertIdentical($data['foo'][2]['value'], '"Llamas are very cool field 3"');
+    $this->assertSame($data['foo'][0]['value'], '"Llamas are very cool field 1"');
+    $this->assertSame($data['foo'][1]['value'], '"Llamas are very cool field 2"');
+    $this->assertSame($data['foo'][2]['value'], '"Llamas are very cool field 3"');
 
     $this->goToContentBulkManagementForm();
 
@@ -275,11 +275,11 @@ class LingotekNodeMultivaluedFieldTest extends LingotekTestBase {
     // Request the Spanish translation.
     $this->clickLink('ES');
     $this->assertSession()->pageTextContains("Locale 'es_MX' was added as a translation target for node \"Llamas are cool\".");
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $this->clickLink('ES');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.checked_target_locale'));
     $this->assertSession()->pageTextContains('The es_MX translation for node "Llamas are cool" is ready for download.');
 
     // Download the Spanish translation.
@@ -290,9 +290,9 @@ class LingotekNodeMultivaluedFieldTest extends LingotekTestBase {
     $this->clickLink('Translate');
     $this->clickLink('"Las llamas son chulas"');
 
-    $this->assertNoText('"Las llamas son muy chulas campo 1"');
-    $this->assertNoText('"Las llamas son muy chulas campo 2"');
-    $this->assertNoText('"Las llamas son muy chulas campo 3"');
+    $this->assertSession()->pageTextNotContains('"Las llamas son muy chulas campo 1"');
+    $this->assertSession()->pageTextNotContains('"Las llamas son muy chulas campo 2"');
+    $this->assertSession()->pageTextNotContains('"Las llamas son muy chulas campo 3"');
   }
 
 }

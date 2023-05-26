@@ -37,46 +37,46 @@ class LingotekUnitTest extends UnitTestCase {
   /**
    * The language-locale mapper.
    *
-   * @var \Drupal\lingotek\LanguageLocaleMapperInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\lingotek\LanguageLocaleMapperInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $languageLocaleMapper;
 
   /**
-   * @var \Drupal\lingotek\Remote\LingotekHttpInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\lingotek\Remote\LingotekHttpInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $api;
 
   /**
-   * @var \Drupal\Core\Config\Config|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Config\Config|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $config;
 
   /**
-   * @var \Drupal\Core\Config\Config|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Config\Config|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $accountConfig;
 
   /**
-   * @var \Drupal\Core\Config\Config|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Config\Config|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $configEditable;
 
   /**
-   * @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Config\ConfigFactoryInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $configFactory;
 
   /**
    * The Lingotek Filter manager.
    *
-   * @var \Drupal\lingotek\LingotekFilterManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\lingotek\LingotekFilterManagerInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $lingotekFilterManager;
 
   /**
    * The Lingotek configuration service.
    *
-   * @var \Drupal\lingotek\LingotekConfigurationServiceInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\lingotek\LingotekConfigurationServiceInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $lingotekConfiguration;
 
@@ -86,15 +86,9 @@ class LingotekUnitTest extends UnitTestCase {
   protected function setUp(): void {
     $this->api = $this->createMock(LingotekApiInterface::class);
     $this->languageLocaleMapper = $this->createMock(LanguageLocaleMapperInterface::class);
-    $this->config = $this->getMockBuilder(Config::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-    $this->accountConfig = $this->getMockBuilder(Config::class)
-      ->disableOriginalConstructor()
-      ->getMock();
-    $this->configEditable = $this->getMockBuilder(Config::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->config = $this->createMock(Config::class);
+    $this->accountConfig = $this->createMock(Config::class);
+    $this->configEditable = $this->createMock(Config::class);
 
     $this->lingotekFilterManager = $this->createMock(LingotekFilterManagerInterface::class);
     $this->configFactory = $this->createMock(ConfigFactoryInterface::class);
@@ -127,7 +121,7 @@ class LingotekUnitTest extends UnitTestCase {
       ->method('getVaults');
 
     $vaults = $this->lingotek->getVaults(FALSE);
-    $this->assertArrayEquals($vaults, ['a_vault' => 'A vault']);
+    $this->assertEquals($vaults, ['a_vault' => 'A vault']);
   }
 
   /**
@@ -172,7 +166,7 @@ class LingotekUnitTest extends UnitTestCase {
       ->method('save');
 
     $vaults = $this->lingotek->getVaults(FALSE);
-    $this->assertArrayEquals($vaults, ['a_vault' => 'A vault']);
+    $this->assertEquals($vaults, ['a_vault' => 'A vault']);
   }
 
   /**
@@ -218,7 +212,7 @@ class LingotekUnitTest extends UnitTestCase {
       ->method('save');
 
     $vaults = $this->lingotek->getVaults(TRUE);
-    $this->assertArrayEquals($vaults, ['a_vault' => 'A vault']);
+    $this->assertEquals($vaults, ['a_vault' => 'A vault']);
   }
 
   /**
@@ -277,7 +271,7 @@ class LingotekUnitTest extends UnitTestCase {
       ->method('save');
 
     $filters = $this->lingotek->getFilters(FALSE);
-    $this->assertArrayEquals($filters, ['a_filter' => 'A filter']);
+    $this->assertEquals($filters, ['a_filter' => 'A filter']);
   }
 
   /**
@@ -323,7 +317,7 @@ class LingotekUnitTest extends UnitTestCase {
       ->method('save');
 
     $filters = $this->lingotek->getFilters(TRUE);
-    $this->assertArrayEquals($filters, ['a_filter' => 'A filter']);
+    $this->assertEquals($filters, ['a_filter' => 'A filter']);
   }
 
   /**
@@ -338,7 +332,7 @@ class LingotekUnitTest extends UnitTestCase {
     $this->api->expects($this->never())
       ->method('getProjects');
     $projects = $this->lingotek->getProjects(FALSE);
-    $this->assertArrayEquals($projects, ['a_project' => 'A project']);
+    $this->assertEquals($projects, ['a_project' => 'A project']);
   }
 
   /**
@@ -383,7 +377,7 @@ class LingotekUnitTest extends UnitTestCase {
       ->method('save');
 
     $projects = $this->lingotek->getProjects(FALSE);
-    $this->assertArrayEquals($projects, ['a_project' => 'A project']);
+    $this->assertEquals($projects, ['a_project' => 'A project']);
   }
 
   /**
@@ -429,16 +423,14 @@ class LingotekUnitTest extends UnitTestCase {
       ->method('save');
 
     $projects = $this->lingotek->getProjects(TRUE);
-    $this->assertArrayEquals($projects, ['a_project' => 'A project']);
+    $this->assertEquals($projects, ['a_project' => 'A project']);
   }
 
   /**
    * @covers ::uploadDocument
    */
   public function testUploadDocument() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_ACCEPTED);
@@ -767,9 +759,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::updateDocument
    */
   public function testUpdateDocumentBC() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_ACCEPTED);
@@ -994,9 +984,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::addTarget
    */
   public function testAddTarget() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_CREATED);
@@ -1089,9 +1077,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::addTarget
    */
   public function testAddTargetPaymentRequired() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_PAYMENT_REQUIRED);
@@ -1131,9 +1117,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::addTarget
    */
   public function testAddTargetGone() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_GONE);
@@ -1171,9 +1155,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::addTarget
    */
   public function testAddTargetLocked() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_LOCKED);
@@ -1212,9 +1194,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::addTarget
    */
   public function testAddTargetProcessedWordsLimit() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_TOO_MANY_REQUESTS);
@@ -1255,9 +1235,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::cancelDocument
    */
   public function testCancelDocument() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->at(0))
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_NO_CONTENT);
@@ -1308,9 +1286,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::cancelDocumentTarget
    */
   public function testCancelDocumentTarget() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->at(0))
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_NO_CONTENT);
@@ -1355,9 +1331,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::getDocumentTranslationStatus
    */
   public function testGetDocumentTranslationStatus() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_OK);
@@ -1419,9 +1393,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::getDocumentTranslationStatus
    */
   public function testGetDocumentTranslationStatusWithStrings() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_OK);
@@ -1483,9 +1455,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::getDocumentTranslationStatus
    */
   public function testGetDocumentTranslationStatusCancelled() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_OK);
@@ -1547,9 +1517,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::uploadDocument
    */
   public function testUploadWithNoMetadataLeaked() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_ACCEPTED);
@@ -1590,9 +1558,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::updateDocument
    */
   public function testUpdateWithNoMetadataLeaked() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_ACCEPTED);
@@ -1637,9 +1603,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::updateDocument
    */
   public function testUpdateDocument() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $this->lingotekFilterManager->expects($this->any())
       ->method('getFilterId')
       ->willReturn('4f91482b-5aa1-4a4a-a43f-712af7b39625');
@@ -1690,9 +1654,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::updateDocument
    */
   public function testUpdateDocumentManualProfile() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_ACCEPTED);
@@ -1762,9 +1724,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::updateDocument
    */
   public function testUpdateDocumentPaymentRequired() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $this->lingotekFilterManager->expects($this->any())
       ->method('getFilterId')
       ->willReturn('4f91482b-5aa1-4a4a-a43f-712af7b39625');
@@ -1814,9 +1774,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::updateDocument
    */
   public function testUpdateDocumentGone() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $this->lingotekFilterManager->expects($this->any())
       ->method('getFilterId')
       ->willReturn('4f91482b-5aa1-4a4a-a43f-712af7b39625');
@@ -1866,9 +1824,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::updateDocument
    */
   public function testUpdateDocumentLocked() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $this->lingotekFilterManager->expects($this->any())
       ->method('getFilterId')
       ->willReturn('4f91482b-5aa1-4a4a-a43f-712af7b39625');
@@ -1919,9 +1875,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers::updateDocument
    */
   public function testUpdateDocumentProcessedWordsLimit() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $this->lingotekFilterManager->expects($this->any())
       ->method('getFilterId')
       ->willReturn('4f91482b-5aa1-4a4a-a43f-712af7b39625');
@@ -1972,9 +1926,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::uploadDocument
    */
   public function testUploadDocumentPaymentRequired() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $this->lingotekFilterManager->expects($this->any())
       ->method('getFilterId')
       ->willReturn('4f91482b-5aa1-4a4a-a43f-712af7b39625');
@@ -2026,9 +1978,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::uploadDocument
    */
   public function testUploadDocumentProcessedWordsLimit() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
 
     $this->lingotekFilterManager->expects($this->any())
       ->method('getFilterId')
@@ -2082,9 +2032,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::downloadDocument
    */
   public function testDownloadDocument() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_OK);
@@ -2125,9 +2073,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @covers ::downloadDocument
    */
   public function testDownloadDocumentGone() {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn(Response::HTTP_GONE);
@@ -2168,9 +2114,7 @@ class LingotekUnitTest extends UnitTestCase {
    * @dataProvider dataProviderGetProcessStatus
    */
   public function testGetProcessStatus($httpCode, $status, $progress, $expected) {
-    $response = $this->getMockBuilder(ResponseInterface::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $response = $this->createMock(ResponseInterface::class);
     $response->expects($this->any())
       ->method('getStatusCode')
       ->willReturn($httpCode);

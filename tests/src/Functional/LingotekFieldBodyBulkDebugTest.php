@@ -14,7 +14,7 @@ class LingotekFieldBodyBulkDebugTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'field_ui'];
+  protected static $modules = ['block', 'node', 'field_ui'];
 
   /**
    * {@inheritdoc}
@@ -52,7 +52,7 @@ class LingotekFieldBodyBulkDebugTest extends LingotekTestBase {
 
     // Enable the debug operations.
     $this->drupalGet('admin/lingotek/settings');
-    $this->drupalPostForm(NULL, [], t('Enable debug operations'));
+    $this->submitForm([], t('Enable debug operations'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -68,7 +68,7 @@ class LingotekFieldBodyBulkDebugTest extends LingotekTestBase {
 
     // Enable the debug operations.
     $this->drupalGet('admin/lingotek/settings');
-    $this->drupalPostForm(NULL, [], t('Enable debug operations'));
+    $this->submitForm([], t('Enable debug operations'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm('node_fields');
@@ -77,24 +77,24 @@ class LingotekFieldBodyBulkDebugTest extends LingotekTestBase {
       'table[node.article.body]' => TRUE,
       $this->getBulkOperationFormName() => 'change_profile:manual',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $edit = [
       'table[node.article.body]' => TRUE,
       $this->getBulkOperationFormName() => 'debug_export',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertText('Exports available');
+    $this->assertSession()->pageTextContains('Exports available');
     // Download the file.
     $this->clickLink('config.node.article.body.json');
 
     $response = json_decode($this->getSession()->getPage()->getContent(), TRUE);
-    $this->assertIdentical('Body', $response['field.field.node.article.body']['label']);
-    $this->assertIdentical('', $response['field.field.node.article.body']['description']);
-    $this->assertIdentical('node.article.body (config): Body', $response['_debug']['title']);
-    $this->assertIdentical('manual', $response['_debug']['profile']);
-    $this->assertIdentical('en_US', $response['_debug']['source_locale']);
+    $this->assertSame('Body', $response['field.field.node.article.body']['label']);
+    $this->assertSame('', $response['field.field.node.article.body']['description']);
+    $this->assertSame('node.article.body (config): Body', $response['_debug']['title']);
+    $this->assertSame('manual', $response['_debug']['profile']);
+    $this->assertSame('en_US', $response['_debug']['source_locale']);
   }
 
 }

@@ -22,7 +22,7 @@ class LingotekNodeLayoutBuilderSymmetricTranslationTest extends LingotekTestBase
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'block',
     'block_content',
     'node',
@@ -134,7 +134,7 @@ class LingotekNodeLayoutBuilderSymmetricTranslationTest extends LingotekTestBase
 
     $edit['langcode[0][value]'] = 'en';
 
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
 
     // Add a block with a custom label.
     $page->clickLink('Layout');
@@ -197,12 +197,12 @@ class LingotekNodeLayoutBuilderSymmetricTranslationTest extends LingotekTestBase
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(\Drupal::request()
+    $this->assertSame(\Drupal::request()
       ->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('manual', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('manual', $used_profile, 'The automatic profile was used.');
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -264,7 +264,7 @@ class LingotekNodeLayoutBuilderSymmetricTranslationTest extends LingotekTestBase
 
     $edit['langcode[0][value]'] = 'en';
 
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
 
     // Add a block with a custom label.
     $page->clickLink('Layout');
@@ -324,12 +324,12 @@ class LingotekNodeLayoutBuilderSymmetricTranslationTest extends LingotekTestBase
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(\Drupal::request()
+    $this->assertSame(\Drupal::request()
       ->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('manual', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('manual', $used_profile, 'The automatic profile was used.');
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -381,8 +381,8 @@ class LingotekNodeLayoutBuilderSymmetricTranslationTest extends LingotekTestBase
     // From the manage display page, go to manage the layout.
     foreach ($nodeTypes as $nodeType) {
       $this->drupalGet("admin/structure/types/manage/$nodeType/display/default");
-      $this->drupalPostForm(NULL, ['layout[enabled]' => TRUE], 'Save');
-      $this->drupalPostForm(NULL, ['layout[allow_custom]' => TRUE], 'Save');
+      $this->submitForm(['layout[enabled]' => TRUE], 'Save');
+      $this->submitForm(['layout[allow_custom]' => TRUE], 'Save');
     }
   }
 

@@ -33,7 +33,7 @@ class TargetStatusTest extends UnitTestCase {
   /**
    * The connection object on which to run queries.
    *
-   * @var \Drupal\Core\Database\Connection|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Database\Connection|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $connection;
 
@@ -85,9 +85,7 @@ class TargetStatusTest extends UnitTestCase {
   protected function setUp(): void {
     parent::setUp();
 
-    $this->connection = $this->getMockBuilder(Connection::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->connection = $this->createMock(Connection::class);
 
     $this->entityType = $this->createMock(ContentEntityTypeInterface::class);
     $this->entityType->expects($this->any())
@@ -181,7 +179,7 @@ class TargetStatusTest extends UnitTestCase {
       ->with('lingotek_content_metadata')
       ->willReturn($metadata);
 
-    $subquery = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $subquery = $this->createMock(PagerSelectExtender::class);
     $this->connection->expects($this->once())
       ->method('select')
       ->with('entity_datatable', 'entity_table')
@@ -207,9 +205,9 @@ class TargetStatusTest extends UnitTestCase {
       ->with('translation_target_status.translation_status_value', ['CURRENT'], '=')
       ->willReturnSelf();
 
-    $unionQuery = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $unionQuery = $this->createMock(PagerSelectExtender::class);
 
-    $select = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $select = $this->createMock(PagerSelectExtender::class);
     $select->expects($this->once())
       ->method('condition')
       ->with('entity_table.entity_id', $subquery, 'IN')

@@ -18,7 +18,7 @@ class LingotekNodeBulkViewsTranslationTest extends LingotekNodeBulkTranslationTe
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'views'];
+  protected static $modules = ['block', 'node', 'views'];
 
   /**
    * {@inheritdoc}
@@ -74,8 +74,8 @@ class LingotekNodeBulkViewsTranslationTest extends LingotekNodeBulkTranslationTe
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -90,10 +90,10 @@ class LingotekNodeBulkViewsTranslationTest extends LingotekNodeBulkTranslationTe
       $key => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForRequestTranslation('it', 'node'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // But the disabled language won't be requested.
-    $this->assertText('Cannot request language Italian (it). That language is not enabled for Lingotek translation.');
+    $this->assertSession()->pageTextContains('Cannot request language Italian (it). That language is not enabled for Lingotek translation.');
   }
 
   /**
@@ -101,7 +101,7 @@ class LingotekNodeBulkViewsTranslationTest extends LingotekNodeBulkTranslationTe
    */
   protected function assertSelectionIsKept(string $key) {
     // No valid selection, so permission denied message.
-    $this->assertText('You are not authorized to access this page.');
+    $this->assertSession()->pageTextContains('You are not authorized to access this page.');
   }
 
   /**
@@ -118,16 +118,16 @@ class LingotekNodeBulkViewsTranslationTest extends LingotekNodeBulkTranslationTe
       $status_target = $this->xpath("//a[contains(@class,'language-icon') and contains(@class,'source-" . strtolower($status) . "')  and contains(text(), '" . strtoupper($language) . "')]");
       // If not found, maybe it didn't have a link.
       if (count($status_target) === 1) {
-        $this->assertEqual(count($status_target), 1, 'The source ' . strtoupper($language) . ' has been marked with status ' . strtolower($status) . '.');
+        $this->assertEquals(count($status_target), 1, 'The source ' . strtoupper($language) . ' has been marked with status ' . strtolower($status) . '.');
       }
       else {
         $status_target = $this->xpath("//span[contains(@class,'language-icon') and contains(@class,'source-" . strtolower($status) . "')  and contains(text(), '" . strtoupper($language) . "')]");
         if (count($status_target) === 1) {
-          $this->assertEqual(count($status_target), 1, 'The source ' . strtoupper($language) . ' has been marked with status ' . strtolower($status) . '.');
+          $this->assertEquals(count($status_target), 1, 'The source ' . strtoupper($language) . ' has been marked with status ' . strtolower($status) . '.');
         }
         else {
           $status_target = $this->xpath("//span[contains(@class,'language-icon')]");
-          $this->assertEqual(count($status_target), 0, 'The source ' . strtoupper($language) . ' has been marked with status ' . strtolower($status) . '.');
+          $this->assertEquals(count($status_target), 0, 'The source ' . strtoupper($language) . ' has been marked with status ' . strtolower($status) . '.');
         }
       }
     }
@@ -135,11 +135,11 @@ class LingotekNodeBulkViewsTranslationTest extends LingotekNodeBulkTranslationTe
       $status_target = $this->xpath("//a[contains(@class,'language-icon') and contains(@class,'source-" . strtolower($status) . "')  and contains(text(), '" . strtoupper($language) . "')]");
       // If not found, maybe it didn't have a link.
       if (count($status_target) === 1) {
-        $this->assertEqual(count($status_target), 1, 'The source ' . strtoupper($language) . ' has been marked with status ' . strtolower($status) . '.');
+        $this->assertEquals(count($status_target), 1, 'The source ' . strtoupper($language) . ' has been marked with status ' . strtolower($status) . '.');
       }
       else {
         $status_target = $this->xpath("//span[contains(@class,'language-icon') and contains(@class,'source-" . strtolower($status) . "')  and contains(text(), '" . strtoupper($language) . "')]");
-        $this->assertEqual(count($status_target), 1, 'The source ' . strtoupper($language) . ' has been marked with status ' . strtolower($status) . '.');
+        $this->assertEquals(count($status_target), 1, 'The source ' . strtoupper($language) . ' has been marked with status ' . strtolower($status) . '.');
       }
     }
   }

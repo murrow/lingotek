@@ -18,7 +18,7 @@ class TargetSecondaryActionsEventTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['system', 'block', 'node', 'lingotek_form_test', 'lingotek_secondary_actions_test'];
+  protected static $modules = ['system', 'block', 'node', 'lingotek_form_test', 'lingotek_secondary_actions_test'];
 
   /**
    * {@inheritdoc}

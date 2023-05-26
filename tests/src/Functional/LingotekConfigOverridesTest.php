@@ -25,14 +25,14 @@ class LingotekConfigOverridesTest extends LingotekTestBase {
 
     // Container was not rebuilt yet.
     $defaults = \Drupal::service('lingotek')->getDefaults();
-    $this->assertIdentical('test_community', $defaults['community'], 'Default community could be overridden by settings.php');
+    $this->assertSame('test_community', $defaults['community'], 'Default community could be overridden by settings.php');
 
     // Editing settings.php forces us to rebuild the container.
     $GLOBALS['config']['lingotek.account']['default']['community'] = 'def';
     $this->rebuildContainer();
 
     $defaults = \Drupal::service('lingotek')->getDefaults();
-    $this->assertIdentical('def', $defaults['community'], 'Default community could be overridden by settings.php');
+    $this->assertSame('def', $defaults['community'], 'Default community could be overridden by settings.php');
   }
 
   public function testDefaultProjectOverride() {
@@ -40,14 +40,14 @@ class LingotekConfigOverridesTest extends LingotekTestBase {
 
     // Container was not rebuilt yet.
     $defaults = \Drupal::service('lingotek')->getDefaults();
-    $this->assertIdentical('test_project', $defaults['project'], 'Default project could be overridden by settings.php');
+    $this->assertSame('test_project', $defaults['project'], 'Default project could be overridden by settings.php');
 
     // Editing settings.php forces us to rebuild the container.
     $GLOBALS['config']['lingotek.account']['default']['project'] = 'def';
     $this->rebuildContainer();
 
     $defaults = \Drupal::service('lingotek')->getDefaults();
-    $this->assertIdentical('def', $defaults['project'], 'Default project could be overridden by settings.php');
+    $this->assertSame('def', $defaults['project'], 'Default project could be overridden by settings.php');
   }
 
   public function testDefaultWorkflowOverride() {
@@ -55,14 +55,14 @@ class LingotekConfigOverridesTest extends LingotekTestBase {
 
     // Container was not rebuilt yet.
     $defaults = \Drupal::service('lingotek')->getDefaults();
-    $this->assertIdentical('test_workflow', $defaults['workflow'], 'Default workflow could be overridden by settings.php');
+    $this->assertSame('test_workflow', $defaults['workflow'], 'Default workflow could be overridden by settings.php');
 
     // Editing settings.php forces us to rebuild the container.
     $GLOBALS['config']['lingotek.account']['default']['workflow'] = 'def';
     $this->rebuildContainer();
 
     $defaults = \Drupal::service('lingotek')->getDefaults();
-    $this->assertIdentical('def', $defaults['workflow'], 'Default workflow could be overridden by settings.php');
+    $this->assertSame('def', $defaults['workflow'], 'Default workflow could be overridden by settings.php');
   }
 
   public function testDefaultVaultOverride() {
@@ -70,14 +70,14 @@ class LingotekConfigOverridesTest extends LingotekTestBase {
 
     // Container was not rebuilt yet.
     $defaults = \Drupal::service('lingotek')->getDefaults();
-    $this->assertIdentical('test_vault', $defaults['vault'], 'Default vault could be overridden by settings.php');
+    $this->assertSame('test_vault', $defaults['vault'], 'Default vault could be overridden by settings.php');
 
     // Editing settings.php forces us to rebuild the container.
     $GLOBALS['config']['lingotek.account']['default']['vault'] = 'def';
     $this->rebuildContainer();
 
     $defaults = \Drupal::service('lingotek')->getDefaults();
-    $this->assertIdentical('def', $defaults['vault'], 'Default vault could be overridden by settings.php');
+    $this->assertSame('def', $defaults['vault'], 'Default vault could be overridden by settings.php');
   }
 
   public function testDefaultFilterOverride() {
@@ -85,13 +85,13 @@ class LingotekConfigOverridesTest extends LingotekTestBase {
 
     // Container was not rebuilt yet.
     $defaults = \Drupal::service('lingotek')->getDefaults();
-    $this->assertIdentical('drupal_default', $defaults['filter'], 'Default filter could be overridden by settings.php');
+    $this->assertSame('drupal_default', $defaults['filter'], 'Default filter could be overridden by settings.php');
 
     // Editing settings.php forces us to rebuild the container.
     $this->rebuildContainer();
 
     $defaults = \Drupal::service('lingotek')->getDefaults();
-    $this->assertIdentical('project_default', $defaults['filter'], 'Default filter could be overridden by settings.php');
+    $this->assertSame('project_default', $defaults['filter'], 'Default filter could be overridden by settings.php');
   }
 
   public function testDefaultSubfilterOverride() {
@@ -99,13 +99,13 @@ class LingotekConfigOverridesTest extends LingotekTestBase {
 
     // Container was not rebuilt yet.
     $defaults = \Drupal::service('lingotek')->getDefaults();
-    $this->assertIdentical('drupal_default', $defaults['subfilter'], 'Default subfilter could be overridden by settings.php');
+    $this->assertSame('drupal_default', $defaults['subfilter'], 'Default subfilter could be overridden by settings.php');
 
     // Editing settings.php forces us to rebuild the container.
     $this->rebuildContainer();
 
     $defaults = \Drupal::service('lingotek')->getDefaults();
-    $this->assertIdentical('project_default', $defaults['subfilter'], 'Default subfilter could be overridden by settings.php');
+    $this->assertSame('project_default', $defaults['subfilter'], 'Default subfilter could be overridden by settings.php');
   }
 
   /**

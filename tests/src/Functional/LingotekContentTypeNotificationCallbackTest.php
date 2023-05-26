@@ -19,7 +19,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node'];
+  protected static $modules = ['block', 'node'];
 
   /**
    * {@inheritdoc}
@@ -46,10 +46,11 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $this->saveLingotekConfigTranslationSettings([
       'node_type' => 'automatic',
     ]);
+    $this->drupalGet('/admin/structure/types/add');
 
     // Create Article node types. We use the form at least once to ensure that
     // we don't break anything. E.g. see https://www.drupal.org/node/2645202.
-    $this->drupalPostForm('/admin/structure/types/add', ['type' => 'article', 'name' => 'Article'], 'Save content type');
+    $this->submitForm(['type' => 'article', 'name' => 'Article'], 'Save content type');
 
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $config_translation_service */
     $config_translation_service = \Drupal::service('lingotek.config_translation');
@@ -57,7 +58,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = \Drupal::entityTypeManager()->getStorage('node_type')->load('article');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm('node_type');
@@ -81,7 +82,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
+    $this->assertSame(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -93,9 +94,9 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
 
     $this->goToConfigBulkManagementForm('node_type');
 
@@ -131,7 +132,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the target is ready.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -165,7 +166,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = \Drupal::entityTypeManager()->getStorage('node_type')->load('article');
 
     // Assert the content is edited, but not auto-uploaded.
-    $this->assertIdentical(Lingotek::STATUS_EDITED, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_EDITED, $config_translation_service->getSourceStatus($entity));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm('node_type');
@@ -194,7 +195,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $response = json_decode($request->getBody(), TRUE);
 
     // Translations are not requested.
-    $this->assertIdentical([], $response['result']['request_translations'], 'No translations has been requested after notification automatically.');
+    $this->assertSame([], $response['result']['request_translations'], 'No translations has been requested after notification automatically.');
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -206,9 +207,9 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is ready to be requested.
-    $this->assertIdentical(Lingotek::STATUS_REQUEST, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_REQUEST, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -248,7 +249,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the target is ready.
-    $this->assertIdentical(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -261,7 +262,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the target is current.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
   }
 
   /**
@@ -278,10 +279,11 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $this->saveLingotekConfigTranslationSettings([
       'node_type' => 'automatic',
     ]);
+    $this->drupalGet('/admin/structure/types/add');
 
     // Create Article node types. We use the form at least once to ensure that
     // we don't break anything. E.g. see https://www.drupal.org/node/2645202.
-    $this->drupalPostForm('/admin/structure/types/add', ['type' => 'article', 'name' => 'Article'], 'Save content type');
+    $this->submitForm(['type' => 'article', 'name' => 'Article'], 'Save content type');
 
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $config_translation_service */
     $config_translation_service = \Drupal::service('lingotek.config_translation');
@@ -289,7 +291,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = \Drupal::entityTypeManager()->getStorage('node_type')->load('article');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm('node_type');
@@ -332,9 +334,9 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is intermediate.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Assert a translation has been downloaded.
     $this->drupalGet('admin/structure/types/manage/article/translate');
@@ -380,7 +382,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the target is ready.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -400,10 +402,11 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $this->saveLingotekConfigTranslationSettings([
       'node_type' => 'automatic',
     ]);
+    $this->drupalGet('/admin/structure/types/add');
 
     // Create Article node types. We use the form at least once to ensure that
     // we don't break anything. E.g. see https://www.drupal.org/node/2645202.
-    $this->drupalPostForm('/admin/structure/types/add', ['type' => 'article', 'name' => 'Article'], 'Save content type');
+    $this->submitForm(['type' => 'article', 'name' => 'Article'], 'Save content type');
 
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $config_translation_service */
     $config_translation_service = \Drupal::service('lingotek.config_translation');
@@ -411,7 +414,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = \Drupal::entityTypeManager()->getStorage('node_type')->load('article');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm('node_type');
@@ -454,9 +457,9 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -513,10 +516,11 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $this->saveLingotekConfigTranslationSettings([
       'node_type' => 'automatic',
     ]);
+    $this->drupalGet('/admin/structure/types/add');
 
     // Create Article node types. We use the form at least once to ensure that
     // we don't break anything. E.g. see https://www.drupal.org/node/2645202.
-    $this->drupalPostForm('/admin/structure/types/add', ['type' => 'article', 'name' => 'Article'], 'Save content type');
+    $this->submitForm(['type' => 'article', 'name' => 'Article'], 'Save content type');
 
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $config_translation_service */
     $config_translation_service = \Drupal::service('lingotek.config_translation');
@@ -524,7 +528,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = \Drupal::entityTypeManager()->getStorage('node_type')->load('article');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm('node_type');
@@ -568,9 +572,9 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is intermediate.
-    $this->assertIdentical(Lingotek::STATUS_INTERMEDIATE, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_INTERMEDIATE, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -627,10 +631,11 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $this->saveLingotekConfigTranslationSettings([
       'node_type' => 'automatic',
     ]);
+    $this->drupalGet('/admin/structure/types/add');
 
     // Create Article node types. We use the form at least once to ensure that
     // we don't break anything. E.g. see https://www.drupal.org/node/2645202.
-    $this->drupalPostForm('/admin/structure/types/add', ['type' => 'article', 'name' => 'Article'], 'Save content type');
+    $this->submitForm(['type' => 'article', 'name' => 'Article'], 'Save content type');
 
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $config_translation_service */
     $config_translation_service = \Drupal::service('lingotek.config_translation');
@@ -638,7 +643,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = \Drupal::entityTypeManager()->getStorage('node_type')->load('article');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm('node_type');
@@ -682,9 +687,9 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Assert a translation has been downloaded.
     $this->drupalGet('admin/structure/types/manage/article/translate');
@@ -747,10 +752,11 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $this->saveLingotekConfigTranslationSettings([
       'node_type' => 'automatic',
     ]);
+    $this->drupalGet('/admin/structure/types/add');
 
     // Create Article node types. We use the form at least once to ensure that
     // we don't break anything. E.g. see https://www.drupal.org/node/2645202.
-    $this->drupalPostForm('/admin/structure/types/add', ['type' => 'article', 'name' => 'Article'], 'Save content type');
+    $this->submitForm(['type' => 'article', 'name' => 'Article'], 'Save content type');
 
     /** @var \Drupal\lingotek\LingotekConfigTranslationServiceInterface $config_translation_service */
     $config_translation_service = \Drupal::service('lingotek.config_translation');
@@ -758,7 +764,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = \Drupal::entityTypeManager()->getStorage('node_type')->load('article');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm('node_type');
@@ -802,9 +808,9 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is intermediate.
-    $this->assertIdentical(Lingotek::STATUS_INTERMEDIATE, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_INTERMEDIATE, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Assert a translation has been downloaded.
     $this->drupalGet('admin/structure/types/manage/article/translate');
@@ -911,7 +917,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = \Drupal::entityTypeManager()->getStorage('node_type')->load('article');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm('node_type');
@@ -936,7 +942,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical(['de', 'it'], $response['result']['request_translations'], 'German and Italian languages has been requested after notification automatically.');
+    $this->assertSame(['de', 'it'], $response['result']['request_translations'], 'German and Italian languages has been requested after notification automatically.');
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -946,10 +952,10 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_REQUEST, $config_translation_service->getTargetStatus($entity, 'es'));
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'de'));
+    $this->assertSame(Lingotek::STATUS_REQUEST, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'de'));
     // We assert for the UI, as the status is not really stored.
     // TODO: This should actually be stored.
     $this->assertTargetStatus('ca', Lingotek::STATUS_DISABLED);
@@ -1040,8 +1046,8 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the target is ready.
-    $this->assertIdentical(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'es'));
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'de'));
+    $this->assertSame(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'de'));
     // We assert for the UI, as the status is not really stored.
     // TODO: This should actually be stored.
     $this->assertTargetStatus('ca', Lingotek::STATUS_DISABLED);
@@ -1055,8 +1061,8 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $node_storage->resetCache();
     $entity = $node_storage->load('article');
     // Assert the target is current.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'de'));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'de'));
   }
 
   /**
@@ -1111,7 +1117,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = \Drupal::entityTypeManager()->getStorage('node_type')->load('article');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm('node_type');
@@ -1136,7 +1142,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
+    $this->assertSame(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -1146,10 +1152,10 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
-    $this->assertIdentical(Lingotek::STATUS_REQUEST, $config_translation_service->getTargetStatus($entity, 'de'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_REQUEST, $config_translation_service->getTargetStatus($entity, 'de'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -1212,8 +1218,8 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the target is ready.
-    $this->assertIdentical(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'es'));
-    $this->assertIdentical(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'de'));
+    $this->assertSame(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'de'));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm();
@@ -1224,8 +1230,8 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $node_storage->resetCache();
     $entity = $node_storage->load('article');
     // Assert the target is current.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
-    $this->assertIdentical(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'de'));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_READY, $config_translation_service->getTargetStatus($entity, 'de'));
   }
 
   /**
@@ -1241,14 +1247,16 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $this->saveLingotekConfigTranslationSettings([
       'node_type' => 'automatic',
     ]);
+    $this->drupalGet('/admin/structure/types/add');
 
     // Create Article node types. We use the form at least once to ensure that
     // we don't break anything. E.g. see https://www.drupal.org/node/2645202.
-    $this->drupalPostForm('/admin/structure/types/add', ['type' => 'article', 'name' => 'Article'], 'Save content type');
+    $this->submitForm(['type' => 'article', 'name' => 'Article'], 'Save content type');
+    $this->drupalGet('/admin/structure/types/add');
 
     // Create Page node type. We use the form at least once to ensure that
     // we don't break anything. E.g. see https://www.drupal.org/node/2645202.
-    $this->drupalPostForm('/admin/structure/types/add', ['type' => 'page', 'name' => 'Page'], 'Save content type');
+    $this->submitForm(['type' => 'page', 'name' => 'Page'], 'Save content type');
 
     // Login as admin.
     $this->drupalLogin($this->rootUser);
@@ -1258,7 +1266,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
 
     // Assert the content is importing.
     $entity = \Drupal::entityTypeManager()->getStorage('node_type')->load('article');
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
 
     // Go to the bulk config management page.
     $this->goToConfigBulkManagementForm('node_type');
@@ -1282,7 +1290,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical(['it', 'es'], $response['result']['request_translations'], 'Spanish and Italian languages have been requested after notification automatically.');
+    $this->assertSame(['it', 'es'], $response['result']['request_translations'], 'Spanish and Italian languages have been requested after notification automatically.');
 
     /** @var \Drupal\lingotek\LingotekConfigurationServiceInterface $lingotek_config */
     $lingotek_config = \Drupal::service('lingotek.configuration');
@@ -1310,7 +1318,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->assertIdentical(['es'], $response['result']['request_translations'], 'Italian language has not been requested after notification automatically because it is disabled.');
+    $this->assertSame(['es'], $response['result']['request_translations'], 'Italian language has not been requested after notification automatically because it is disabled.');
   }
 
   /**
@@ -1325,10 +1333,11 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $this->saveLingotekConfigTranslationSettings([
       'node_type' => 'automatic',
     ]);
+    $this->drupalGet('/admin/structure/types/add');
 
     // Create Article node types. We use the form at least once to ensure that
     // we don't break anything. E.g. see https://www.drupal.org/node/2645202.
-    $this->drupalPostForm('/admin/structure/types/add', ['type' => 'article', 'name' => 'Article'], 'Save content type');
+    $this->submitForm(['type' => 'article', 'name' => 'Article'], 'Save content type');
 
     // Simulate the notification of content successfully uploaded.
     $url = Url::fromRoute('lingotek.notify', [], [
@@ -1371,7 +1380,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
     $this->assertTrue($response['result']['download'], 'Spanish language has been downloaded after notification automatically.');
     $this->assertEquals('Document downloaded.', $response['messages'][0]);
 
@@ -1397,7 +1406,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
     $this->assertTrue($response['result']['download'], 'Italian language has been downloaded after notification automatically.');
     $this->assertEquals('Document downloaded.', $response['messages'][0]);
 
@@ -1406,7 +1415,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
 
     // All the links are current.
     $current_links = $this->xpath("//a[contains(@class,'language-icon') and contains(@class, 'target-current')]");
-    $this->assertEqual(count($current_links), 2, 'Translation "es_ES" and "it_IT" are current.');
+    $this->assertEquals(count($current_links), 2, 'Translation "es_ES" and "it_IT" are current.');
 
     // Simulate the notification of target deleted.
     $url = Url::fromRoute('lingotek.notify', [], [
@@ -1458,10 +1467,11 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $this->saveLingotekConfigTranslationSettings([
       'node_type' => 'automatic',
     ]);
+    $this->drupalGet('/admin/structure/types/add');
 
     // Create Article node types. We use the form at least once to ensure that
     // we don't break anything. E.g. see https://www.drupal.org/node/2645202.
-    $this->drupalPostForm('/admin/structure/types/add', ['type' => 'article', 'name' => 'Article'], 'Save content type');
+    $this->submitForm(['type' => 'article', 'name' => 'Article'], 'Save content type');
 
     // Simulate the notification of content successfully uploaded.
     $url = Url::fromRoute('lingotek.notify', [], [
@@ -1504,7 +1514,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
     $this->assertTrue($response['result']['download'], 'Spanish language has been downloaded after notification automatically.');
     $this->assertEquals('Document downloaded.', $response['messages'][0]);
 
@@ -1530,7 +1540,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
     $this->assertTrue($response['result']['download'], 'Italian language has been downloaded after notification automatically.');
     $this->assertEquals('Document downloaded.', $response['messages'][0]);
 
@@ -1592,10 +1602,11 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $this->saveLingotekConfigTranslationSettings([
       'node_type' => 'automatic',
     ]);
+    $this->drupalGet('/admin/structure/types/add');
 
     // Create Article node types. We use the form at least once to ensure that
     // we don't break anything. E.g. see https://www.drupal.org/node/2645202.
-    $this->drupalPostForm('/admin/structure/types/add', ['type' => 'article', 'name' => 'Article'], 'Save content type');
+    $this->submitForm(['type' => 'article', 'name' => 'Article'], 'Save content type');
 
     /** @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface $node_storage */
     $node_storage = $this->container->get('entity_type.manager')->getStorage('node_type');
@@ -1605,8 +1616,8 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
-    $this->assertIdentical($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
 
     $this->goToConfigBulkManagementForm('node_type');
 
@@ -1627,15 +1638,15 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
-    $this->assertIdentical($response['messages'][0], 'Document import for entity Article failed. Reverting dummy-document-hash-id to previous id (NULL)');
+    dump($request);
+    $this->assertSame($response['messages'][0], 'Document import for entity Article failed. Reverting dummy-document-hash-id to previous id (NULL)');
 
     $this->goToConfigBulkManagementForm('node_type');
 
     $entity = $node_storage->load('article');
 
     $this->assertNull($config_translation_service->getDocumentId($entity));
-    $this->assertIdentical(Lingotek::STATUS_ERROR, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_ERROR, $config_translation_service->getSourceStatus($entity));
   }
 
   /**
@@ -1650,10 +1661,11 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $this->saveLingotekConfigTranslationSettings([
       'node_type' => 'automatic',
     ]);
+    $this->drupalGet('/admin/structure/types/add');
 
     // Create Article node types. We use the form at least once to ensure that
     // we don't break anything. E.g. see https://www.drupal.org/node/2645202.
-    $this->drupalPostForm('/admin/structure/types/add', ['type' => 'article', 'name' => 'Article'], 'Save content type');
+    $this->submitForm(['type' => 'article', 'name' => 'Article'], 'Save content type');
 
     /** @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface $node_storage */
     $node_storage = $this->container->get('entity_type.manager')->getStorage('node_type');
@@ -1663,8 +1675,8 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
-    $this->assertIdentical($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
 
     $this->goToConfigBulkManagementForm('node_type');
 
@@ -1687,30 +1699,31 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
-    $this->assertIdentical(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
+    dump($request);
+    $this->assertSame(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
 
     $this->goToConfigBulkManagementForm('node_type');
 
     $entity = $node_storage->load('article');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->drupalGet('/admin/structure/types/manage/article');
 
     // Edit the node.
-    $this->drupalPostForm('/admin/structure/types/manage/article', ['name' => 'Article EDITED'], 'Save content type');
+    $this->submitForm(['name' => 'Article EDITED'], 'Save content type');
 
     $this->goToConfigBulkManagementForm('node_type');
     $entity = $node_storage->load('article');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
     // Assert the document id changed.
-    $this->assertIdentical($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id-1');
+    $this->assertSame($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id-1');
 
     // Simulate the notification of failed import document.
     $url = Url::fromRoute('lingotek.notify', [], [
@@ -1730,9 +1743,9 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
 
-    $this->assertIdentical($response['messages'][0], 'Document import for entity Article EDITED failed. Reverting dummy-document-hash-id-1 to previous id dummy-document-hash-id');
+    $this->assertSame($response['messages'][0], 'Document import for entity Article EDITED failed. Reverting dummy-document-hash-id-1 to previous id dummy-document-hash-id');
 
     $this->goToConfigBulkManagementForm('node_type');
 
@@ -1740,7 +1753,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
 
     // Assert the document id was restored.
     $this->assertEquals($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
-    $this->assertIdentical(Lingotek::STATUS_ERROR, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_ERROR, $config_translation_service->getSourceStatus($entity));
   }
 
   /**
@@ -1755,10 +1768,11 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $this->saveLingotekConfigTranslationSettings([
       'node_type' => 'automatic',
     ]);
+    $this->drupalGet('/admin/structure/types/add');
 
     // Create Article node types. We use the form at least once to ensure that
     // we don't break anything. E.g. see https://www.drupal.org/node/2645202.
-    $this->drupalPostForm('/admin/structure/types/add', ['type' => 'article', 'name' => 'Article'], 'Save content type');
+    $this->submitForm(['type' => 'article', 'name' => 'Article'], 'Save content type');
 
     /** @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface $node_storage */
     $node_storage = $this->container->get('entity_type.manager')->getStorage('node_type');
@@ -1768,8 +1782,8 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
-    $this->assertIdentical($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
 
     $this->goToConfigBulkManagementForm('node_type');
 
@@ -1792,30 +1806,31 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
-    $this->assertIdentical(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
+    dump($request);
+    $this->assertSame(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
 
     $this->goToConfigBulkManagementForm('node_type');
 
     $entity = $node_storage->load('article');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->drupalGet('/admin/structure/types/manage/article');
 
     // Edit the node.
-    $this->drupalPostForm('/admin/structure/types/manage/article', ['name' => 'Article EDITED'], 'Save content type');
+    $this->submitForm(['name' => 'Article EDITED'], 'Save content type');
 
     $this->goToConfigBulkManagementForm('node_type');
     $entity = $node_storage->load('article');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
     // Assert the document id changed.
-    $this->assertIdentical($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id-1');
+    $this->assertSame($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id-1');
 
     // Simulate the notification of content successfully updated.
     $url = Url::fromRoute('lingotek.notify', [], [
@@ -1836,7 +1851,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
 
     $this->goToConfigBulkManagementForm('node_type');
 
@@ -1844,7 +1859,7 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
 
     // Assert the document id and the CURRENT status.
     $this->assertEquals($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id-1');
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
   }
 
   /**
@@ -1859,10 +1874,11 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $this->saveLingotekConfigTranslationSettings([
       'node_type' => 'automatic',
     ]);
+    $this->drupalGet('/admin/structure/types/add');
 
     // Create Article node types. We use the form at least once to ensure that
     // we don't break anything. E.g. see https://www.drupal.org/node/2645202.
-    $this->drupalPostForm('/admin/structure/types/add', ['type' => 'article', 'name' => 'Article'], 'Save content type');
+    $this->submitForm(['type' => 'article', 'name' => 'Article'], 'Save content type');
 
     /** @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface $node_storage */
     $node_storage = $this->container->get('entity_type.manager')->getStorage('node_type');
@@ -1872,8 +1888,8 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
-    $this->assertIdentical($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
 
     $this->goToConfigBulkManagementForm('node_type');
 
@@ -1896,17 +1912,17 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
-    $this->assertIdentical(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
+    dump($request);
+    $this->assertSame(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
 
     $this->goToConfigBulkManagementForm('node_type');
 
     $entity = $node_storage->load('article');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Simulate the notification of document_cancelled document.
     $url = Url::fromRoute('lingotek.notify', [], [
@@ -1925,17 +1941,17 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
 
-    $this->assertIdentical($response['messages'][0], 'Document Article cancelled in TMS.');
+    $this->assertSame($response['messages'][0], 'Document Article cancelled in TMS.');
 
     $this->goToConfigBulkManagementForm('node_type');
 
     $entity = $node_storage->load('article');
 
     $this->assertNull($config_translation_service->getDocumentId($entity));
-    $this->assertIdentical(Lingotek::STATUS_CANCELLED, $config_translation_service->getSourceStatus($entity));
-    $this->assertIdentical(Lingotek::STATUS_CANCELLED, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_CANCELLED, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CANCELLED, $config_translation_service->getTargetStatus($entity, 'es'));
   }
 
   /**
@@ -1950,10 +1966,11 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $this->saveLingotekConfigTranslationSettings([
       'node_type' => 'automatic',
     ]);
+    $this->drupalGet('/admin/structure/types/add');
 
     // Create Article node types. We use the form at least once to ensure that
     // we don't break anything. E.g. see https://www.drupal.org/node/2645202.
-    $this->drupalPostForm('/admin/structure/types/add', ['type' => 'article', 'name' => 'Article'], 'Save content type');
+    $this->submitForm(['type' => 'article', 'name' => 'Article'], 'Save content type');
 
     /** @var \Drupal\Core\Config\Entity\ConfigEntityStorageInterface $node_storage */
     $node_storage = $this->container->get('entity_type.manager')->getStorage('node_type');
@@ -1963,8 +1980,8 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
     $entity = $node_storage->load('article');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
-    $this->assertIdentical($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame($config_translation_service->getDocumentId($entity), 'dummy-document-hash-id');
 
     $this->goToConfigBulkManagementForm('node_type');
 
@@ -1987,17 +2004,17 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
-    $this->assertIdentical(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
+    dump($request);
+    $this->assertSame(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
 
     $this->goToConfigBulkManagementForm('node_type');
 
     $entity = $node_storage->load('article');
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $config_translation_service->getTargetStatus($entity, 'es'));
 
     // Simulate the notification of document_cancelled document.
     $url = Url::fromRoute('lingotek.notify', [], [
@@ -2017,17 +2034,17 @@ class LingotekContentTypeNotificationCallbackTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
 
-    $this->assertIdentical($response['messages'][0], 'Document Article target es_ES cancelled in TMS.');
+    $this->assertSame($response['messages'][0], 'Document Article target es_ES cancelled in TMS.');
 
     $this->goToConfigBulkManagementForm('node_type');
 
     $entity = $node_storage->load('article');
 
-    $this->assertIdentical('dummy-document-hash-id', $config_translation_service->getDocumentId($entity));
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
-    $this->assertIdentical(Lingotek::STATUS_CANCELLED, $config_translation_service->getTargetStatus($entity, 'es'));
+    $this->assertSame('dummy-document-hash-id', $config_translation_service->getDocumentId($entity));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $config_translation_service->getSourceStatus($entity));
+    $this->assertSame(Lingotek::STATUS_CANCELLED, $config_translation_service->getTargetStatus($entity, 'es'));
   }
 
 }

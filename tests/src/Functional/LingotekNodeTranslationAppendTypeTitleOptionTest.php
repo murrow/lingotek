@@ -16,7 +16,7 @@ class LingotekNodeTranslationAppendTypeTitleOptionTest extends LingotekTestBase 
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node'];
+  protected static $modules = ['block', 'node'];
 
   /**
    * {@inheritdoc}
@@ -84,7 +84,8 @@ class LingotekNodeTranslationAppendTypeTitleOptionTest extends LingotekTestBase 
     $edit = [
       'append_type_to_title' => $value,
     ];
-    $this->drupalPostForm('admin/lingotek/settings', $edit, 'Save', [], 'lingoteksettings-tab-preferences-form');
+    $this->drupalGet('admin/lingotek/settings', []);
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-preferences-form');
   }
 
   /**
@@ -108,7 +109,7 @@ class LingotekNodeTranslationAppendTypeTitleOptionTest extends LingotekTestBase 
 
     // Check that the title used was the right one.
     $uploaded_title = \Drupal::state()->get('lingotek.uploaded_title');
-    $this->assertIdentical('article (node): Llamas are cool', $uploaded_title, 'The node title was used appending type.');
+    $this->assertSame('article (node): Llamas are cool', $uploaded_title, 'The node title was used appending type.');
   }
 
   /**
@@ -132,7 +133,7 @@ class LingotekNodeTranslationAppendTypeTitleOptionTest extends LingotekTestBase 
 
     // Check that the title used was the right one.
     $uploaded_title = \Drupal::state()->get('lingotek.uploaded_title');
-    $this->assertIdentical('Llamas are cool', $uploaded_title, 'The node title was used without appending type.');
+    $this->assertSame('Llamas are cool', $uploaded_title, 'The node title was used without appending type.');
   }
 
   /**
@@ -165,7 +166,7 @@ class LingotekNodeTranslationAppendTypeTitleOptionTest extends LingotekTestBase 
 
     // Check that the title used was the right one.
     $uploaded_title = \Drupal::state()->get('lingotek.uploaded_title');
-    $this->assertIdentical('article (node): Llamas are cool', $uploaded_title, 'The node title was used appending type.');
+    $this->assertSame('article (node): Llamas are cool', $uploaded_title, 'The node title was used appending type.');
   }
 
   /**
@@ -198,7 +199,7 @@ class LingotekNodeTranslationAppendTypeTitleOptionTest extends LingotekTestBase 
 
     // Check that the title used was the right one.
     $uploaded_title = \Drupal::state()->get('lingotek.uploaded_title');
-    $this->assertIdentical('Llamas are cool', $uploaded_title, 'The node title was used without appending type.');
+    $this->assertSame('Llamas are cool', $uploaded_title, 'The node title was used without appending type.');
   }
 
   /**
@@ -231,7 +232,7 @@ class LingotekNodeTranslationAppendTypeTitleOptionTest extends LingotekTestBase 
 
     // Check that the title used was the right one.
     $uploaded_title = \Drupal::state()->get('lingotek.uploaded_title');
-    $this->assertIdentical('article (node): Llamas are cool', $uploaded_title, 'The node title was used appending type.');
+    $this->assertSame('article (node): Llamas are cool', $uploaded_title, 'The node title was used appending type.');
   }
 
   /**
@@ -264,7 +265,7 @@ class LingotekNodeTranslationAppendTypeTitleOptionTest extends LingotekTestBase 
 
     // Check that the title used was the right one.
     $uploaded_title = \Drupal::state()->get('lingotek.uploaded_title');
-    $this->assertIdentical('Llamas are cool', $uploaded_title, 'The node title was used without appending type.');
+    $this->assertSame('Llamas are cool', $uploaded_title, 'The node title was used without appending type.');
   }
 
 }

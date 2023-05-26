@@ -27,7 +27,7 @@ class LingotekNodeCohesionRepeaterTranslationTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'block',
     'content_moderation',
     'workflows',
@@ -152,7 +152,7 @@ JSON;
       ->setValue($edit['layout_canvas[0][target_id][json_values]']);
     unset($edit['layout_canvas[0][target_id][json_values]']);
 
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
 
     $this->node = Node::load(1);
     /** @var \Drupal\cohesion_elements\Entity\CohesionLayout $layout */
@@ -183,12 +183,12 @@ JSON;
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(\Drupal::request()
+    $this->assertSame(\Drupal::request()
       ->getUriForPath('/node/1'), $uploaded_url, 'The node url was used.');
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -197,30 +197,30 @@ JSON;
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $link = $this->xpath('//a[normalize-space()="Request translation" and contains(@href,"es_AR")]');
     $link[0]->click();
-    $this->assertText("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_AR translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
     $this->assertLingotekWorkbenchLink('es_AR');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Llamas are cool into es_AR has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_AR has been downloaded.');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
-    $this->assertText('Los perros son muy chulos');
-    $this->assertText('Los gatos son muy chulos');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Los perros son muy chulos');
+    $this->assertSession()->pageTextContains('Los gatos son muy chulos');
 
     /** @var \Drupal\Core\Entity\EntityStorageInterface $cohesionLayoutStorage */
     $cohesionLayoutStorage = $this->container->get('entity_type.manager')->getStorage('cohesion_layout');
@@ -237,10 +237,10 @@ JSON;
 
     // The original content didn't change.
     $this->drupalGet('node/1');
-    $this->assertText('Llamas are cool');
-    $this->assertText('Llamas are very cool');
-    $this->assertText('Dogs are very cool');
-    $this->assertText('Cats are very cool');
+    $this->assertSession()->pageTextContains('Llamas are cool');
+    $this->assertSession()->pageTextContains('Llamas are very cool');
+    $this->assertSession()->pageTextContains('Dogs are very cool');
+    $this->assertSession()->pageTextContains('Cats are very cool');
   }
 
   protected function createCohesionField($entity_type_id, $bundle, $field_name = 'layout_canvas', $field_label = 'Layout canvas', $target_entity_type = 'cohesion_layout', $selection_handler = 'default', $selection_handler_settings = [], $cardinality = 1) {

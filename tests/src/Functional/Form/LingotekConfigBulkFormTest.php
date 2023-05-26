@@ -17,7 +17,7 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'field_ui'];
+  protected static $modules = ['block', 'node', 'field_ui'];
 
   /**
    * {@inheritdoc}
@@ -63,7 +63,7 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
     // Assert that there is a "Bundle" header on the second position.
     // First position is the checkbox, that's why we care about the second.
     $second_header = $this->xpath('//*[@id="edit-table"]/thead/tr/th[2]')[0];
-    $this->assertEqual($second_header->getHtml(), 'Entity', 'There is a Entity header.');
+    $this->assertEquals($second_header->getHtml(), 'Entity', 'There is a Entity header.');
   }
 
   /**
@@ -76,15 +76,15 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
 
     // Let's filter by node fields.
     $edit = ['filters[wrapper][bundle]' => 'node_fields'];
-    $this->drupalPostForm(NULL, $edit, t('Filter'));
+    $this->submitForm($edit, t('Filter'));
 
     // Assert that there is a "Bundle" header on the second position.
     // First position is the checkbox, that's why we care about the second.
     $second_header = $this->xpath('//*[@id="edit-table"]/thead/tr/th[2]/a')[0];
-    $this->assertEqual($second_header->getHtml(), 'Bundle', 'There is a Bundle header.');
+    $this->assertEquals($second_header->getHtml(), 'Bundle', 'There is a Bundle header.');
 
     $third_header = $this->xpath('//*[@id="edit-table"]/thead/tr/th[3]/a')[0];
-    $this->assertEqual($third_header->getHtml(), 'Entity', 'There is a Entity header.');
+    $this->assertEquals($third_header->getHtml(), 'Entity', 'There is a Entity header.');
 
     // Assert that there is a bundle printed with the Body field, and by that
     // Body must be appear twice.
@@ -160,7 +160,7 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'options[job_id]' => 'my_custom_job_id',
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $this->assertEquals('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
     $this->assertEquals('my_custom_job_id', \Drupal::state()->get('lingotek.uploaded_job_id'));
 
@@ -170,8 +170,8 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       $this->assertEquals('my_custom_job_id', $metadata->getJobId(), 'The job id was saved along with metadata.');
     }
     // The column for Job ID exists and there are values.
-    $this->assertText('Job ID');
-    $this->assertText('my_custom_job_id');
+    $this->assertSession()->pageTextContains('Job ID');
+    $this->assertSession()->pageTextContains('my_custom_job_id');
   }
 
   /**
@@ -209,7 +209,7 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'options[job_id]' => 'my_custom_job_id',
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $this->assertEquals('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
     $this->assertEquals('my_custom_job_id', \Drupal::state()->get('lingotek.uploaded_job_id'));
 
@@ -219,8 +219,8 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       $this->assertEquals('my_custom_job_id', $metadata->getJobId(), 'The job id was saved along with metadata.');
     }
     // The column for Job ID exists and there are values.
-    $this->assertText('Job ID');
-    $this->assertText('my_custom_job_id');
+    $this->assertSession()->pageTextContains('Job ID');
+    $this->assertSession()->pageTextContains('my_custom_job_id');
   }
 
   /**
@@ -242,27 +242,27 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // There is no upload.
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_title'));
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The job id is displayed.
-    $this->assertText('my_custom_job_id');
+    $this->assertSession()->pageTextContains('my_custom_job_id');
 
     // And the job id is used on upload.
     $this->clickLink('EN');
 
-    $this->assertText('Article uploaded successfully');
+    $this->assertSession()->pageTextContains('Article uploaded successfully');
     // Check that the job id used was the right one.
     \Drupal::state()->resetCache();
-    $this->assertIdentical(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
+    $this->assertSame(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
 
     // If we update the job ID without notification to the TMS, no update happens.
     $edit = [
@@ -270,12 +270,12 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'other_job_id',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // There is no upload.
     \Drupal::state()->resetCache();
@@ -303,13 +303,13 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // There is no update, because there are no document ids.
     \Drupal::state()->resetCache();
@@ -318,15 +318,15 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The job id is displayed.
-    $this->assertText('my_custom_job_id');
+    $this->assertSession()->pageTextContains('my_custom_job_id');
 
     // And the job id is used on upload.
     $this->clickLink('EN');
 
-    $this->assertText('Article uploaded successfully');
+    $this->assertSession()->pageTextContains('Article uploaded successfully');
     // Check that the job id used was the right one.
     \Drupal::state()->resetCache();
-    $this->assertIdentical(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
+    $this->assertSame(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
 
     // If we update the job ID with notification to the TMS, an update happens.
     $edit = [
@@ -334,19 +334,19 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'other_job_id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // There is an update.
     \Drupal::state()->resetCache();
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_title'));
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_content'));
-    $this->assertIdentical(\Drupal::state()->get('lingotek.uploaded_job_id'), 'other_job_id');
+    $this->assertSame(\Drupal::state()->get('lingotek.uploaded_job_id'), 'other_job_id');
   }
 
   /**
@@ -368,13 +368,13 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // There is no update, because there are no document ids.
     \Drupal::state()->resetCache();
@@ -383,15 +383,15 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The job id is displayed.
-    $this->assertText('my_custom_job_id');
+    $this->assertSession()->pageTextContains('my_custom_job_id');
 
     // And the job id is used on upload.
     $this->clickLink('EN');
 
-    $this->assertText('Article uploaded successfully');
+    $this->assertSession()->pageTextContains('Article uploaded successfully');
     // Check that the job id used was the right one.
     \Drupal::state()->resetCache();
-    $this->assertIdentical(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
+    $this->assertSame(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
 
     // If we update the job ID with notification to the TMS, an update happens.
     \Drupal::state()->set('lingotek.must_document_not_found_error_in_update', TRUE);
@@ -402,22 +402,22 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'other_job_id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Document node_type Article was not found. Please upload again.');
-    $this->assertText('Job ID for some config failed to sync to the TMS.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Document node_type Article was not found. Please upload again.');
+    $this->assertSession()->pageTextContains('Job ID for some config failed to sync to the TMS.');
 
     // There is no update.
     \Drupal::state()->resetCache();
     $this->assertEquals('my_custom_job_id', \Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // But it was saved for future uploads.
-    $this->assertNoText('my_custom_job_id');
-    $this->assertText('other_job_id');
+    $this->assertSession()->pageTextNotContains('my_custom_job_id');
+    $this->assertSession()->pageTextContains('other_job_id');
   }
 
   /**
@@ -439,13 +439,13 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // There is no update, because there are no document ids.
     \Drupal::state()->resetCache();
@@ -454,15 +454,15 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The job id is displayed.
-    $this->assertText('my_custom_job_id');
+    $this->assertSession()->pageTextContains('my_custom_job_id');
 
     // And the job id is used on upload.
     $this->clickLink('EN');
 
-    $this->assertText('Article uploaded successfully');
+    $this->assertSession()->pageTextContains('Article uploaded successfully');
     // Check that the job id used was the right one.
     \Drupal::state()->resetCache();
-    $this->assertIdentical(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
+    $this->assertSame(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
 
     // If we update the job ID with notification to the TMS, an update happens.
     \Drupal::state()->set('lingotek.must_document_archived_error_in_update', TRUE);
@@ -473,21 +473,21 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'other_job_id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Document node_type Article has been archived. Please upload again.');
-    $this->assertText('Job ID for some config failed to sync to the TMS.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Document node_type Article has been archived. Please upload again.');
+    $this->assertSession()->pageTextContains('Job ID for some config failed to sync to the TMS.');
 
     // There is no update.
     \Drupal::state()->resetCache();
     $this->assertEquals('my_custom_job_id', \Drupal::state()->get('lingotek.uploaded_job_id'));
 
-    $this->assertText('my_custom_job_id');
-    $this->assertText('other_job_id');
+    $this->assertSession()->pageTextContains('my_custom_job_id');
+    $this->assertSession()->pageTextContains('other_job_id');
   }
 
   /**
@@ -509,13 +509,13 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // There is no update, because there are no document ids.
     \Drupal::state()->resetCache();
@@ -524,15 +524,15 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The job id is displayed.
-    $this->assertText('my_custom_job_id');
+    $this->assertSession()->pageTextContains('my_custom_job_id');
 
     // And the job id is used on upload.
     $this->clickLink('EN');
 
-    $this->assertText('Article uploaded successfully');
+    $this->assertSession()->pageTextContains('Article uploaded successfully');
     // Check that the job id used was the right one.
     \Drupal::state()->resetCache();
-    $this->assertIdentical(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
+    $this->assertSame(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
 
     // If we update the job ID with notification to the TMS, an update happens.
     \Drupal::state()->set('lingotek.must_document_locked_error_in_update', TRUE);
@@ -543,21 +543,21 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'other_job_id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Document node_type Article has a new version. The document id has been updated for all future interactions. Please try again.');
-    $this->assertText('Job ID for some config failed to sync to the TMS.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Document node_type Article has a new version. The document id has been updated for all future interactions. Please try again.');
+    $this->assertSession()->pageTextContains('Job ID for some config failed to sync to the TMS.');
 
     // There is no update.
     \Drupal::state()->resetCache();
     $this->assertEquals('my_custom_job_id', \Drupal::state()->get('lingotek.uploaded_job_id'));
 
-    $this->assertText('my_custom_job_id');
-    $this->assertText('other_job_id');
+    $this->assertSession()->pageTextContains('my_custom_job_id');
+    $this->assertSession()->pageTextContains('other_job_id');
   }
 
   /**
@@ -579,13 +579,13 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // There is no update, because there are no document ids.
     \Drupal::state()->resetCache();
@@ -594,15 +594,15 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The job id is displayed.
-    $this->assertText('my_custom_job_id');
+    $this->assertSession()->pageTextContains('my_custom_job_id');
 
     // And the job id is used on upload.
     $this->clickLink('EN');
 
-    $this->assertText('Article uploaded successfully');
+    $this->assertSession()->pageTextContains('Article uploaded successfully');
     // Check that the job id used was the right one.
     \Drupal::state()->resetCache();
-    $this->assertIdentical(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
+    $this->assertSame(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
 
     // If we update the job ID with notification to the TMS, an update happens.
     \Drupal::state()->set('lingotek.must_payment_required_error_in_update', TRUE);
@@ -613,21 +613,21 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'other_job_id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
-    $this->assertText('Job ID for some config failed to sync to the TMS.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
+    $this->assertSession()->pageTextContains('Job ID for some config failed to sync to the TMS.');
 
     // There is no update.
     \Drupal::state()->resetCache();
     $this->assertEquals('my_custom_job_id', \Drupal::state()->get('lingotek.uploaded_job_id'));
 
-    $this->assertText('my_custom_job_id');
-    $this->assertText('other_job_id');
+    $this->assertSession()->pageTextContains('my_custom_job_id');
+    $this->assertSession()->pageTextContains('other_job_id');
   }
 
   /**
@@ -649,13 +649,13 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // There is no update, because there are no document ids.
     \Drupal::state()->resetCache();
@@ -664,15 +664,15 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The job id is displayed.
-    $this->assertText('my_custom_job_id');
+    $this->assertSession()->pageTextContains('my_custom_job_id');
 
     // And the job id is used on upload.
     $this->clickLink('EN');
 
-    $this->assertText('Article uploaded successfully');
+    $this->assertSession()->pageTextContains('Article uploaded successfully');
     // Check that the job id used was the right one.
     \Drupal::state()->resetCache();
-    $this->assertIdentical(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
+    $this->assertSame(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
 
     // If we update the job ID with notification to the TMS, an update happens.
     \Drupal::state()->set('lingotek.must_processed_words_limit_error_in_update', TRUE);
@@ -683,21 +683,21 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'other_job_id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
-    $this->assertText('Job ID for some config failed to sync to the TMS.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
+    $this->assertSession()->pageTextContains('Job ID for some config failed to sync to the TMS.');
 
     // There is no update.
     \Drupal::state()->resetCache();
     $this->assertEquals('my_custom_job_id', \Drupal::state()->get('lingotek.uploaded_job_id'));
 
-    $this->assertText('my_custom_job_id');
-    $this->assertText('other_job_id');
+    $this->assertSession()->pageTextContains('my_custom_job_id');
+    $this->assertSession()->pageTextContains('other_job_id');
   }
 
   /**
@@ -719,13 +719,13 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // There is no update, because there are no document ids.
     \Drupal::state()->resetCache();
@@ -734,15 +734,15 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The job id is displayed.
-    $this->assertText('my_custom_job_id');
+    $this->assertSession()->pageTextContains('my_custom_job_id');
 
     // And the job id is used on upload.
     $this->clickLink('EN');
 
-    $this->assertText('Article uploaded successfully');
+    $this->assertSession()->pageTextContains('Article uploaded successfully');
     // Check that the job id used was the right one.
     \Drupal::state()->resetCache();
-    $this->assertIdentical(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
+    $this->assertSame(\Drupal::state()->get('lingotek.uploaded_job_id'), 'my_custom_job_id');
 
     // If we update the job ID with notification to the TMS, an update happens.
     \Drupal::state()->set('lingotek.must_error_in_upload', TRUE);
@@ -753,21 +753,21 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'other_job_id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('The Job ID change submission for node_type Article failed. Please try again.');
-    $this->assertText('Job ID for some config failed to sync to the TMS.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('The Job ID change submission for node_type Article failed. Please try again.');
+    $this->assertSession()->pageTextContains('Job ID for some config failed to sync to the TMS.');
 
     // There is no update.
     \Drupal::state()->resetCache();
     $this->assertEquals('my_custom_job_id', \Drupal::state()->get('lingotek.uploaded_job_id'));
 
-    $this->assertText('my_custom_job_id');
-    $this->assertText('other_job_id');
+    $this->assertSession()->pageTextContains('my_custom_job_id');
+    $this->assertSession()->pageTextContains('other_job_id');
   }
 
   /**
@@ -789,14 +789,14 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $edit = [
       'job_id' => 'my\invalid\id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('The job ID name cannot contain invalid chars as "/" or "\".');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('The job ID name cannot contain invalid chars as "/" or "\".');
 
     // There is no update, because it's not valid.
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_job_id'));
@@ -805,8 +805,8 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'job_id' => 'my/invalid/id',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('The job ID name cannot contain invalid chars as "/" or "\".');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('The job ID name cannot contain invalid chars as "/" or "\".');
 
     // There is no update, because it's not valid.
     $this->assertNull(\Drupal::state()->get('lingotek.uploaded_job_id'));
@@ -831,20 +831,20 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[article]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertText('Article content type');
-    $this->assertNoText('Page content type');
-    $this->drupalPostForm(NULL, [], 'Cancel');
+    $this->assertSession()->pageTextContains('Article content type');
+    $this->assertSession()->pageTextNotContains('Page content type');
+    $this->submitForm([], 'Cancel');
 
     $edit = [
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertNoText('Article content type');
-    $this->assertText('Page content type');
+    $this->assertSession()->pageTextNotContains('Article content type');
+    $this->assertSession()->pageTextContains('Page content type');
   }
 
   /**
@@ -866,10 +866,10 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[article]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertText('Article content type');
-    $this->assertNoText('Page content type');
+    $this->assertSession()->pageTextContains('Article content type');
+    $this->assertSession()->pageTextNotContains('Page content type');
 
     $this->goToConfigBulkManagementForm('node_type');
 
@@ -877,10 +877,10 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertNoText('Article content type');
-    $this->assertText('Page content type');
+    $this->assertSession()->pageTextNotContains('Article content type');
+    $this->assertSession()->pageTextContains('Page content type');
   }
 
   /**
@@ -903,47 +903,47 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[article]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id_1',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     $edit = [
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id_2',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // The job id is displayed.
-    $this->assertText('my_custom_job_id_1');
-    $this->assertText('my_custom_job_id_2');
+    $this->assertSession()->pageTextContains('my_custom_job_id_1');
+    $this->assertSession()->pageTextContains('my_custom_job_id_2');
 
     $edit = [
       'table[article]' => TRUE,
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForClearJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->drupalPostForm(NULL, [], 'Clear Job ID');
-    $this->assertText('Job ID was cleared successfully.');
+    $this->submitForm([], 'Clear Job ID');
+    $this->assertSession()->pageTextContains('Job ID was cleared successfully.');
 
     // There is no upload.
     \Drupal::state()->resetCache();
     $this->assertEquals('my_custom_job_id_1', \Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The job id is gone.
-    $this->assertNoText('my_custom_job_id_1');
-    $this->assertNoText('my_custom_job_id_2');
+    $this->assertSession()->pageTextNotContains('my_custom_job_id_1');
+    $this->assertSession()->pageTextNotContains('my_custom_job_id_2');
   }
 
   /**
@@ -966,47 +966,47 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[article]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id_1',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     $edit = [
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id_2',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // The job id is displayed.
-    $this->assertText('my_custom_job_id_1');
-    $this->assertText('my_custom_job_id_2');
+    $this->assertSession()->pageTextContains('my_custom_job_id_1');
+    $this->assertSession()->pageTextContains('my_custom_job_id_2');
 
     $edit = [
       'table[article]' => TRUE,
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForClearJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->drupalPostForm(NULL, ['update_tms' => 1], 'Clear Job ID');
-    $this->assertText('Job ID was cleared successfully.');
+    $this->submitForm(['update_tms' => 1], 'Clear Job ID');
+    $this->assertSession()->pageTextContains('Job ID was cleared successfully.');
 
     // There is an update with empty job id.
     \Drupal::state()->resetCache();
     $this->assertEquals('', \Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The job id is gone.
-    $this->assertNoText('my_custom_job_id_1');
-    $this->assertNoText('my_custom_job_id_2');
+    $this->assertSession()->pageTextNotContains('my_custom_job_id_1');
+    $this->assertSession()->pageTextNotContains('my_custom_job_id_2');
   }
 
   /**
@@ -1029,29 +1029,29 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[article]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id_1',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     $edit = [
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id_2',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // The job id is displayed.
-    $this->assertText('my_custom_job_id_1');
-    $this->assertText('my_custom_job_id_2');
+    $this->assertSession()->pageTextContains('my_custom_job_id_1');
+    $this->assertSession()->pageTextContains('my_custom_job_id_2');
 
     // If we update the job ID with notification to the TMS, an update happens.
     \Drupal::state()->set('lingotek.must_error_in_upload', TRUE);
@@ -1061,18 +1061,18 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForClearJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->drupalPostForm(NULL, ['update_tms' => 1], 'Clear Job ID');
-    $this->assertText('The Job ID change submission for node_type Article failed. Please try again.');
-    $this->assertText('Job ID for some config failed to sync to the TMS.');
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm(['update_tms' => 1], 'Clear Job ID');
+    $this->assertSession()->pageTextContains('The Job ID change submission for node_type Article failed. Please try again.');
+    $this->assertSession()->pageTextContains('Job ID for some config failed to sync to the TMS.');
 
     // There is an update with empty job id.
     \Drupal::state()->resetCache();
     $this->assertEquals('my_custom_job_id_1', \Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The job id is gone.
-    $this->assertText('my_custom_job_id_1');
-    $this->assertNoText('my_custom_job_id_2');
+    $this->assertSession()->pageTextContains('my_custom_job_id_1');
+    $this->assertSession()->pageTextNotContains('my_custom_job_id_2');
   }
 
   /**
@@ -1095,29 +1095,29 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[article]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id_1',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     $edit = [
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id_2',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // The job id is displayed.
-    $this->assertText('my_custom_job_id_1');
-    $this->assertText('my_custom_job_id_2');
+    $this->assertSession()->pageTextContains('my_custom_job_id_1');
+    $this->assertSession()->pageTextContains('my_custom_job_id_2');
 
     // If we update the job ID with notification to the TMS, an update happens.
     \Drupal::state()->set('lingotek.must_document_archived_error_in_update', TRUE);
@@ -1127,18 +1127,18 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForClearJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->drupalPostForm(NULL, ['update_tms' => 1], 'Clear Job ID');
-    $this->assertText('Document node_type Article has been archived. Please upload again.');
-    $this->assertText('Job ID for some config failed to sync to the TMS.');
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm(['update_tms' => 1], 'Clear Job ID');
+    $this->assertSession()->pageTextContains('Document node_type Article has been archived. Please upload again.');
+    $this->assertSession()->pageTextContains('Job ID for some config failed to sync to the TMS.');
 
     // There is an update with empty job id.
     \Drupal::state()->resetCache();
     $this->assertEquals('my_custom_job_id_1', \Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The job id is gone.
-    $this->assertText('my_custom_job_id_1');
-    $this->assertNoText('my_custom_job_id_2');
+    $this->assertSession()->pageTextContains('my_custom_job_id_1');
+    $this->assertSession()->pageTextNotContains('my_custom_job_id_2');
   }
 
   /**
@@ -1161,29 +1161,29 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[article]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id_1',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     $edit = [
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id_2',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // The job id is displayed.
-    $this->assertText('my_custom_job_id_1');
-    $this->assertText('my_custom_job_id_2');
+    $this->assertSession()->pageTextContains('my_custom_job_id_1');
+    $this->assertSession()->pageTextContains('my_custom_job_id_2');
 
     // If we update the job ID with notification to the TMS, an update happens.
     \Drupal::state()->set('lingotek.must_document_locked_error_in_update', TRUE);
@@ -1193,18 +1193,18 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForClearJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->drupalPostForm(NULL, ['update_tms' => 1], 'Clear Job ID');
-    $this->assertText('Document node_type Article has a new version. The document id has been updated for all future interactions. Please try again.');
-    $this->assertText('Job ID for some config failed to sync to the TMS.');
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm(['update_tms' => 1], 'Clear Job ID');
+    $this->assertSession()->pageTextContains('Document node_type Article has a new version. The document id has been updated for all future interactions. Please try again.');
+    $this->assertSession()->pageTextContains('Job ID for some config failed to sync to the TMS.');
 
     // There is an update with empty job id.
     \Drupal::state()->resetCache();
     $this->assertEquals('my_custom_job_id_1', \Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The job id is gone.
-    $this->assertText('my_custom_job_id_1');
-    $this->assertNoText('my_custom_job_id_2');
+    $this->assertSession()->pageTextContains('my_custom_job_id_1');
+    $this->assertSession()->pageTextNotContains('my_custom_job_id_2');
   }
 
   /**
@@ -1227,29 +1227,29 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[article]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id_1',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     $edit = [
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForAssignJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
     $edit = [
       'job_id' => 'my_custom_job_id_2',
       'update_tms' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Assign Job ID');
-    $this->assertText('Job ID was assigned successfully.');
+    $this->submitForm($edit, 'Assign Job ID');
+    $this->assertSession()->pageTextContains('Job ID was assigned successfully.');
 
     // The job id is displayed.
-    $this->assertText('my_custom_job_id_1');
-    $this->assertText('my_custom_job_id_2');
+    $this->assertSession()->pageTextContains('my_custom_job_id_1');
+    $this->assertSession()->pageTextContains('my_custom_job_id_2');
 
     // If we update the job ID with notification to the TMS, an update happens.
     \Drupal::state()->set('lingotek.must_error_in_upload', TRUE);
@@ -1259,18 +1259,18 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       'table[page]' => TRUE,
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForClearJobId('node_type'),
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
-    $this->drupalPostForm(NULL, ['update_tms' => 1], 'Clear Job ID');
-    $this->assertText('The Job ID change submission for node_type Article failed. Please try again.');
-    $this->assertText('Job ID for some config failed to sync to the TMS.');
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm(['update_tms' => 1], 'Clear Job ID');
+    $this->assertSession()->pageTextContains('The Job ID change submission for node_type Article failed. Please try again.');
+    $this->assertSession()->pageTextContains('Job ID for some config failed to sync to the TMS.');
 
     // There is an update with empty job id.
     \Drupal::state()->resetCache();
     $this->assertEquals('my_custom_job_id_1', \Drupal::state()->get('lingotek.uploaded_job_id'));
 
     // The job id is gone.
-    $this->assertText('my_custom_job_id_1');
-    $this->assertNoText('my_custom_job_id_2');
+    $this->assertSession()->pageTextContains('my_custom_job_id_1');
+    $this->assertSession()->pageTextNotContains('my_custom_job_id_2');
   }
 
   /**
@@ -1292,20 +1292,20 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
     }
 
     $this->goToConfigBulkManagementForm('node_type');
-    $this->assertNoText('No content available');
+    $this->assertSession()->pageTextNotContains('No content available');
 
     // After we filter by an unexisting job, there is no content and no rows.
     $edit = [
       'filters[wrapper][job_id]' => 'this job does not exist',
     ];
-    $this->drupalPostForm(NULL, $edit, 'edit-filters-actions-submit');
-    $this->assertText('No content available');
+    $this->submitForm($edit, 'edit-filters-actions-submit');
+    $this->assertSession()->pageTextContains('No content available');
 
     // After we reset, we get back to having all the content.
-    $this->drupalPostForm(NULL, [], 'Reset');
+    $this->submitForm([], 'Reset');
     $this->goToConfigBulkManagementForm('node_type');
     foreach (range(1, 9) as $j) {
-      $this->assertText('Content Type ' . $indexes[$j]);
+      $this->assertSession()->pageTextContains('Content Type ' . $indexes[$j]);
     }
 
     // I can init the upload of content.
@@ -1318,7 +1318,7 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('node_type'),
       'options[job_id]' => 'even numbers',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     $edit = [
       'table[content_type_1]' => TRUE,
@@ -1329,36 +1329,36 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
       $this->getBulkOperationFormName() => $this->getBulkOperationNameForUpload('node_type'),
       'options[job_id]' => 'prime numbers',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
     // After we filter by prime, there is no pager and the rows
     // selected are the ones expected.
     $edit = [
       'filters[wrapper][job_id]' => 'prime',
     ];
-    $this->drupalPostForm(NULL, $edit, 'edit-filters-actions-submit');
+    $this->submitForm($edit, 'edit-filters-actions-submit');
     foreach ([1, 2, 3, 5, 7] as $j) {
-      $this->assertText('Content Type ' . $indexes[$j]);
+      $this->assertSession()->pageTextContains('Content Type ' . $indexes[$j]);
     }
-    $this->assertNoText('Content Type ' . $indexes[4]);
-    $this->assertNoText('Content Type ' . $indexes[6]);
+    $this->assertSession()->pageTextNotContains('Content Type ' . $indexes[4]);
+    $this->assertSession()->pageTextNotContains('Content Type ' . $indexes[6]);
 
     // After we filter by even, there is no pager and the rows selected are the
     // ones expected.
     $edit = [
       'filters[wrapper][job_id]' => 'even',
     ];
-    $this->drupalPostForm(NULL, $edit, 'edit-filters-actions-submit');
+    $this->submitForm($edit, 'edit-filters-actions-submit');
     foreach ([4, 6, 8] as $j) {
-      $this->assertText('Content Type ' . $indexes[$j]);
+      $this->assertSession()->pageTextContains('Content Type ' . $indexes[$j]);
     }
-    $this->assertNoText('Content Type ' . $indexes[5]);
+    $this->assertSession()->pageTextNotContains('Content Type ' . $indexes[5]);
 
     // After we reset, we get back to having all the content.
-    $this->drupalPostForm(NULL, [], 'Reset');
+    $this->submitForm([], 'Reset');
     $this->goToConfigBulkManagementForm('node_type');
     foreach (range(1, 9) as $j) {
-      $this->assertText('Content Type ' . $indexes[$j]);
+      $this->assertSession()->pageTextContains('Content Type ' . $indexes[$j]);
     }
   }
 
@@ -1369,7 +1369,7 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
     $assert_session = $this->assertSession();
 
     $this->goToConfigBulkManagementForm();
-    $this->assertNoField('filters[wrapper][label]');
+    $this->assertSession()->fieldNotExists('filters[wrapper][label]');
 
     \Drupal::configFactory()->getEditable('lingotek.settings')->set('translate.config.node_type.profile', 'manual')->save();
 
@@ -1384,21 +1384,21 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
     }
 
     $this->goToConfigBulkManagementForm('node_type');
-    $this->assertField('filters[wrapper][label]');
-    $this->assertNoText('No content available');
+    $this->assertSession()->fieldExists('filters[wrapper][label]');
+    $this->assertSession()->pageTextNotContains('No content available');
 
     // After we filter by an unexisting label, there is no content and no rows.
     $edit = [
       'filters[wrapper][label]' => 'this label does not exist',
     ];
-    $this->drupalPostForm(NULL, $edit, 'edit-filters-actions-submit');
-    $this->assertText('No content available');
+    $this->submitForm($edit, 'edit-filters-actions-submit');
+    $this->assertSession()->pageTextContains('No content available');
 
     // After we reset, we get back to having all the content.
-    $this->drupalPostForm(NULL, [], 'Reset');
+    $this->submitForm([], 'Reset');
     $this->goToConfigBulkManagementForm('node_type');
     foreach (range(1, 9) as $j) {
-      $this->assertText('Content Type ' . $indexes[$j]);
+      $this->assertSession()->pageTextContains('Content Type ' . $indexes[$j]);
     }
 
     // After we filter by prime, there is no pager and the rows
@@ -1406,42 +1406,42 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
     $edit = [
       'filters[wrapper][label]' => 'even',
     ];
-    $this->drupalPostForm(NULL, $edit, 'edit-filters-actions-submit');
+    $this->submitForm($edit, 'edit-filters-actions-submit');
     foreach ([1, 3, 5, 7, 9] as $j) {
-      $this->assertText('Content Type ' . $indexes[$j]);
+      $this->assertSession()->pageTextContains('Content Type ' . $indexes[$j]);
     }
-    $this->assertNoText('Content Type ' . $indexes[2]);
-    $this->assertNoText('Content Type ' . $indexes[4]);
-    $this->assertNoText('Content Type ' . $indexes[6]);
+    $this->assertSession()->pageTextNotContains('Content Type ' . $indexes[2]);
+    $this->assertSession()->pageTextNotContains('Content Type ' . $indexes[4]);
+    $this->assertSession()->pageTextNotContains('Content Type ' . $indexes[6]);
 
     // After we filter by even, there is no pager and the rows selected are the
     // ones expected.
     $edit = [
       'filters[wrapper][label]' => 'odd',
     ];
-    $this->drupalPostForm(NULL, $edit, 'edit-filters-actions-submit');
+    $this->submitForm($edit, 'edit-filters-actions-submit');
     foreach ([2, 4, 6, 8] as $j) {
-      $this->assertText('Content Type ' . $indexes[$j]);
+      $this->assertSession()->pageTextContains('Content Type ' . $indexes[$j]);
     }
-    $this->assertNoText('Content Type ' . $indexes[1]);
-    $this->assertNoText('Content Type ' . $indexes[3]);
-    $this->assertNoText('Content Type ' . $indexes[5]);
+    $this->assertSession()->pageTextNotContains('Content Type ' . $indexes[1]);
+    $this->assertSession()->pageTextNotContains('Content Type ' . $indexes[3]);
+    $this->assertSession()->pageTextNotContains('Content Type ' . $indexes[5]);
 
     // After we reset, we get back to having all the content.
-    $this->drupalPostForm(NULL, [], 'Reset');
+    $this->submitForm([], 'Reset');
     $this->goToConfigBulkManagementForm('node_type');
     foreach (range(1, 9) as $j) {
-      $this->assertText('Content Type ' . $indexes[$j]);
+      $this->assertSession()->pageTextContains('Content Type ' . $indexes[$j]);
     }
     // If we filter with extra spaces, we still show configs.
     $edit = [
       'filters[wrapper][label]' => '  even   ',
     ];
-    $this->drupalPostForm(NULL, $edit, 'edit-filters-actions-submit');
+    $this->submitForm($edit, 'edit-filters-actions-submit');
     foreach ([1, 3, 5, 7, 9] as $j) {
-      $this->assertText('Content Type ' . $indexes[$j]);
+      $this->assertSession()->pageTextContains('Content Type ' . $indexes[$j]);
     }
-    $this->assertFieldByName('filters[wrapper][label]', 'even', 'The value is trimmed in the filter.');
+    $this->assertSession()->fieldValueEquals('filters[wrapper][label]', 'even');
   }
 
   /**
@@ -1451,7 +1451,7 @@ class LingotekConfigBulkFormTest extends LingotekTestBase {
     $assert_session = $this->assertSession();
 
     $this->goToConfigBulkManagementForm();
-    $this->assertText('System maintenance');
+    $this->assertSession()->pageTextContains('System maintenance');
     $assert_session->linkNotExists('System maintenance');
 
     $this->goToConfigBulkManagementForm('configurable_language');

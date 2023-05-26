@@ -14,6 +14,13 @@ use Symfony\Component\HttpFoundation\Request;
 class LingotekManagementController extends LingotekControllerBase {
 
   /**
+   * The URL generator.
+   *
+   * @var \Drupal\Core\Routing\UrlGeneratorInterface
+   */
+  protected $urlGenerator;
+
+  /**
    * Constructs a LingotekManagementController object.
    *
    * @param \Symfony\Component\HttpFoundation\Request $request

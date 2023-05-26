@@ -19,7 +19,7 @@ class LingotekWorkbenchModerationSettingsTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['node', 'taxonomy', 'workbench_moderation'];
+  protected static $modules = ['node', 'taxonomy', 'workbench_moderation'];
 
   /**
    * Vocabulary for testing.
@@ -75,18 +75,14 @@ class LingotekWorkbenchModerationSettingsTest extends LingotekTestBase {
 
     // We don't have any fields for configuring workbench moderation until it's
     // enabled.
-    $this->assertNoField('node[article][moderation][upload_status]',
-      'The field for setting the state when a content should be uploaded does not exist as workbench moderation is not enabled for this bundle.');
-    $this->assertNoField('node[article][moderation][download_transition]',
-      'The field for setting the transition that must happen after download does not exist as workbench moderation is not enabled for this bundle.');
+    $this->assertSession()->fieldNotExists('node[article][moderation][upload_status]', 'The field for setting the state when a content should be uploaded does not exist as workbench moderation is not enabled for this bundle.');
+    $this->assertSession()->fieldNotExists('node[article][moderation][download_transition]', 'The field for setting the transition that must happen after download does not exist as workbench moderation is not enabled for this bundle.');
 
-    $this->assertNoField('node[page][moderation][upload_status]',
-      'The field for setting the state when a content should be uploaded does not exist as workbench moderation is not enabled for this bundle.');
-    $this->assertNoField('node[page][moderation][download_transition]',
-      'The field for setting the transition that must happen after download does not exist as workbench moderation is not enabled for this bundle.');
+    $this->assertSession()->fieldNotExists('node[page][moderation][upload_status]', 'The field for setting the state when a content should be uploaded does not exist as workbench moderation is not enabled for this bundle.');
+    $this->assertSession()->fieldNotExists('node[page][moderation][download_transition]', 'The field for setting the transition that must happen after download does not exist as workbench moderation is not enabled for this bundle.');
 
     // We show a message and link for enabling it.
-    $this->assertText('This entity bundle is not enabled for moderation with workbench_moderation. You can change its settings here.');
+    $this->assertSession()->pageTextContains('This entity bundle is not enabled for moderation with workbench_moderation. You can change its settings here.');
     $assert_session->linkByHrefExists('/admin/structure/types/manage/article/moderation');
     $assert_session->linkByHrefExists('/admin/structure/types/manage/page/moderation');
 
@@ -98,20 +94,16 @@ class LingotekWorkbenchModerationSettingsTest extends LingotekTestBase {
 
     // Assert the fields for setting up the integration exist and they have
     // sensible defaults.
-    $this->assertField('node[article][moderation][upload_status]',
-      'The field for setting the state when a content should be uploaded exists.');
-    $this->assertField('node[article][moderation][download_transition]',
-      'The field for setting the transition that must happen after download exists.');
+    $this->assertSession()->fieldExists('node[article][moderation][upload_status]', 'The field for setting the state when a content should be uploaded exists.');
+    $this->assertSession()->fieldExists('node[article][moderation][download_transition]', 'The field for setting the transition that must happen after download exists.');
     $assert_session->optionExists('edit-node-article-moderation-upload-status', 'published');
     $assert_session->optionExists('edit-node-article-moderation-download-transition', 'published_published');
 
     // The content types without moderation enabled should show a link instead
     // for configuring them.
-    $this->assertNoField('node[page][moderation][upload_status]',
-      'The field for setting the state when a content should be uploaded does not exist as workbench moderation is not enabled for this bundle.');
-    $this->assertNoField('node[page][moderation][download_transition]',
-      'The field for setting the transition that must happen after download does not exist as workbench moderation is not enabled for this bundle.');
-    $this->assertText('This entity bundle is not enabled for moderation with workbench_moderation. You can change its settings here.');
+    $this->assertSession()->fieldNotExists('node[page][moderation][upload_status]', 'The field for setting the state when a content should be uploaded does not exist as workbench moderation is not enabled for this bundle.');
+    $this->assertSession()->fieldNotExists('node[page][moderation][download_transition]', 'The field for setting the transition that must happen after download does not exist as workbench moderation is not enabled for this bundle.');
+    $this->assertSession()->pageTextContains('This entity bundle is not enabled for moderation with workbench_moderation. You can change its settings here.');
     $assert_session->linkByHrefNotExists('/admin/structure/types/manage/article/moderation');
     $assert_session->linkByHrefExists('/admin/structure/types/manage/page/moderation');
 
@@ -135,25 +127,21 @@ class LingotekWorkbenchModerationSettingsTest extends LingotekTestBase {
     $assert_session->optionExists('edit-node-article-moderation-upload-status', 'draft');
     $assert_session->optionExists('edit-node-article-moderation-download-transition', 'draft_needs_review');
 
-    $this->assertNoField("taxonomy_term[$vocabulary_id][moderation][upload_status]",
-      'The field for setting the state when a content should be uploaded does not exist as workbench moderation is not available for this entity type.');
-    $this->assertNoField("taxonomy_term[$vocabulary_id][moderation][download_transition]",
-      'The field for setting the transition that must happen after download does not exist as workbench moderation is not available for this entity type.');
+    $this->assertSession()->fieldNotExists("taxonomy_term[$vocabulary_id][moderation][upload_status]", 'The field for setting the state when a content should be uploaded does not exist as workbench moderation is not available for this entity type.');
+    $this->assertSession()->fieldNotExists("taxonomy_term[$vocabulary_id][moderation][download_transition]", 'The field for setting the transition that must happen after download does not exist as workbench moderation is not available for this entity type.');
 
     $assert_session->linkByHrefExists("/admin/structure/taxonomy/manage/$vocabulary_id/moderation");
     // Users cannot be moderated.
-    $this->assertNoField("user[user][moderation][upload_status]",
-      'The field for setting the state when a content should be uploaded does not exist as workbench moderation is not available for this entity type.');
-    $this->assertNoField("user[user][moderation][download_transition]",
-      'The field for setting the transition that must happen after download does not exist as workbench moderation is not available for this entity type.');
+    $this->assertSession()->fieldNotExists("user[user][moderation][upload_status]", 'The field for setting the state when a content should be uploaded does not exist as workbench moderation is not available for this entity type.');
+    $this->assertSession()->fieldNotExists("user[user][moderation][download_transition]", 'The field for setting the transition that must happen after download does not exist as workbench moderation is not available for this entity type.');
     $assert_session->linkByHrefNotExists("/admin/structure/user/manage/user/moderation");
 
     $header = $this->xpath("//details[@id='edit-entity-node']//th[text()='Workbench Moderation']");
-    $this->assertEqual(count($header), 1, 'There is a Workbench Moderation column for content.');
+    $this->assertEquals(count($header), 1, 'There is a Workbench Moderation column for content.');
     $header = $this->xpath("//details[@id='edit-entity-taxonomy-term']//th[text()='Workbench Moderation']");
-    $this->assertEqual(count($header), 1, 'There is a Workbench Moderation column for terms.');
+    $this->assertEquals(count($header), 1, 'There is a Workbench Moderation column for terms.');
     $header = $this->xpath("//details[@id='edit-entity-user']//th[text()='Workbench Moderation']");
-    $this->assertEqual(count($header), 0, 'There is no Workbench Moderation column for users.');
+    $this->assertEquals(count($header), 0, 'There is no Workbench Moderation column for users.');
   }
 
   /**
@@ -168,8 +156,8 @@ class LingotekWorkbenchModerationSettingsTest extends LingotekTestBase {
    */
   protected function enableModerationThroughUI($content_type_id, array $allowed_states, $default_state) {
     $this->drupalGet('admin/structure/types/manage/' . $content_type_id . '/moderation');
-    $this->assertFieldByName('enable_moderation_state');
-    $this->assertNoFieldChecked('edit-enable-moderation-state');
+    $this->assertSession()->fieldExists('enable_moderation_state');
+    $this->assertSession()->checkboxNotChecked('edit-enable-moderation-state');
 
     $edit['enable_moderation_state'] = 1;
 
@@ -181,7 +169,7 @@ class LingotekWorkbenchModerationSettingsTest extends LingotekTestBase {
 
     $edit['default_moderation_state'] = $default_state;
 
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
   }
 
 }

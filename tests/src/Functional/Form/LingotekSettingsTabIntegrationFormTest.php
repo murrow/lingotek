@@ -26,7 +26,7 @@ class LingotekSettingsTabIntegrationFormTest extends LingotekTestBase {
    */
   public function testTabNotShownIfThereAreNoSettings() {
     $this->drupalGet('admin/lingotek/settings');
-    $this->assertNoText('Integrations Settings');
+    $this->assertSession()->pageTextNotContains('Integrations Settings');
   }
 
 }

@@ -18,7 +18,7 @@ class LingotekTranslationStatusesFormatterTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['node', 'lingotek_visitable_metadata_statuses'];
+  protected static $modules = ['node', 'lingotek_visitable_metadata_statuses'];
 
   /**
    * {@inheritdoc}

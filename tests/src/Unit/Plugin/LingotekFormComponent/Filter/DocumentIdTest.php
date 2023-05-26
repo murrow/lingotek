@@ -33,7 +33,7 @@ class DocumentIdTest extends UnitTestCase {
   /**
    * The connection object on which to run queries.
    *
-   * @var \Drupal\Core\Database\Connection|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Database\Connection|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $connection;
 
@@ -85,9 +85,7 @@ class DocumentIdTest extends UnitTestCase {
   protected function setUp(): void {
     parent::setUp();
 
-    $this->connection = $this->getMockBuilder(Connection::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->connection = $this->createMock(Connection::class);
 
     $this->entityType = $this->createMock(ContentEntityTypeInterface::class);
     $this->entityType->expects($this->any())
@@ -169,9 +167,9 @@ class DocumentIdTest extends UnitTestCase {
       ->with('lingotek_content_metadata')
       ->willReturn($metadata);
 
-    $unionQuery = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $unionQuery = $this->createMock(PagerSelectExtender::class);
 
-    $select = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $select = $this->createMock(PagerSelectExtender::class);
     $select->expects($this->once())
       ->method('innerJoin')
       ->with('metadata_content', 'metadata', "entity_table.entity_id= metadata.content_entity_id AND metadata.content_entity_type_id = 'my_entity_type'")
@@ -222,9 +220,9 @@ class DocumentIdTest extends UnitTestCase {
       ->with('lingotek_content_metadata')
       ->willReturn($metadata);
 
-    $unionQuery = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $unionQuery = $this->createMock(PagerSelectExtender::class);
 
-    $select = $this->getMockBuilder(PagerSelectExtender::class)->disableOriginalConstructor()->getMock();
+    $select = $this->createMock(PagerSelectExtender::class);
     $select->expects($this->once())
       ->method('innerJoin')
       ->with('metadata_content', 'metadata', "entity_table.entity_id= metadata.content_entity_id AND metadata.content_entity_type_id = 'my_entity_type'")

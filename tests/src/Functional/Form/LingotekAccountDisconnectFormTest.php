@@ -17,15 +17,15 @@ class LingotekAccountDisconnectFormTest extends LingotekTestBase {
   public function testAccountDisconnect() {
     // We try to disconnect from an already connected account.
     $this->drupalGet('admin/lingotek/settings');
-    $this->drupalPostForm(NULL, [], t('Disconnect'), [], 'lingoteksettings-tab-account-form');
+    $this->submitForm([], t('Disconnect'), 'lingoteksettings-tab-account-form');
 
     \Drupal::state()->set('must_remain_disconnected', TRUE);
 
     // We need to confirm disconnection.
-    $this->drupalPostForm(NULL, [], t('Disconnect'));
+    $this->submitForm([], t('Disconnect'));
 
     // We have been redirected to the account connection form.
-    $this->assertUrl('/admin/lingotek/setup/account');
+    $this->assertSession()->addressEquals('/admin/lingotek/setup/account');
 
     // We don't have an account anymore.
     $lingotek_config = \Drupal::config('lingotek.account');

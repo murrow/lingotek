@@ -49,6 +49,13 @@ class DeleteContentTest extends UnitTestCase {
   protected $entityTypeBundleInfo;
 
   /**
+   * The mocked language manager.
+   *
+   * @var \Drupal\Core\Language\LanguageManagerInterface|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $languageManager;
+
+  /**
    * The mocked Lingotek configuration service.
    *
    * @var \Drupal\lingotek\LingotekConfigurationServiceInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -72,14 +79,14 @@ class DeleteContentTest extends UnitTestCase {
   /**
    * The tempstore factory.
    *
-   * @var \Drupal\Core\TempStore\PrivateTempStoreFactory|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\TempStore\PrivateTempStoreFactory|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $tempStoreFactory;
 
   /**
    * The user currently logged in.
    *
-   * @var \Drupal\Core\Session\AccountInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Session\AccountInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $currentUser;
 

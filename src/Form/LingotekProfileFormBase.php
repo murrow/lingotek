@@ -355,7 +355,7 @@ class LingotekProfileFormBase extends EntityForm {
 
     $profile->setIntelligenceMetadataOverrides($form_state->getValue(['intelligence_metadata_overrides', 'override']));
 
-    parent::save($form, $form_state);
+    return parent::save($form, $form_state);
   }
 
 }

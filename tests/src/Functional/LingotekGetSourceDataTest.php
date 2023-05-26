@@ -16,7 +16,7 @@ class LingotekGetSourceDataTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['node', 'image'];
+  protected static $modules = ['node', 'image'];
 
   /**
    * {@inheritdoc}
@@ -97,9 +97,9 @@ class LingotekGetSourceDataTest extends LingotekTestBase {
     $translation_service = \Drupal::service('lingotek.content_translation');
     $serialized_node = $translation_service->getSourceData($node);
     $this->assertTrue(isset($serialized_node['_lingotek_metadata']), 'The Lingotek metadata is included in the extracted data.');
-    $this->assertEqual('node', $serialized_node['_lingotek_metadata']['_entity_type_id'], 'Entity type id is included as metadata.');
-    $this->assertEqual(1, $serialized_node['_lingotek_metadata']['_entity_id'], 'Entity id is included as metadata.');
-    $this->assertEqual(1, $serialized_node['_lingotek_metadata']['_entity_revision'], 'Entity revision id is included as metadata.');
+    $this->assertEquals('node', $serialized_node['_lingotek_metadata']['_entity_type_id'], 'Entity type id is included as metadata.');
+    $this->assertEquals(1, $serialized_node['_lingotek_metadata']['_entity_id'], 'Entity id is included as metadata.');
+    $this->assertEquals(1, $serialized_node['_lingotek_metadata']['_entity_revision'], 'Entity revision id is included as metadata.');
 
     $node->setNewRevision();
     $node->setTitle($this->randomString(10));
@@ -107,9 +107,9 @@ class LingotekGetSourceDataTest extends LingotekTestBase {
 
     $serialized_node = $translation_service->getSourceData($node);
     $this->assertTrue(isset($serialized_node['_lingotek_metadata']), 'The Lingotek metadata is included in the extracted data.');
-    $this->assertEqual('node', $serialized_node['_lingotek_metadata']['_entity_type_id'], 'Entity type id is included as metadata.');
-    $this->assertEqual(1, $serialized_node['_lingotek_metadata']['_entity_id'], 'Entity id is included as metadata.');
-    $this->assertEqual(2, $serialized_node['_lingotek_metadata']['_entity_revision'], 'Entity revision id is included as metadata, and has changed.');
+    $this->assertEquals('node', $serialized_node['_lingotek_metadata']['_entity_type_id'], 'Entity type id is included as metadata.');
+    $this->assertEquals(1, $serialized_node['_lingotek_metadata']['_entity_id'], 'Entity id is included as metadata.');
+    $this->assertEquals(2, $serialized_node['_lingotek_metadata']['_entity_revision'], 'Entity revision id is included as metadata, and has changed.');
   }
 
 }

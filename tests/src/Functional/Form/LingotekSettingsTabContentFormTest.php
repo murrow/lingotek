@@ -23,7 +23,7 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'node', 'field_ui', 'image'];
+  protected static $modules = ['block', 'node', 'field_ui', 'image'];
 
   protected function setUp(): void {
     parent::setUp();
@@ -61,7 +61,7 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
    */
   public function testNoUntranslatableEntitiesAreShown() {
     $this->drupalGet('admin/lingotek/settings');
-    $this->assertText('There are no translatable content entities specified');
+    $this->assertSession()->pageTextContains('There are no translatable content entities specified');
   }
 
   /**
@@ -86,12 +86,12 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
 
     // Check the form contains the article type and only its text-based fields.
     $this->drupalGet('admin/lingotek/settings');
-    $this->assertNoText('There are no translatable content types specified');
-    $this->assertNoField('node[article][fields][langcode]');
-    $this->assertField('node[article][enabled]');
-    $this->assertField('node[article][profiles]');
-    $this->assertField('node[article][fields][title]');
-    $this->assertField('node[article][fields][body]');
+    $this->assertSession()->pageTextNotContains('There are no translatable content types specified');
+    $this->assertSession()->fieldNotExists('node[article][fields][langcode]');
+    $this->assertSession()->fieldExists('node[article][enabled]');
+    $this->assertSession()->fieldExists('node[article][profiles]');
+    $this->assertSession()->fieldExists('node[article][fields][title]');
+    $this->assertSession()->fieldExists('node[article][fields][body]');
 
     // Check the title and body fields.
     $edit = [
@@ -105,16 +105,16 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
       'user[user][fields][user_picture]' => 1,
       'user[user][fields][user_picture:properties][alt]' => 'alt',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
 
     // Check that values are kept in the form.
-    $this->assertFieldChecked('edit-node-article-enabled');
-    $this->assertFieldByName('node[article][profiles]', 'automatic');
-    $this->assertFieldChecked('edit-node-article-fields-title');
-    $this->assertFieldChecked('edit-node-article-fields-body');
-    $this->assertFieldChecked('edit-node-article-fields-field-image');
-    $this->assertFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-enabled');
+    $this->assertSession()->fieldValueEquals('node[article][profiles]', 'automatic');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-body');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-image');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-title');
 
     // Check that the config is correctly saved.
     $config_data = $this->config('lingotek.settings')->getRawData();
@@ -123,10 +123,10 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
     $this->assertTrue($config_data['translate']['entity']['node']['article']['field']['body']);
     $this->assertTrue($config_data['translate']['entity']['node']['article']['field']['field_image']);
     // As the schema here is sequence:ignore, there is no boolean casting.
-    $this->assertEqual($config_data['translate']['entity']['node']['article']['field']['field_image:properties']['alt'], '1');
-    $this->assertEqual($config_data['translate']['entity']['node']['article']['field']['field_image:properties']['title'], '0');
+    $this->assertEquals($config_data['translate']['entity']['node']['article']['field']['field_image:properties']['alt'], '1');
+    $this->assertEquals($config_data['translate']['entity']['node']['article']['field']['field_image:properties']['title'], '0');
     $this->assertFalse(array_key_exists('revision_log', $config_data['translate']['entity']['node']['article']['field']));
-    $this->assertEqual('automatic', $config_data['translate']['entity']['node']['article']['profile']);
+    $this->assertEquals('automatic', $config_data['translate']['entity']['node']['article']['profile']);
   }
 
   /**
@@ -149,16 +149,16 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
       'user[user][fields][user_picture:properties][alt]' => FALSE,
       'user[user][fields][user_picture:properties][title]' => 'title',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
 
     // Check that values are kept in the form.
-    $this->assertFieldChecked('edit-node-article-enabled');
-    $this->assertFieldByName('node[article][profiles]', 'automatic');
-    $this->assertFieldChecked('edit-node-article-fields-title');
-    $this->assertFieldChecked('edit-node-article-fields-body');
-    $this->assertFieldChecked('edit-node-article-fields-field-image');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertFieldChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-enabled');
+    $this->assertSession()->fieldValueEquals('node[article][profiles]', 'automatic');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-body');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-image');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-imageproperties-title');
 
     // Check that the config is correctly saved.
     $config_data = $this->config('lingotek.settings')->getRawData();
@@ -167,10 +167,10 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
     $this->assertTrue($config_data['translate']['entity']['node']['article']['field']['body']);
     $this->assertTrue($config_data['translate']['entity']['node']['article']['field']['field_image']);
     // As the schema here is sequence:ignore, there is no boolean casting.
-    $this->assertEqual($config_data['translate']['entity']['node']['article']['field']['field_image:properties']['alt'], '0');
-    $this->assertEqual($config_data['translate']['entity']['node']['article']['field']['field_image:properties']['title'], '1');
+    $this->assertEquals($config_data['translate']['entity']['node']['article']['field']['field_image:properties']['alt'], '0');
+    $this->assertEquals($config_data['translate']['entity']['node']['article']['field']['field_image:properties']['title'], '1');
     $this->assertFalse(array_key_exists('revision_log', $config_data['translate']['entity']['node']['article']['field']));
-    $this->assertEqual('automatic', $config_data['translate']['entity']['node']['article']['profile']);
+    $this->assertEquals('automatic', $config_data['translate']['entity']['node']['article']['profile']);
 
     // Uncheck a couple of fields: body and image from node.
     $edit = [
@@ -186,16 +186,16 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
       'user[user][fields][user_picture:properties][alt]' => FALSE,
       'user[user][fields][user_picture:properties][title]' => 'title',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
 
     // Check that values are kept in the form.
-    $this->assertFieldChecked('edit-node-article-enabled');
-    $this->assertFieldByName('node[article][profiles]', 'automatic');
-    $this->assertFieldChecked('edit-node-article-fields-title');
-    $this->assertNoFieldChecked('edit-node-article-fields-body');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-image');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-enabled');
+    $this->assertSession()->fieldValueEquals('node[article][profiles]', 'automatic');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-title');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-body');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-image');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-title');
 
     // Check that the config is correctly saved.
     $config_data = $this->config('lingotek.settings')->getRawData();
@@ -206,9 +206,9 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
     // As the schema here is sequence:ignore, there is no boolean casting.
     // This should probably just be deleted.
     $this->assertFalse(array_key_exists('alt', $config_data['translate']['entity']['node']['article']['field']['field_image:properties']));
-    $this->assertEqual($config_data['translate']['entity']['node']['article']['field']['field_image:properties']['title'], '0');
+    $this->assertEquals($config_data['translate']['entity']['node']['article']['field']['field_image:properties']['title'], '0');
     $this->assertFalse(array_key_exists('revision_log', $config_data['translate']['entity']['node']['article']['field']));
-    $this->assertEqual('automatic', $config_data['translate']['entity']['node']['article']['profile']);
+    $this->assertEquals('automatic', $config_data['translate']['entity']['node']['article']['profile']);
 
     // Uncheck user for translation.
     $edit = [
@@ -221,21 +221,21 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
       'node[article][fields][field_image:properties][title]' => 'title',
       'user[user][enabled]' => FALSE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
 
     // Check that values are kept in the form.
-    $this->assertFieldChecked('edit-node-article-enabled');
-    $this->assertFieldByName('node[article][profiles]', 'automatic');
-    $this->assertFieldChecked('edit-node-article-fields-title');
-    $this->assertNoFieldChecked('edit-node-article-fields-body');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-image');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-enabled');
+    $this->assertSession()->fieldValueEquals('node[article][profiles]', 'automatic');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-title');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-body');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-image');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-title');
 
-    $this->assertNoFieldChecked('edit-user-user-enabled');
-    $this->assertFieldByName('user[user][profiles]', 'automatic');
-    $this->assertFieldChecked('edit-user-user-fields-user-picture');
-    $this->assertFieldChecked('edit-user-user-fields-user-pictureproperties-title');
+    $this->assertSession()->checkboxNotChecked('edit-user-user-enabled');
+    $this->assertSession()->fieldValueEquals('user[user][profiles]', 'automatic');
+    $this->assertSession()->checkboxChecked('edit-user-user-fields-user-picture');
+    $this->assertSession()->checkboxChecked('edit-user-user-fields-user-pictureproperties-title');
 
     // Check that the config is correctly saved.
     $config_data = $this->config('lingotek.settings')->getRawData();
@@ -246,13 +246,13 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
     // As the schema here is sequence:ignore, there is no boolean casting.
     // This should probably just be deleted.
     $this->assertFalse(array_key_exists('alt', $config_data['translate']['entity']['node']['article']['field']['field_image:properties']));
-    $this->assertEqual($config_data['translate']['entity']['node']['article']['field']['field_image:properties']['title'], '0');
+    $this->assertEquals($config_data['translate']['entity']['node']['article']['field']['field_image:properties']['title'], '0');
     $this->assertFalse(array_key_exists('revision_log', $config_data['translate']['entity']['node']['article']['field']));
-    $this->assertEqual('automatic', $config_data['translate']['entity']['node']['article']['profile']);
+    $this->assertEquals('automatic', $config_data['translate']['entity']['node']['article']['profile']);
 
     $this->assertFalse($config_data['translate']['entity']['user']['user']['enabled']);
     $this->assertTrue($config_data['translate']['entity']['user']['user']['field']['user_picture']);
-    $this->assertEqual($config_data['translate']['entity']['user']['user']['field']['user_picture:properties']['title'], '1');
+    $this->assertEquals($config_data['translate']['entity']['user']['user']['field']['user_picture:properties']['title'], '1');
   }
 
   public function testICanDisableFields() {
@@ -281,10 +281,10 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
       'node[article][fields][field_image]' => 1,
       'node[article][fields][field_image:properties][alt]' => 'alt',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
     // Assert that body translation is enabled.
-    $this->assertFieldChecked('edit-node-article-fields-body');
-    $this->assertFieldChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-body');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-imageproperties-alt');
 
     // Submit again unchecking body and image including subfields.
     $edit = [
@@ -295,11 +295,11 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
       'node[article][fields][field_image]' => FALSE,
       'node[article][fields][field_image:properties][alt]' => FALSE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
 
     // Those checkboxes should not be checked anymore.
-    $this->assertNoFieldChecked('edit-node-article-fields-body');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-body');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-alt');
 
   }
 
@@ -335,12 +335,12 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
       'node[article][fields][field_image]' => 1,
       'node[article][fields][field_image:properties][alt]' => 'alt',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
     // Assert that body translation is enabled.
-    $this->assertFieldChecked('edit-node-article-fields-title', 'The title field is enabled after enabled for Lingotek translation');
-    $this->assertFieldChecked('edit-node-article-fields-body', 'The body field is enabled after enabled for Lingotek translation');
-    $this->assertFieldChecked('edit-node-article-fields-field-image', 'The image field is enabled after enabled for Lingotek translation');
-    $this->assertFieldChecked('edit-node-article-fields-field-imageproperties-alt', 'The image alt property is enabled after enabled for Lingotek translation');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-title', 'The title field is enabled after enabled for Lingotek translation');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-body', 'The body field is enabled after enabled for Lingotek translation');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-image', 'The image field is enabled after enabled for Lingotek translation');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-imageproperties-alt', 'The image alt property is enabled after enabled for Lingotek translation');
 
     // Go to the content language settings, and disable the body field.
     // It should result that the field is disabled in Lingotek too.
@@ -352,14 +352,15 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
       'settings[node][article][fields][body]' => FALSE,
       'settings[node][article][fields][field_image]' => FALSE,
     ];
-    $this->drupalPostForm('admin/config/regional/content-language', $edit, t('Save configuration'));
+    $this->drupalGet('admin/config/regional/content-language');
+    $this->submitForm($edit, t('Save configuration'));
 
     // Get the form and check the fields are not available, because they cannot be translated.
     $this->drupalGet('admin/lingotek/settings');
-    $this->assertFieldChecked('edit-node-article-fields-title', 'The title field is enabled after other fields were disabled for content translation');
-    $this->assertNoFieldById('edit-node-article-fields-body', 'The body field is not present after disabled for content translation');
-    $this->assertNoFieldById('edit-node-article-fields-field-image', 'The image field is not present after disabled for content translation');
-    $this->assertNoFieldById('edit-node-article-fields-field-imageproperties-alt', 'The image alt property is not present after image was disabled for content translation');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-title', 'The title field is enabled after other fields were disabled for content translation');
+    $this->assertSession()->fieldValueNotEquals('edit-node-article-fields-body', 'The body field is not present after disabled for content translation');
+    $this->assertSession()->fieldValueNotEquals('edit-node-article-fields-field-image', 'The image field is not present after disabled for content translation');
+    $this->assertSession()->fieldValueNotEquals('edit-node-article-fields-field-imageproperties-alt', 'The image alt property is not present after image was disabled for content translation');
 
     // But also check that the fields are not enabled.
     /** @var \Drupal\lingotek\LingotekConfigurationServiceInterface $lingotek_config */
@@ -405,23 +406,23 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
     // Get the form and check the field is not available, even if the storage
     // is translatable.
     $this->drupalGet('admin/lingotek/settings');
-    $this->assertNoFieldById('edit-node-article-fields-field-image', '', 'The image field is not present after marked as not translatable.');
+    $this->assertSession()->fieldValueNotEquals('edit-node-article-fields-field-image', '');
 
     // Make the field translatable again.
     $field->setTranslatable(TRUE)->save();
 
     // If the field is translatable, the field is available again.
     $this->drupalGet('admin/lingotek/settings');
-    $this->assertFieldById('edit-node-article-fields-field-image', '', 'The image field is present after marked as translatable.');
+    $this->assertSession()->fieldValueEquals('edit-node-article-fields-field-image', '');
   }
 
   public function testAddContentTypeAndConfigureLingotekToTranslate() {
     // Check the form contains the article type and only its text-based fields.
     $this->drupalGet('admin/structure/types');
     $this->clickLink('Add content type');
-    $this->assertNoFieldChecked('language_configuration[language_alterable]');
-    $this->assertNoFieldChecked('language_configuration[content_translation]');
-    $this->assertNoFieldChecked('language_configuration[content_translation_for_lingotek]');
+    $this->assertSession()->checkboxNotChecked('language_configuration[language_alterable]');
+    $this->assertSession()->checkboxNotChecked('language_configuration[content_translation]');
+    $this->assertSession()->checkboxNotChecked('language_configuration[content_translation_for_lingotek]');
 
     $edit = [
       'name' => 'Test',
@@ -430,17 +431,17 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
       'language_configuration[content_translation]' => TRUE,
       'language_configuration[content_translation_for_lingotek]' => TRUE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save and manage fields');
-    $this->assertText('The content type Test has been added.');
+    $this->submitForm($edit, 'Save and manage fields');
+    $this->assertSession()->pageTextContains('The content type Test has been added.');
 
     // It should result that the field is enabled in Lingotek settings.
     $this->drupalGet('admin/lingotek/settings');
-    $this->assertFieldChecked('edit-node-test-enabled');
+    $this->assertSession()->checkboxChecked('edit-node-test-enabled');
 
     // We automatically enabled sensible defaults fields according to their type.
-    $this->assertFieldChecked('edit-node-test-fields-title');
-    $this->assertFieldChecked('edit-node-test-fields-body');
-    $this->assertNoFieldChecked('edit-node-test-fields-uid');
+    $this->assertSession()->checkboxChecked('edit-node-test-fields-title');
+    $this->assertSession()->checkboxChecked('edit-node-test-fields-body');
+    $this->assertSession()->checkboxNotChecked('edit-node-test-fields-uid');
   }
 
   /**
@@ -470,13 +471,14 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
       'language_configuration[content_translation]' => FALSE,
       'language_configuration[content_translation_for_lingotek]' => FALSE,
     ];
-    $this->drupalPostForm('admin/structure/types/manage/article', $edit, t('Save content type'));
+    $this->drupalGet('admin/structure/types/manage/article');
+    $this->submitForm($edit, t('Save content type'));
 
     // Check the form contains the article type and only its text-based fields.
     $this->drupalGet('admin/structure/types/manage/article');
 
     $this->drupalGet('admin/lingotek/settings');
-    $this->assertText('There are no translatable content entities specified');
+    $this->assertSession()->pageTextContains('There are no translatable content entities specified');
 
     // It should result that the field is enabled in Lingotek.
     $edit = [
@@ -484,19 +486,20 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
       'language_configuration[content_translation]' => TRUE,
       'language_configuration[content_translation_for_lingotek]' => TRUE,
     ];
-    $this->drupalPostForm('admin/structure/types/manage/article', $edit, t('Save content type'));
+    $this->drupalGet('admin/structure/types/manage/article');
+    $this->submitForm($edit, t('Save content type'));
     $this->applyEntityUpdates();
 
     // Check the form contains the article type and only its text-based fields.
     $this->drupalGet('admin/structure/types/manage/article');
 
     $this->drupalGet('admin/lingotek/settings');
-    $this->assertFieldChecked('edit-node-article-enabled');
+    $this->assertSession()->checkboxChecked('edit-node-article-enabled');
 
     // We automatically enabled sensible defaults fields according to their type.
-    $this->assertFieldChecked('edit-node-article-fields-title');
-    $this->assertFieldChecked('edit-node-article-fields-body');
-    $this->assertNoFieldChecked('edit-node-article-fields-uid');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-body');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-uid');
   }
 
   /**
@@ -523,7 +526,7 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
     $this->drupalGet('admin/lingotek/settings');
 
     // Check the form contains the fields but they are disabled.
-    $this->assertNoFieldChecked('edit-node-article-fields-body');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-body');
 
     // Check body field.
     $edit = [
@@ -531,28 +534,28 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
       'node[article][profiles]' => 'automatic',
       'node[article][fields][body]' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save', [], 'lingoteksettings-tab-content-form');
-    $this->assertFieldChecked('edit-node-article-fields-body');
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-body');
 
     $this->drupalGet('/admin/config/regional/config-translation/node_fields');
     $this->clickLink(t('Translate'), 0);
     $this->clickLink('Edit');
 
-    $this->assertFieldChecked('edit-translatable-for-lingotek');
+    $this->assertSession()->checkboxChecked('edit-translatable-for-lingotek');
     // There are no properties to show.
-    $this->assertNoRaw('Lingotek translation');
+    $this->assertSession()->responseNotContains('Lingotek translation');
 
     $edit = [
       'translatable_for_lingotek' => FALSE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save settings');
+    $this->submitForm($edit, 'Save settings');
     $this->clickLink('Edit');
 
-    $this->assertNoFieldChecked('edit-translatable-for-lingotek');
+    $this->assertSession()->checkboxNotChecked('edit-translatable-for-lingotek');
 
     $this->drupalGet('/admin/lingotek/settings');
 
-    $this->assertNoFieldChecked("edit-node-article-fields-body");
+    $this->assertSession()->checkboxNotChecked("edit-node-article-fields-body");
 
     $this->drupalGet('/admin/config/regional/config-translation/node_fields');
     $this->clickLink(t('Translate'), 0);
@@ -561,13 +564,13 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
     $edit = [
       'translatable_for_lingotek' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save settings');
+    $this->submitForm($edit, 'Save settings');
     $this->clickLink('Edit');
 
-    $this->assertFieldChecked('edit-translatable-for-lingotek');
+    $this->assertSession()->checkboxChecked('edit-translatable-for-lingotek');
 
     $this->drupalGet('/admin/lingotek/settings');
-    $this->assertFieldChecked("edit-node-article-fields-body");
+    $this->assertSession()->checkboxChecked("edit-node-article-fields-body");
   }
 
   /**
@@ -594,9 +597,9 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
     $this->drupalGet('admin/lingotek/settings');
 
     // Check the form contains the fields but they are disabled.
-    $this->assertNoFieldChecked('edit-node-article-fields-body');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-image');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-body');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-image');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-alt');
 
     // Check image and alt subfield.
     $edit = [
@@ -607,62 +610,62 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
       'node[article][fields][field_image]' => 1,
       'node[article][fields][field_image:properties][alt]' => 'alt',
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
 
-    $this->assertFieldChecked('edit-node-article-fields-body');
-    $this->assertFieldChecked('edit-node-article-fields-field-image');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-file');
-    $this->assertFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-body');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-image');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-file');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-title');
 
     // Submit again unchecking image including subfields.
     $edit = [
       'node[article][fields][field_image]' => FALSE,
       'node[article][fields][field_image:properties][alt]' => FALSE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
 
     // Those checkboxes should not be checked anymore.
-    $this->assertFieldChecked('edit-node-article-fields-body');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-image');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-file');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-body');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-image');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-file');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-title');
 
     $this->drupalGet('/admin/config/regional/config-translation/node_fields');
     $this->clickLink(t('Translate'), 1);
     $this->clickLink('Edit');
 
-    $this->assertNoFieldChecked('edit-translatable-for-lingotek');
-    $this->assertNoFieldChecked('edit-third-party-settings-content-translation-translation-sync-file');
-    $this->assertFieldChecked('edit-third-party-settings-content-translation-translation-sync-alt');
-    $this->assertFieldChecked('edit-third-party-settings-content-translation-translation-sync-title');
-    $this->assertNoFieldChecked('edit-translatable-for-lingotek-properties-file');
-    $this->assertNoFieldChecked('edit-translatable-for-lingotek-properties-alt');
-    $this->assertNoFieldChecked('edit-translatable-for-lingotek-properties-title');
+    $this->assertSession()->checkboxNotChecked('edit-translatable-for-lingotek');
+    $this->assertSession()->checkboxNotChecked('edit-third-party-settings-content-translation-translation-sync-file');
+    $this->assertSession()->checkboxChecked('edit-third-party-settings-content-translation-translation-sync-alt');
+    $this->assertSession()->checkboxChecked('edit-third-party-settings-content-translation-translation-sync-title');
+    $this->assertSession()->checkboxNotChecked('edit-translatable-for-lingotek-properties-file');
+    $this->assertSession()->checkboxNotChecked('edit-translatable-for-lingotek-properties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-translatable-for-lingotek-properties-title');
 
     $edit = [
       'translatable_for_lingotek' => 1,
       'third_party_settings[content_translation][translation_sync][alt]' => 'alt',
       'translatable_for_lingotek_properties_alt' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save settings');
+    $this->submitForm($edit, 'Save settings');
     $this->clickLink('Edit');
 
-    $this->assertFieldChecked('edit-translatable-for-lingotek');
-    $this->assertNoFieldChecked('edit-third-party-settings-content-translation-translation-sync-file');
-    $this->assertFieldChecked('edit-third-party-settings-content-translation-translation-sync-alt');
-    $this->assertFieldChecked('edit-third-party-settings-content-translation-translation-sync-title');
-    $this->assertNoFieldChecked('edit-translatable-for-lingotek-properties-file');
-    $this->assertFieldChecked('edit-translatable-for-lingotek-properties-alt');
-    $this->assertNoFieldChecked('edit-translatable-for-lingotek-properties-title');
+    $this->assertSession()->checkboxChecked('edit-translatable-for-lingotek');
+    $this->assertSession()->checkboxNotChecked('edit-third-party-settings-content-translation-translation-sync-file');
+    $this->assertSession()->checkboxChecked('edit-third-party-settings-content-translation-translation-sync-alt');
+    $this->assertSession()->checkboxChecked('edit-third-party-settings-content-translation-translation-sync-title');
+    $this->assertSession()->checkboxNotChecked('edit-translatable-for-lingotek-properties-file');
+    $this->assertSession()->checkboxChecked('edit-translatable-for-lingotek-properties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-translatable-for-lingotek-properties-title');
 
     $this->drupalGet('/admin/lingotek/settings');
 
-    $this->assertFieldChecked("edit-node-article-fields-field-image");
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-file');
-    $this->assertFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxChecked("edit-node-article-fields-field-image");
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-file');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-title');
 
     $edit = [
       'node[article][fields][field_image]' => 1,
@@ -670,11 +673,11 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
       'node[article][fields][field_image:properties][alt]' => FALSE,
       'node[article][fields][field_image:properties][title]' => FALSE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
 
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-file');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-file');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-title');
 
     $this->drupalGet('/admin/config/regional/config-translation/node_fields');
     $this->clickLink(t('Translate'), 1);
@@ -689,23 +692,23 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
       'translatable_for_lingotek_properties_title' => 1,
       'translatable_for_lingotek_properties_file' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save settings');
+    $this->submitForm($edit, 'Save settings');
     $this->clickLink('Edit');
 
-    $this->assertFieldChecked('edit-translatable-for-lingotek');
-    $this->assertFieldChecked('edit-third-party-settings-content-translation-translation-sync-file');
-    $this->assertFieldChecked('edit-third-party-settings-content-translation-translation-sync-alt');
-    $this->assertFieldChecked('edit-third-party-settings-content-translation-translation-sync-title');
-    $this->assertFieldChecked('edit-translatable-for-lingotek-properties-file');
-    $this->assertFieldChecked('edit-translatable-for-lingotek-properties-alt');
-    $this->assertFieldChecked('edit-translatable-for-lingotek-properties-title');
+    $this->assertSession()->checkboxChecked('edit-translatable-for-lingotek');
+    $this->assertSession()->checkboxChecked('edit-third-party-settings-content-translation-translation-sync-file');
+    $this->assertSession()->checkboxChecked('edit-third-party-settings-content-translation-translation-sync-alt');
+    $this->assertSession()->checkboxChecked('edit-third-party-settings-content-translation-translation-sync-title');
+    $this->assertSession()->checkboxChecked('edit-translatable-for-lingotek-properties-file');
+    $this->assertSession()->checkboxChecked('edit-translatable-for-lingotek-properties-alt');
+    $this->assertSession()->checkboxChecked('edit-translatable-for-lingotek-properties-title');
 
     $this->drupalGet('/admin/lingotek/settings');
 
-    $this->assertFieldChecked("edit-node-article-fields-field-image");
-    $this->assertFieldChecked('edit-node-article-fields-field-imageproperties-file');
-    $this->assertFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertFieldChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxChecked("edit-node-article-fields-field-image");
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-imageproperties-file');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxChecked('edit-node-article-fields-field-imageproperties-title');
 
     $edit = [
       'node[article][fields][field_image]' => 1,
@@ -713,12 +716,12 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
       'node[article][fields][field_image:properties][alt]' => FALSE,
       'node[article][fields][field_image:properties][title]' => FALSE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
 
-    $this->assertFieldChecked("edit-node-article-fields-field-image");
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-file');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxChecked("edit-node-article-fields-field-image");
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-file');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-title');
 
     $this->drupalGet('/admin/config/regional/config-translation/node_fields');
     $this->clickLink(t('Translate'), 1);
@@ -733,23 +736,23 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
       'translatable_for_lingotek_properties_title' => 1,
       'translatable_for_lingotek_properties_file' => 1,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save settings');
+    $this->submitForm($edit, 'Save settings');
     $this->clickLink('Edit');
 
-    $this->assertFieldChecked('edit-translatable-for-lingotek');
-    $this->assertNoFieldChecked('edit-third-party-settings-content-translation-translation-sync-file');
-    $this->assertNoFieldChecked('edit-third-party-settings-content-translation-translation-sync-alt');
-    $this->assertNoFieldChecked('edit-third-party-settings-content-translation-translation-sync-title');
-    $this->assertNoFieldChecked('edit-translatable-for-lingotek-properties-file');
-    $this->assertNoFieldChecked('edit-translatable-for-lingotek-properties-alt');
-    $this->assertNoFieldChecked('edit-translatable-for-lingotek-properties-title');
+    $this->assertSession()->checkboxChecked('edit-translatable-for-lingotek');
+    $this->assertSession()->checkboxNotChecked('edit-third-party-settings-content-translation-translation-sync-file');
+    $this->assertSession()->checkboxNotChecked('edit-third-party-settings-content-translation-translation-sync-alt');
+    $this->assertSession()->checkboxNotChecked('edit-third-party-settings-content-translation-translation-sync-title');
+    $this->assertSession()->checkboxNotChecked('edit-translatable-for-lingotek-properties-file');
+    $this->assertSession()->checkboxNotChecked('edit-translatable-for-lingotek-properties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-translatable-for-lingotek-properties-title');
 
     $this->drupalGet('/admin/lingotek/settings');
 
-    $this->assertFieldChecked("edit-node-article-fields-field-image");
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-title');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-file');
+    $this->assertSession()->checkboxChecked("edit-node-article-fields-field-image");
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-file');
 
     $edit = [
       'node[article][fields][field_image]' => 1,
@@ -757,11 +760,11 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
       'node[article][fields][field_image:properties][title]' => FALSE,
       'node[article][fields][field_image:properties][file]' => FALSE,
     ];
-    $this->drupalPostForm(NULL, $edit, 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
 
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-alt');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-title');
-    $this->assertNoFieldChecked('edit-node-article-fields-field-imageproperties-file');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-alt');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-title');
+    $this->assertSession()->checkboxNotChecked('edit-node-article-fields-field-imageproperties-file');
   }
 
   public function testContentTypesAreNotDisabledIfThereAreLotsOfContentTypes() {
@@ -813,16 +816,16 @@ class LingotekSettingsTabContentFormTest extends LingotekTestBase {
 
     // Check the form contains the fields, and have the proper values,
     // but they are disabled.
-    $this->assertFieldChecked('edit-node-article-readonly-enabled');
-    $this->assertFieldByName('node[article][profiles]', 'automatic');
+    $this->assertSession()->checkboxChecked('edit-node-article-readonly-enabled');
+    $this->assertSession()->fieldValueEquals('node[article][profiles]', 'automatic');
 
     $edit = ['node[article][profiles]' => 'manual'];
-    $this->drupalPostForm(NULL, $edit, 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
 
     // Check the form contains the fields, and have the proper values,
     // but they are disabled.
-    $this->assertFieldChecked('edit-node-article-readonly-enabled');
-    $this->assertFieldByName('node[article][profiles]', 'manual');
+    $this->assertSession()->checkboxChecked('edit-node-article-readonly-enabled');
+    $this->assertSession()->fieldValueEquals('node[article][profiles]', 'manual');
   }
 
 }

@@ -61,6 +61,13 @@ class NestedEntityReferenceRevisionsDetectorTest extends UnitTestCase {
   protected $lingotekConfiguration;
 
   /**
+   * The mocked entity type.
+   *
+   * @var \Drupal\Core\Entity\ContentEntityTypeInterface|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $entityType;
+
+  /**
    * {@inheritdoc}
    */
   protected function setUp(): void {

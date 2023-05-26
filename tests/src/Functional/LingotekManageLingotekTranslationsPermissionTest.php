@@ -17,7 +17,7 @@ class LingotekManageLingotekTranslationsPermissionTest extends LingotekTestBase 
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['lingotek', 'lingotek_test', 'node', 'toolbar', 'block'];
+  protected static $modules = ['lingotek', 'lingotek_test', 'node', 'toolbar', 'block'];
 
   /**
    * {@inheritdoc}
@@ -71,7 +71,7 @@ class LingotekManageLingotekTranslationsPermissionTest extends LingotekTestBase 
     // Get the settings form.
     $this->drupalGet('admin/lingotek/settings');
     // Assert translation profile can be assigned.
-    $this->assertNoText('You are not authorized to access this page.');
+    $this->assertSession()->pageTextNotContains('You are not authorized to access this page.');
 
     $user = $this->drupalCreateUser([
       'assign lingotek translation profiles',
@@ -82,7 +82,7 @@ class LingotekManageLingotekTranslationsPermissionTest extends LingotekTestBase 
     // Get the settings form.
     $this->drupalGet('admin/lingotek/settings');
     // Assert translation profile cannot be assigned.
-    $this->assertText('You are not authorized to access this page.');
+    $this->assertSession()->pageTextContains('You are not authorized to access this page.');
   }
 
   /**
@@ -103,13 +103,13 @@ class LingotekManageLingotekTranslationsPermissionTest extends LingotekTestBase 
     // Assert in the configuration panes we have access to Lingotek Translation.
     $this->clickLink('Configuration');
 
-    $this->assertText('Regional and language');
+    $this->assertSession()->pageTextContains('Regional and language');
     $this->clickLink('Lingotek Translation');
 
     // Assert we see the dashboard and can navigate to content.
     $assert_session->linkExists('Content');
     $this->clickLink('Content');
-    $this->assertText('Manage Translations');
+    $this->assertSession()->pageTextContains('Manage Translations');
   }
 
   /**
@@ -130,7 +130,7 @@ class LingotekManageLingotekTranslationsPermissionTest extends LingotekTestBase 
     // Assert in the configuration panes we have access to Lingotek Translation.
     $this->clickLink('Configuration');
 
-    $this->assertText('Regional and language');
+    $this->assertSession()->pageTextContains('Regional and language');
     $this->clickLink('Lingotek Translation');
 
     // Config shouldn't be visible unless we can translate settings too.
@@ -160,13 +160,13 @@ class LingotekManageLingotekTranslationsPermissionTest extends LingotekTestBase 
     // Assert in the configuration panes we have access to Lingotek Translation.
     $this->clickLink('Configuration');
 
-    $this->assertText('Regional and language');
+    $this->assertSession()->pageTextContains('Regional and language');
     $this->clickLink('Lingotek Translation');
 
     // Assert we see the dashboard and can navigate to config.
     $assert_session->linkExists('Config');
     $this->clickLink('Config');
-    $this->assertText('Manage Configuration Translation');
+    $this->assertSession()->pageTextContains('Manage Configuration Translation');
   }
 
   /**
@@ -182,15 +182,15 @@ class LingotekManageLingotekTranslationsPermissionTest extends LingotekTestBase 
     $request = $this->drupalGet(Url::fromRoute('lingotek.dashboard_endpoint', [], ['absolute' => TRUE]));
 
     $response = json_decode($request, TRUE);
-    $this->verbose(var_export($response, TRUE));
-    $this->assertIdentical('GET', $response['method']);
-    $this->assertIdentical(2, $response['count']);
-    $this->assertIdentical('en', $response['languages']['en_US']['xcode']);
-    $this->assertIdentical(1, $response['languages']['en_US']['active']);
-    $this->assertIdentical(1, $response['languages']['en_US']['enabled']);
-    $this->assertIdentical('es', $response['languages']['es_ES']['xcode']);
-    $this->assertIdentical(1, $response['languages']['es_ES']['active']);
-    $this->assertIdentical(1, $response['languages']['es_ES']['enabled']);
+    dump(var_export($response, TRUE));
+    $this->assertSame('GET', $response['method']);
+    $this->assertSame(2, $response['count']);
+    $this->assertSame('en', $response['languages']['en_US']['xcode']);
+    $this->assertSame(1, $response['languages']['en_US']['active']);
+    $this->assertSame(1, $response['languages']['en_US']['enabled']);
+    $this->assertSame('es', $response['languages']['es_ES']['xcode']);
+    $this->assertSame(1, $response['languages']['es_ES']['active']);
+    $this->assertSame(1, $response['languages']['es_ES']['enabled']);
   }
 
   /**
@@ -223,7 +223,7 @@ class LingotekManageLingotekTranslationsPermissionTest extends LingotekTestBase 
 
     // We don't have any operations or actions available.
     $assert_session->linkNotExists('Upload');
-    $this->assertNoFieldByName('op');
+    $this->assertSession()->fieldValueNotEquals('op', '');
   }
 
   /**

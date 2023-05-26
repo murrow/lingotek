@@ -182,7 +182,7 @@ class LingotekContentTranslationService implements LingotekContentTranslationSer
         throw $exception;
       }
 
-      if ($status) {
+      if (isset($status) && !empty($status)) {
         $this->setSourceStatus($entity, Lingotek::STATUS_CURRENT);
         return TRUE;
       }

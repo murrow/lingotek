@@ -184,6 +184,7 @@ class LingotekConfigManagementForm extends FormBase {
       $headers['title']['specifier'] = 'label';
 
       $ids = \Drupal::entityQuery('field_config')
+        ->accessCheck(FALSE)
         ->condition('id', $base_entity_type . '.', 'STARTS_WITH')
         ->tableSort($headers)
         ->execute();
@@ -198,6 +199,7 @@ class LingotekConfigManagementForm extends FormBase {
     else {
       $mapper = $this->mappers[$this->filter];
       $query = \Drupal::entityQuery($this->filter);
+      $query->accessCheck(FALSE);
       $label_filter = $temp_store->get('label');
 
       // Determine the machine name of the title for this entity type.
@@ -1934,6 +1936,7 @@ class LingotekConfigManagementForm extends FormBase {
     elseif (substr($this->filter, -7) == '_fields') {
       $mapper = $this->mappers[$this->filter];
       $ids = \Drupal::entityQuery('field_config')
+        ->accessCheck(FALSE)
         ->condition('id', $values)
         ->execute();
       $fields = FieldConfig::loadMultiple($ids);

@@ -20,7 +20,7 @@ class LingotekActionsTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['action', 'taxonomy', 'node'];
+  protected static $modules = ['action', 'taxonomy', 'node'];
 
   /**
    * @var \Drupal\taxonomy\VocabularyInterface

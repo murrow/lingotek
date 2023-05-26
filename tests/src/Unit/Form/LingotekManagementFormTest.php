@@ -50,126 +50,126 @@ class LingotekManagementFormTest extends UnitTestCase {
   /**
    * The connection object on which to run queries.
    *
-   * @var \Drupal\Core\Database\Connection|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Database\Connection|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $connection;
 
   /**
    * The language-locale mapper.
    *
-   * @var \Drupal\lingotek\LanguageLocaleMapperInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\lingotek\LanguageLocaleMapperInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $languageLocaleMapper;
 
   /**
    * The entity manager.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $entityTypeManager;
 
   /**
    * The entity field manager.
    *
-   * @var \Drupal\Core\Entity\EntityFieldManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Entity\EntityFieldManagerInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $entityFieldManager;
 
   /**
    * The entity type bundle info.
    *
-   * @var \Drupal\Core\Entity\EntityTypeBundleInfoInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Entity\EntityTypeBundleInfoInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $entityTypeBundleInfo;
 
   /**
    * The language manager.
    *
-   * @var \Drupal\Core\Language\LanguageManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Language\LanguageManagerInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $languageManager;
 
   /**
    * The Lingotek configuration service.
    *
-   * @var \Drupal\lingotek\LingotekConfigurationServiceInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\lingotek\LingotekConfigurationServiceInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $lingotekConfiguration;
 
   /**
    * The Lingotek service
    *
-   * @var \Drupal\lingotek\LingotekInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\lingotek\LingotekInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $lingotek;
 
   /**
    * The content translation manager.
    *
-   * @var \Drupal\content_translation\ContentTranslationManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\content_translation\ContentTranslationManagerInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $contentTranslationManager;
 
   /**
    * The Lingotek content translation service.
    *
-   * @var \Drupal\lingotek\LingotekContentTranslationServiceInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\lingotek\LingotekContentTranslationServiceInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $contentTranslationService;
 
   /**
    * The tempstore factory.
    *
-   * @var \Drupal\Core\TempStore\PrivateTempStoreFactory|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\TempStore\PrivateTempStoreFactory|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $tempStoreFactory;
 
   /**
    * The module handler.
    *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $moduleHandler;
 
   /**
    * The state key value store.
    *
-   * @var \Drupal\Core\State\StateInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\State\StateInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $state;
 
   /**
    * The form component field manager.
    *
-   * @var \Drupal\lingotek\FormComponent\LingotekFormComponentFieldManager|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\lingotek\FormComponent\LingotekFormComponentFieldManager|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $formComponentFieldManager;
 
   /**
    * The form component filter manager.
    *
-   * @var \Drupal\lingotek\FormComponent\LingotekFormComponentFilterManager|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\lingotek\FormComponent\LingotekFormComponentFilterManager|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $formComponentFilterManager;
 
   /**
    * The form component bulk actions manager.
    *
-   * @var \Drupal\lingotek\FormComponent\LingotekFormComponentBulkActionManager|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\lingotek\FormComponent\LingotekFormComponentBulkActionManager|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $formComponentActionsManager;
 
   /**
    * The form component bulk action options manager.
    *
-   * @var \Drupal\lingotek\FormComponent\LingotekFormComponentBulkActionOptionManager|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\lingotek\FormComponent\LingotekFormComponentBulkActionOptionManager|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $formComponentActionOptionsManager;
 
   /**
    * Available form-bulk-actions executor.
    *
-   * @var \Drupal\lingotek\FormComponent\LingotekFormComponentBulkActionExecutor|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\lingotek\FormComponent\LingotekFormComponentBulkActionExecutor|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $formBulkActionExecutor;
 
@@ -179,9 +179,7 @@ class LingotekManagementFormTest extends UnitTestCase {
   protected function setUp(): void {
     parent::setUp();
 
-    $this->connection = $this->getMockBuilder(Connection::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->connection = $this->createMock(Connection::class);
     $this->entityTypeManager = $this->createMock(EntityTypeManagerInterface::class);
     $this->entityFieldManager = $this->createMock(EntityFieldManagerInterface::class);
     $this->entityTypeBundleInfo = $this->createMock(EntityTypeBundleInfoInterface::class);
@@ -191,9 +189,7 @@ class LingotekManagementFormTest extends UnitTestCase {
     $this->languageLocaleMapper = $this->createMock(LanguageLocaleMapperInterface::class);
     $this->contentTranslationManager = $this->createMock(ContentTranslationManagerInterface::class);
     $this->contentTranslationService = $this->createMock(LingotekContentTranslationServiceInterface::class);
-    $this->tempStoreFactory = $this->getMockBuilder(PrivateTempStoreFactory::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $this->tempStoreFactory = $this->createMock(PrivateTempStoreFactory::class);
     $this->state = $this->createMock(StateInterface::class);
     $this->moduleHandler = $this->createMock(ModuleHandlerInterface::class);
     $this->formComponentFieldManager = $this->createMock(LingotekFormComponentFieldManager::class);
@@ -353,7 +349,7 @@ class LingotekManagementFormTest extends UnitTestCase {
    * @covers ::formSubmit
    */
   public function testFormSubmitWithRedirect() {
-    /** @var \PHPUnit_Framework_MockObject_MockObject $plugin */
+    /** @var \PHPUnit\Framework\MockObject\MockObject $plugin */
     $plugin = $this->formComponentActionsManager->getApplicable([
       'form_id' => 'lingotek_management',
       'entity_type_id' => 'node',
@@ -407,7 +403,7 @@ class LingotekManagementFormTest extends UnitTestCase {
    * @covers ::formSubmit
    */
   public function testFormSubmitWithRedirectEntity() {
-    /** @var \PHPUnit_Framework_MockObject_MockObject $plugin */
+    /** @var \PHPUnit\Framework\MockObject\MockObject $plugin */
     $plugin = $this->formComponentActionsManager->getApplicable([
       'form_id' => 'lingotek_management',
       'entity_type_id' => 'node',
@@ -464,7 +460,7 @@ class LingotekManagementFormTest extends UnitTestCase {
    * @covers ::formSubmit
    */
   public function testFormSubmitWithEntitiesExecuteReturningFalseKeepsSelection() {
-    /** @var \PHPUnit_Framework_MockObject_MockObject $plugin */
+    /** @var \PHPUnit\Framework\MockObject\MockObject $plugin */
     $plugin = $this->formComponentActionsManager->getApplicable([
       'form_id' => 'lingotek_management',
       'entity_type_id' => 'node',

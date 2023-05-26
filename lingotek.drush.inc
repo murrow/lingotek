@@ -6,6 +6,7 @@
  */
 
 use Drupal\lingotek\Cli\Commands\Drush8\Drush8IoWrapper;
+use Drush\Utils\StringUtils;
 
 /**
  * Implements hook_drush_command().
@@ -126,7 +127,7 @@ function drush_lingotek_request_translations($entity_type_id, $entity_id) {
   $cliService->setupOutput($facade);
   $cliService->setLogger($facade);
 
-  $langcodes = _convert_csv_to_array(drush_get_option('langcodes', 'all'));
+  $langcodes = StringUtils::csvToArray(drush_get_option('langcodes', 'all'));
 
   $table = $cliService->requestTranslations($entity_type_id, $entity_id, $langcodes);
   drush_print_table($table);
@@ -139,7 +140,7 @@ function drush_lingotek_check_translations_statuses($entity_type_id, $entity_id)
   $cliService->setupOutput($facade);
   $cliService->setLogger($facade);
 
-  $langcodes = _convert_csv_to_array(drush_get_option('langcodes', 'all'));
+  $langcodes = StringUtils::csvToArray(drush_get_option('langcodes', 'all'));
 
   $statuses = $cliService->checkTranslationsStatuses($entity_type_id, $entity_id, $langcodes);
   $table = [
@@ -158,7 +159,7 @@ function drush_lingotek_download_translations($entity_type_id, $entity_id) {
   $cliService->setupOutput($facade);
   $cliService->setLogger($facade);
 
-  $langcodes = _convert_csv_to_array(drush_get_option('langcodes', 'all'));
+  $langcodes = StringUtils::csvToArray(drush_get_option('langcodes', 'all'));
 
   return $cliService->downloadTranslations($entity_type_id, $entity_id, $langcodes);
 }

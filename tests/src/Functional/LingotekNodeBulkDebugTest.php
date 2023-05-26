@@ -18,10 +18,10 @@ class LingotekNodeBulkDebugTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'node'];
+  protected static $modules = ['block', 'node'];
 
   /**
-   * @var \Drupal\node\Entity\NodeInterface
+   * @var \Drupal\node\NodeInterface
    */
   protected $node;
 
@@ -63,7 +63,7 @@ class LingotekNodeBulkDebugTest extends LingotekTestBase {
 
     // Enable the debug operations.
     $this->drupalGet('admin/lingotek/settings');
-    $this->drupalPostForm(NULL, [], t('Enable debug operations'));
+    $this->submitForm([], t('Enable debug operations'));
 
     // Back to the bulk node management page.
     $this->goToContentBulkManagementForm();
@@ -86,7 +86,7 @@ class LingotekNodeBulkDebugTest extends LingotekTestBase {
 
     // Enable the debug operations.
     $this->drupalGet('admin/lingotek/settings');
-    $this->drupalPostForm(NULL, [], t('Enable debug operations'));
+    $this->submitForm([], t('Enable debug operations'));
 
     $this->goToContentBulkManagementForm();
 
@@ -95,18 +95,18 @@ class LingotekNodeBulkDebugTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => 'debug_export',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertText('Exports available');
+    $this->assertSession()->pageTextContains('Exports available');
     // Download the file.
     $this->clickLink('node.article.1.json');
 
     $response = json_decode($this->getSession()->getPage()->getContent(), TRUE);
-    $this->assertIdentical('Llamas are cool', $response['title'][0]['value']);
-    $this->assertIdentical('Llamas are very cool', $response['body'][0]['value']);
-    $this->assertIdentical('article (node): Llamas are cool', $response['_debug']['title']);
-    $this->assertIdentical('manual', $response['_debug']['profile']);
-    $this->assertIdentical('en_US', $response['_debug']['source_locale']);
+    $this->assertSame('Llamas are cool', $response['title'][0]['value']);
+    $this->assertSame('Llamas are very cool', $response['body'][0]['value']);
+    $this->assertSame('article (node): Llamas are cool', $response['_debug']['title']);
+    $this->assertSame('manual', $response['_debug']['profile']);
+    $this->assertSame('en_US', $response['_debug']['source_locale']);
   }
 
   public function testDebugExportError() {
@@ -122,7 +122,7 @@ class LingotekNodeBulkDebugTest extends LingotekTestBase {
 
     // Enable the debug operations.
     $this->drupalGet('admin/lingotek/settings');
-    $this->drupalPostForm(NULL, [], t('Enable debug operations'));
+    $this->submitForm([], t('Enable debug operations'));
 
     $this->goToContentBulkManagementForm();
 
@@ -131,10 +131,10 @@ class LingotekNodeBulkDebugTest extends LingotekTestBase {
       $key => TRUE,
       $this->getBulkOperationFormName() => 'debug_export',
     ];
-    $this->drupalPostForm(NULL, $edit, $this->getApplyActionsButtonLabel());
+    $this->submitForm($edit, $this->getApplyActionsButtonLabel());
 
-    $this->assertText('The Article Llamas are cool has no profile assigned so it was not processed.');
-    $this->assertNoText('Exports available');
+    $this->assertSession()->pageTextContains('The Article Llamas are cool has no profile assigned so it was not processed.');
+    $this->assertSession()->pageTextNotContains('Exports available');
   }
 
 }

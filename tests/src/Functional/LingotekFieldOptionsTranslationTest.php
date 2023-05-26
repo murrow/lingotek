@@ -22,10 +22,10 @@ class LingotekFieldOptionsTranslationTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'node', 'options', 'field_ui'];
+  protected static $modules = ['block', 'node', 'options', 'field_ui'];
 
   /**
-   * @var \Drupal\node\Entity\NodeInterface
+   * @var \Drupal\node\NodeInterface
    */
   protected $node;
 
@@ -63,36 +63,36 @@ class LingotekFieldOptionsTranslationTest extends LingotekTestBase {
     $this->clickLink(t('Translate'), 1);
 
     $this->clickLink(t('Upload'));
-    $this->assertText(t('Options uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('Options uploaded successfully'));
 
     // Check that only the translatable fields have been uploaded.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->verbose(var_export($data, TRUE));
+    dump(var_export($data, TRUE));
     $this->assertTrue(array_key_exists('label', $data['field.field.node.article.field_options']));
     $this->assertTrue(array_key_exists('description', $data['field.field.node.article.field_options']));
     $this->assertTrue(array_key_exists('settings.allowed_values.0.label', $data['field.storage.node.field_options']));
     $this->assertTrue(array_key_exists('settings.allowed_values.1.label', $data['field.storage.node.field_options']));
 
-    $this->assertEqual('Options', $data['field.field.node.article.field_options']['label']);
-    $this->assertEqual('Zero', $data['field.storage.node.field_options']['settings.allowed_values.0.label']);
-    $this->assertEqual('One', $data['field.storage.node.field_options']['settings.allowed_values.1.label']);
+    $this->assertEquals('Options', $data['field.field.node.article.field_options']['label']);
+    $this->assertEquals('Zero', $data['field.storage.node.field_options']['settings.allowed_values.0.label']);
+    $this->assertEquals('One', $data['field.storage.node.field_options']['settings.allowed_values.1.label']);
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
     $this->clickLink(t('Check upload status'));
-    $this->assertText('Options status checked successfully');
+    $this->assertSession()->pageTextContains('Options status checked successfully');
 
     $this->clickLink(t('Request translation'));
-    $this->assertText(t('Translation to es_MX requested successfully'));
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains(t('Translation to es_MX requested successfully'));
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     $this->clickLink(t('Check Download'));
-    $this->assertText(t('Translation to es_MX status checked successfully'));
+    $this->assertSession()->pageTextContains(t('Translation to es_MX status checked successfully'));
 
     $this->clickLink('Download');
-    $this->assertText(t('Translation to es_MX downloaded successfully'));
+    $this->assertSession()->pageTextContains(t('Translation to es_MX downloaded successfully'));
 
     // Check that the edit link is there.
     $basepath = \Drupal::request()->getBasePath();
@@ -103,10 +103,10 @@ class LingotekFieldOptionsTranslationTest extends LingotekTestBase {
     // and this alters the order. See https://www.drupal.org/project/drupal/issues/3257407.
     $index = version_compare(\Drupal::VERSION, '9.4', '>=') ? 2 : 1;
     $this->clickLink('Edit', $index);
-    $this->assertFieldByName('translation[config_names][field.field.node.article.field_options][label]', 'Opciones');
-    $this->assertFieldByName('translation[config_names][field.field.node.article.field_options][description]', 'Descripción del campo');
-    $this->assertFieldByName('translation[config_names][field.storage.node.field_options][settings][allowed_values][0][label]', 'Cero');
-    $this->assertFieldByName('translation[config_names][field.storage.node.field_options][settings][allowed_values][1][label]', 'Uno');
+    $this->assertSession()->fieldValueEquals('translation[config_names][field.field.node.article.field_options][label]', 'Opciones');
+    $this->assertSession()->fieldValueEquals('translation[config_names][field.field.node.article.field_options][description]', 'Descripción del campo');
+    $this->assertSession()->fieldValueEquals('translation[config_names][field.storage.node.field_options][settings][allowed_values][0][label]', 'Cero');
+    $this->assertSession()->fieldValueEquals('translation[config_names][field.storage.node.field_options][settings][allowed_values][1][label]', 'Uno');
   }
 
   /**
@@ -137,7 +137,8 @@ class LingotekFieldOptionsTranslationTest extends LingotekTestBase {
     $input_string = "zero|Zero\none|One";
 
     $edit = ['settings[allowed_values]' => $input_string];
-    $this->drupalPostForm($adminPath, $edit, t('Save field settings'));
+    $this->drupalGet($adminPath);
+    $this->submitForm($edit, t('Save field settings'));
   }
 
 }

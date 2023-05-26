@@ -21,7 +21,7 @@ class LingotekConnectTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['lingotek', 'lingotek_test'];
+  protected static $modules = ['lingotek', 'lingotek_test'];
 
   /**
    * {@inheritdoc}
@@ -41,18 +41,18 @@ class LingotekConnectTest extends BrowserTestBase {
 
     $this->drupalGet('admin/lingotek/setup/account');
     $this->clickLink('Connect Lingotek Account');
-    $this->drupalPostForm(NULL, ['community' => 'test_community'], 'Next');
-    $this->assertText('The configuration options have been saved.');
+    $this->submitForm(['community' => 'test_community'], 'Next');
+    $this->assertSession()->pageTextContains('The configuration options have been saved.');
 
     // Assert there are options for workflows.
-    $this->assertFieldByName('workflow');
+    $this->assertSession()->fieldExists('workflow');
     $option_field = $assert_session->optionExists('edit-workflow', '- Select -');
     $this->assertTrue($option_field->hasAttribute('selected'));
     $assert_session->optionExists('edit-workflow', 'test_workflow');
     $assert_session->optionExists('edit-workflow', 'test_workflow2');
 
     // Assert there are options for filters.
-    $this->assertFieldByName('filter');
+    $this->assertSession()->fieldExists('filter');
     $option_field = $assert_session->optionExists('edit-filter', 'drupal_default');
     $this->assertTrue($option_field->hasAttribute('selected'));
     $assert_session->optionExists('edit-filter', 'project_default');
@@ -60,7 +60,7 @@ class LingotekConnectTest extends BrowserTestBase {
     $assert_session->optionExists('edit-filter', 'test_filter2');
     $assert_session->optionExists('edit-filter', 'test_filter3');
 
-    $this->assertFieldByName('subfilter');
+    $this->assertSession()->fieldExists('subfilter');
     $option_field = $assert_session->optionExists('edit-subfilter', 'drupal_default');
     $this->assertTrue($option_field->hasAttribute('selected'));
     $assert_session->optionExists('edit-subfilter', 'project_default');
@@ -68,14 +68,14 @@ class LingotekConnectTest extends BrowserTestBase {
     $assert_session->optionExists('edit-subfilter', 'test_filter2');
     $assert_session->optionExists('edit-subfilter', 'test_filter3');
 
-    $this->drupalPostForm(NULL, [
+    $this->submitForm([
       'project' => 'test_project',
       'vault' => 'test_vault',
       'workflow' => 'test_workflow',
       'filter' => 'drupal_default',
       'subfilter' => 'drupal_default',
     ], 'Save configuration');
-    $this->assertText('The configuration options have been saved.');
+    $this->assertSession()->pageTextContains('The configuration options have been saved.');
   }
 
   /**
@@ -87,26 +87,26 @@ class LingotekConnectTest extends BrowserTestBase {
 
     $this->drupalGet('admin/lingotek/setup/account');
     $this->clickLink('Connect Lingotek Account');
-    $this->drupalPostForm(NULL, ['community' => 'test_community'], 'Next');
-    $this->assertText('The configuration options have been saved.');
+    $this->submitForm(['community' => 'test_community'], 'Next');
+    $this->assertSession()->pageTextContains('The configuration options have been saved.');
 
     // Assert there are options for workflows.
-    $this->assertFieldByName('workflow');
+    $this->assertSession()->fieldExists('workflow');
     $option_field = $assert_session->optionExists('edit-workflow', '- Select -');
     $this->assertTrue($option_field->hasAttribute('selected'));
     $assert_session->optionExists('edit-workflow', 'test_workflow');
     $assert_session->optionExists('edit-workflow', 'test_workflow2');
 
     // Assert there are no options for filters and no select.
-    $this->assertNoFieldByName('filter');
-    $this->assertNoFieldByName('subfilter');
+    $this->assertSession()->fieldValueNotEquals('filter', '');
+    $this->assertSession()->fieldValueNotEquals('subfilter', '');
 
-    $this->drupalPostForm(NULL, [
+    $this->submitForm([
       'project' => 'test_project',
       'workflow' => 'test_workflow',
       'vault' => 'test_vault',
     ], 'Save configuration');
-    $this->assertText('The configuration options have been saved.');
+    $this->assertSession()->pageTextContains('The configuration options have been saved.');
   }
 
 }

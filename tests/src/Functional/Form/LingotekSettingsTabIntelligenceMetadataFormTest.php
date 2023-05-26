@@ -19,8 +19,7 @@ class LingotekSettingsTabIntelligenceMetadataFormTest extends LingotekTestBase {
   public function testIntelligenceMetadataIsSaved() {
     $this->drupalGet('admin/lingotek/settings');
 
-    $this->assertRaw('<summary role="button" aria-controls="edit-intelligence-metadata" aria-expanded="false" aria-pressed="false">Lingotek Intelligence Metadata</summary>',
-      'Lingotek Intelligence Metadata tab is present.');
+    $this->assertSession()->responseContains('<summary role="button" aria-controls="edit-intelligence-metadata" aria-expanded="false" aria-pressed="false">Lingotek Intelligence Metadata</summary>');
 
     // Assert defaults are correct.
     $this->assertIntelligenceFieldDefaults();
@@ -59,22 +58,22 @@ class LingotekSettingsTabIntelligenceMetadataFormTest extends LingotekTestBase {
     ];
     $this->submitForm($edit, 'Save Lingotek Intelligence Metadata', 'lingotekintelligence-metadata-form');
 
-    $this->assertText('Lingotek Intelligence Metadata saved correctly.');
+    $this->assertSession()->pageTextContains('Lingotek Intelligence Metadata saved correctly.');
 
     // The values shown are correct.
-    $this->assertNoFieldChecked('edit-intelligence-metadata-use-contact-email-for-author');
-    $this->assertFieldByName('intelligence_metadata[default_author_email]', 'test@example.com');
-    $this->assertFieldByName('intelligence_metadata[business_unit]', 'Test Business Unit');
-    $this->assertFieldByName('intelligence_metadata[business_division]', 'Test Business Division');
-    $this->assertFieldByName('intelligence_metadata[campaign_id]', 'Campaign ID');
-    $this->assertFieldByName('intelligence_metadata[campaign_rating]', 5);
-    $this->assertFieldByName('intelligence_metadata[channel]', 'Channel Test');
-    $this->assertFieldByName('intelligence_metadata[contact_name]', 'Test Contact Name');
-    $this->assertFieldByName('intelligence_metadata[contact_email]', 'contact@example.com');
-    $this->assertFieldByName('intelligence_metadata[content_description]', 'Content description');
-    $this->assertFieldByName('intelligence_metadata[external_style_id]', 'my-style-id');
-    $this->assertFieldByName('intelligence_metadata[purchase_order]', 'PO32');
-    $this->assertFieldByName('intelligence_metadata[region]', 'region2');
+    $this->assertSession()->checkboxNotChecked('edit-intelligence-metadata-use-contact-email-for-author');
+    $this->assertSession()->fieldValueEquals('intelligence_metadata[default_author_email]', 'test@example.com');
+    $this->assertSession()->fieldValueEquals('intelligence_metadata[business_unit]', 'Test Business Unit');
+    $this->assertSession()->fieldValueEquals('intelligence_metadata[business_division]', 'Test Business Division');
+    $this->assertSession()->fieldValueEquals('intelligence_metadata[campaign_id]', 'Campaign ID');
+    $this->assertSession()->fieldValueEquals('intelligence_metadata[campaign_rating]', 5);
+    $this->assertSession()->fieldValueEquals('intelligence_metadata[channel]', 'Channel Test');
+    $this->assertSession()->fieldValueEquals('intelligence_metadata[contact_name]', 'Test Contact Name');
+    $this->assertSession()->fieldValueEquals('intelligence_metadata[contact_email]', 'contact@example.com');
+    $this->assertSession()->fieldValueEquals('intelligence_metadata[content_description]', 'Content description');
+    $this->assertSession()->fieldValueEquals('intelligence_metadata[external_style_id]', 'my-style-id');
+    $this->assertSession()->fieldValueEquals('intelligence_metadata[purchase_order]', 'PO32');
+    $this->assertSession()->fieldValueEquals('intelligence_metadata[region]', 'region2');
 
     /** @var \Drupal\lingotek\LingotekIntelligenceMetadataInterface $intelligence */
     $intelligence = \Drupal::service('lingotek.intelligence');
@@ -95,18 +94,18 @@ class LingotekSettingsTabIntelligenceMetadataFormTest extends LingotekTestBase {
     $this->assertTrue($intelligence->getBaseDomainPermission());
     $this->assertTrue($intelligence->getReferenceUrlPermission());
 
-    $this->assertIdentical($intelligence->getDefaultAuthorEmail(), 'test@example.com');
-    $this->assertIdentical($intelligence->getBusinessUnit(), 'Test Business Unit');
-    $this->assertIdentical($intelligence->getBusinessDivision(), 'Test Business Division');
-    $this->assertIdentical($intelligence->getCampaignId(), 'Campaign ID');
-    $this->assertIdentical($intelligence->getCampaignRating(), 5);
-    $this->assertIdentical($intelligence->getChannel(), 'Channel Test');
-    $this->assertIdentical($intelligence->getContactName(), 'Test Contact Name');
-    $this->assertIdentical($intelligence->getContactEmail(), 'contact@example.com');
-    $this->assertIdentical($intelligence->getContentDescription(), 'Content description');
-    $this->assertIdentical($intelligence->getExternalStyleId(), 'my-style-id');
-    $this->assertIdentical($intelligence->getPurchaseOrder(), 'PO32');
-    $this->assertIdentical($intelligence->getRegion(), 'region2');
+    $this->assertSame($intelligence->getDefaultAuthorEmail(), 'test@example.com');
+    $this->assertSame($intelligence->getBusinessUnit(), 'Test Business Unit');
+    $this->assertSame($intelligence->getBusinessDivision(), 'Test Business Division');
+    $this->assertSame($intelligence->getCampaignId(), 'Campaign ID');
+    $this->assertSame($intelligence->getCampaignRating(), 5);
+    $this->assertSame($intelligence->getChannel(), 'Channel Test');
+    $this->assertSame($intelligence->getContactName(), 'Test Contact Name');
+    $this->assertSame($intelligence->getContactEmail(), 'contact@example.com');
+    $this->assertSame($intelligence->getContentDescription(), 'Content description');
+    $this->assertSame($intelligence->getExternalStyleId(), 'my-style-id');
+    $this->assertSame($intelligence->getPurchaseOrder(), 'PO32');
+    $this->assertSame($intelligence->getRegion(), 'region2');
   }
 
 }

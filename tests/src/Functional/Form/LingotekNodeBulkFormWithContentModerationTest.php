@@ -17,7 +17,7 @@ class LingotekNodeBulkFormWithContentModerationTest extends LingotekNodeBulkForm
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'content_moderation'];
+  protected static $modules = ['block', 'node', 'content_moderation'];
 
   /**
    * A node used for testing.
@@ -83,10 +83,10 @@ class LingotekNodeBulkFormWithContentModerationTest extends LingotekNodeBulkForm
     $update = [
       'filters[advanced_options][moderation_state]' => 'draft',
     ];
-    $this->drupalPostForm(NULL, $update, 'edit-filters-actions-submit');
+    $this->submitForm($update, 'edit-filters-actions-submit');
     $assert_session->linkExists('Llamas are cool');
 
-    $this->assertFieldByName('filters[advanced_options][moderation_state]', 'draft', 'The value is retained in the filter.');
+    $this->assertSession()->fieldValueEquals('filters[advanced_options][moderation_state]', 'draft');
 
     // Change the content moderation state to published
     $this->saveAndKeepPublishedNodeForm($edit, 1);
@@ -95,10 +95,10 @@ class LingotekNodeBulkFormWithContentModerationTest extends LingotekNodeBulkForm
     $update = [
       'filters[advanced_options][moderation_state]' => 'published',
     ];
-    $this->drupalPostForm(NULL, $update, 'edit-filters-actions-submit');
+    $this->submitForm($update, 'edit-filters-actions-submit');
     $assert_session->linkExists('Llamas are cool');
 
-    $this->assertFieldByName('filters[advanced_options][moderation_state]', 'published', 'The value is retained in the filter.');
+    $this->assertSession()->fieldValueEquals('filters[advanced_options][moderation_state]', 'published');
 
     // Change the content moderation state to archived
     $this->saveAndArchiveNodeForm($edit, 1);
@@ -107,15 +107,15 @@ class LingotekNodeBulkFormWithContentModerationTest extends LingotekNodeBulkForm
     $update = [
       'filters[advanced_options][moderation_state]' => 'archived',
     ];
-    $this->drupalPostForm(NULL, $update, 'edit-filters-actions-submit');
+    $this->submitForm($update, 'edit-filters-actions-submit');
     $assert_session->linkExists('Llamas are cool');
 
-    $this->assertFieldByName('filters[advanced_options][moderation_state]', 'archived', 'The value is retained in the filter.');
+    $this->assertSession()->fieldValueEquals('filters[advanced_options][moderation_state]', 'archived');
 
     $update = [
       'filters[advanced_options][moderation_state]' => 'published',
     ];
-    $this->drupalPostForm(NULL, $update, 'edit-filters-actions-submit');
+    $this->submitForm($update, 'edit-filters-actions-submit');
 
     // Make sure the document does not show up when we filter by published and the document is archived
     $assert_session->linkNotExists('Llamas are cool');
@@ -129,9 +129,9 @@ class LingotekNodeBulkFormWithContentModerationTest extends LingotekNodeBulkForm
    */
   protected function enableModerationThroughUI($content_type_id) {
     $this->drupalGet('/admin/config/workflow/workflows/manage/editorial/type/node');
-    $this->assertFieldByName("bundles[$content_type_id]");
+    $this->assertSession()->fieldExists("bundles[$content_type_id]");
     $edit["bundles[$content_type_id]"] = TRUE;
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
   }
 
   /**

@@ -17,7 +17,7 @@ class LingotekConfigDependenciesTest extends LingotekTestBase {
   /**
    * {@inheritDoc}
    */
-  public static $modules = ['lingotek', 'block', 'node', 'field_ui'];
+  protected static $modules = ['lingotek', 'block', 'node', 'field_ui'];
 
   public function testExportingConfigDependencies() {
     $assert_session = $this->assertSession();
@@ -58,8 +58,8 @@ class LingotekConfigDependenciesTest extends LingotekTestBase {
 
     // Upload article content type for translation.
     $this->clickLink('EN');
-    $this->assertText('article uploaded successfully');
-    $this->assertEqual(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($content_type));
+    $this->assertSession()->pageTextContains('article uploaded successfully');
+    $this->assertEquals(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($content_type));
 
     $field = \Drupal::entityTypeManager()->getStorage('field_config')->load('node.article.body');
     // Go to config translation.
@@ -67,8 +67,8 @@ class LingotekConfigDependenciesTest extends LingotekTestBase {
 
     // Upload article body field type for translation.
     $this->clickLink('EN');
-    $this->assertText('Body uploaded successfully');
-    $this->assertEqual(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($field));
+    $this->assertSession()->pageTextContains('Body uploaded successfully');
+    $this->assertEquals(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($field));
 
     // Copy all configuration to staging.
     $this->copyConfig($this->container->get('config.storage'), $this->container->get('config.storage.sync'));
@@ -89,12 +89,12 @@ class LingotekConfigDependenciesTest extends LingotekTestBase {
     // Article is back.
     $type = \Drupal::entityTypeManager()->getStorage('node_type')->load('article');
     $this->assertNotNull($type, 'Article is back');
-    $this->assertEqual(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($type));
+    $this->assertEquals(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($type));
 
     // The Field is back.
     $field = \Drupal::entityTypeManager()->getStorage('field_config')->load('node.article.body');
     $this->assertNotNull($field, 'Article Body is back');
-    $this->assertEqual(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($field));
+    $this->assertEquals(Lingotek::STATUS_IMPORTING, $config_translation_service->getSourceStatus($field));
   }
 
 }

@@ -26,35 +26,35 @@ class TranslationJobBreadcrumbBuilderTest extends UnitTestCase {
   /**
    * The request.
    *
-   * @var \Symfony\Component\HttpFoundation\Request|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Symfony\Component\HttpFoundation\Request|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $request;
 
   /**
    * The request stack.
    *
-   * @var \Symfony\Component\HttpFoundation\RequestStack|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Symfony\Component\HttpFoundation\RequestStack|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $requestStack;
 
   /**
    * The access manager.
    *
-   * @var \Drupal\Core\Access\AccessManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Access\AccessManagerInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $accessManager;
 
   /**
    * The title resolver.
    *
-   * @var \Drupal\Core\Controller\TitleResolverInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Controller\TitleResolverInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $titleResolver;
 
   /**
    * The user currently logged in.
    *
-   * @var \Drupal\Core\Session\AccountInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\Core\Session\AccountInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $currentUser;
 
@@ -71,9 +71,7 @@ class TranslationJobBreadcrumbBuilderTest extends UnitTestCase {
   protected function setUp(): void {
     parent::setUp();
 
-    $cache_contexts_manager = $this->getMockBuilder(CacheContextsManager::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+    $cache_contexts_manager = $this->createMock(CacheContextsManager::class);
     $cache_contexts_manager->method('assertValidTokens')->willReturn(TRUE);
     $container = new Container();
     $container->set('cache_contexts_manager', $cache_contexts_manager);

@@ -21,7 +21,7 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'image', 'frozenintime'];
+  protected static $modules = ['block', 'node', 'image', 'frozenintime'];
 
   /**
    * @var \Drupal\node\NodeInterface
@@ -102,8 +102,9 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     $edit['body[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['files[field_image_0]'] = \Drupal::service('file_system')->realpath($test_image->uri);
+    $this->drupalGet('node/add/article');
 
-    $this->drupalPostForm('node/add/article', $edit, t('Preview'));
+    $this->submitForm($edit, t('Preview'));
 
     unset($edit['files[field_image_0]']);
     $edit['field_image[0][alt]'] = 'Llamas are cool';
@@ -120,21 +121,21 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
-    $this->assertEqual(1, count($data['field_image'][0]));
+    $this->assertEquals(1, count($data['field_image'][0]));
     $this->assertTrue(isset($data['field_image'][0]['alt']));
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_IMPORTING, $source_status, 'The node has been marked as importing.');
+    $this->assertEquals(Lingotek::STATUS_IMPORTING, $source_status, 'The node has been marked as importing.');
 
     // Assert the updated time and uploaded time have expected values
     $metadata = $this->node->lingotek_metadata->entity;
@@ -145,7 +146,7 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Assert the link keeps the language.
     $this->assertLingotekRequestTranslationLink('es_MX');
@@ -153,29 +154,29 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
 
     // Request translation.
     $this->clickLink('Request translation');
-    $this->assertText("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSession()->pageTextContains("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.added_target_locale'));
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.checked_target_locale'));
-    $this->assertText('The es_MX translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_MX translation for node Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
     $this->assertLingotekWorkbenchLink('es_MX', 'dummy-document-hash-id', 'Edit in Ray Enterprise Workbench');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Llamas are cool into es_MX has been downloaded.');
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_MX has been downloaded.');
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.downloaded_locale'));
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
   }
 
   /**
@@ -199,7 +200,8 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     $edit['title[0][value]'] = 'Pages are cool';
     $edit['body[0][value]'] = 'Pages are very cool';
     $edit['langcode[0][value]'] = 'en';
-    $this->drupalPostForm('node/add/page', $edit, t('Save'));
+    $this->drupalGet('node/add/page');
+    $this->submitForm($edit, t('Save'));
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -228,8 +230,9 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     $edit['langcode[0][value]'] = 'en';
     $edit['files[field_image_0]'] = \Drupal::service('file_system')->realpath($test_image->uri);
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
+    $this->drupalGet('node/add/article');
 
-    $this->drupalPostForm('node/add/article', $edit, t('Preview'));
+    $this->submitForm($edit, t('Preview'));
 
     unset($edit['files[field_image_0]']);
     $edit['field_image[0][alt]'] = 'Llamas are cool';
@@ -240,7 +243,7 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_UNTRACKED, $source_status, 'The node has been marked as untracked.');
+    $this->assertEquals(Lingotek::STATUS_UNTRACKED, $source_status, 'The node has been marked as untracked.');
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -249,28 +252,28 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // Check that only the configured fields have been uploaded.
     $data = json_decode(\Drupal::state()
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
-    $this->assertEqual(1, count($data['field_image'][0]));
+    $this->assertEquals(1, count($data['field_image'][0]));
     $this->assertTrue(isset($data['field_image'][0]['alt']));
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('manual', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('manual', $used_profile, 'The automatic profile was used.');
 
     // The document should have been uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Assert the link keeps the language.
     $this->assertLingotekRequestTranslationLink('es_MX');
@@ -278,23 +281,23 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
 
     // Request translation.
     $this->clickLink('Request translation');
-    $this->assertText("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSession()->pageTextContains("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.added_target_locale'));
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.checked_target_locale'));
-    $this->assertText('The es_MX translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_MX translation for node Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
     $this->assertLingotekWorkbenchLink('es_MX', 'dummy-document-hash-id', 'Edit in Ray Enterprise Workbench');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Llamas are cool into es_MX has been downloaded.');
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_MX has been downloaded.');
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.downloaded_locale'));
 
     $assert_session->linkNotExists('Download completed translation');
@@ -302,8 +305,8 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
   }
 
   /**
@@ -341,14 +344,14 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
 
     // Recheck status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_MX translation for node Llamas are cool EDITED is ready for download.');
+    $this->assertSession()->pageTextContains('The es_MX translation for node Llamas are cool EDITED is ready for download.');
 
     // Download the translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Llamas are cool EDITED into es_MX has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool EDITED into es_MX has been downloaded.');
 
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
   }
 
   /**
@@ -371,7 +374,7 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Re-upload.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // Check that only the configured fields have been uploaded.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
@@ -384,14 +387,14 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
 
     // Recheck status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_MX translation for node Llamas are cool EDITED is ready for download.');
+    $this->assertSession()->pageTextContains('The es_MX translation for node Llamas are cool EDITED is ready for download.');
 
     // Download the translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Llamas are cool EDITED into es_MX has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool EDITED into es_MX has been downloaded.');
 
     $this->clickLink('Las llamas son chulas EDITADO');
-    $this->assertNoText('Las llamas son muy chulas');
+    $this->assertSession()->pageTextNotContains('Las llamas son muy chulas');
   }
 
   /**
@@ -408,8 +411,8 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     $edit['langcode[0][value]'] = 'es';
     $this->saveAndPublishNodeForm($edit);
 
-    $this->assertText('Llamas are cool es-MX sent to Lingotek successfully.');
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSession()->pageTextContains('Llamas are cool es-MX sent to Lingotek successfully.');
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
   }
 
@@ -423,7 +426,7 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Get the node form.
     $this->drupalGet('node/add/article');
     // Assert translation profile cannot be assigned.
-    $this->assertNoField('lingotek_translation_management[lingotek_translation_profile]');
+    $this->assertSession()->fieldNotExists('lingotek_translation_management[lingotek_translation_profile]');
 
     $translation_manager = $this->drupalCreateUser([
       'bypass node access',
@@ -434,7 +437,7 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Get the node form.
     $this->drupalGet('node/add/article');
     // Assert translation profile can be assigned.
-    $this->assertField('lingotek_translation_management[lingotek_translation_profile]');
+    $this->assertSession()->fieldExists('lingotek_translation_management[lingotek_translation_profile]');
   }
 
   /**
@@ -465,14 +468,14 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -481,7 +484,7 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // There are two links for requesting translations, or we can add them
     // manually.
@@ -525,14 +528,14 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document, which must fail.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('The upload for node Llamas are cool failed. Please try again.');
+    $this->assertSession()->pageTextContains('The upload for node Llamas are cool failed. Please try again.');
 
     // The node has been marked with the error status.
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
 
     $metadata = $this->node->lingotek_metadata->entity;
     $expected_time = \Drupal::time()->getRequestTime();
@@ -543,7 +546,7 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     \Drupal::state()->set('lingotek.must_error_in_upload', FALSE);
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     $this->node = $this->resetStorageCachesAndReloadNode();
     $metadata = $this->node->lingotek_metadata->entity;
@@ -572,20 +575,20 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document, which must fail.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
+    $this->assertSession()->pageTextContains('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
 
     // The node has been marked with the error status.
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_payment_required_error_in_upload', FALSE);
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
   }
 
   /**
@@ -609,20 +612,20 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document, which must fail.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
+    $this->assertSession()->pageTextContains('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
 
     // The node has been marked with the error status.
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_processed_words_limit_error_in_upload', FALSE);
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
   }
 
   /**
@@ -644,11 +647,11 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // Check that the upload succeeded.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Edit the node.
     $edit['title[0][value]'] = 'Llamas are cool EDITED';
@@ -663,20 +666,20 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Re-upload. Must fail now.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('The update for node Llamas are cool EDITED failed. Please try again.');
+    $this->assertSession()->pageTextContains('The update for node Llamas are cool EDITED failed. Please try again.');
 
     // The node has been marked with the error status.
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_error_in_upload', FALSE);
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
   }
 
   /**
@@ -698,11 +701,11 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // Check that the upload succeeded.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Edit the node.
     $edit['title[0][value]'] = 'Llamas are cool EDITED';
@@ -717,20 +720,20 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Re-upload. Must fail now.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
+    $this->assertSession()->pageTextContains('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
 
     // The node has been marked with the error status.
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_payment_required_error_in_update', FALSE);
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
   }
 
   /**
@@ -752,11 +755,11 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // Check that the upload succeeded.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Edit the node.
     $edit['title[0][value]'] = 'Llamas are cool EDITED';
@@ -771,20 +774,20 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Re-upload. Must fail now.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
+    $this->assertSession()->pageTextContains('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
 
     // The node has been marked with the error status.
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_processed_words_limit_error_in_update', FALSE);
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
   }
 
   /**
@@ -806,11 +809,11 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // Check that the upload succeeded.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Edit the node.
     $edit['title[0][value]'] = 'Llamas are cool EDITED';
@@ -826,20 +829,20 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
 
-    $this->assertText('Document node Llamas are cool EDITED was not found. Please upload again.');
+    $this->assertSession()->pageTextContains('Document node Llamas are cool EDITED was not found. Please upload again.');
 
     // The node has been marked with the error status.
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_UNTRACKED, $source_status, 'The node has been marked as untracked, needs new upload.');
+    $this->assertEquals(Lingotek::STATUS_UNTRACKED, $source_status, 'The node has been marked as untracked, needs new upload.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_document_not_found_error_in_update', FALSE);
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
   }
 
   /**
@@ -861,11 +864,11 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // Check that the upload succeeded.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Edit the node.
     $edit['title[0][value]'] = 'Llamas are cool EDITED';
@@ -880,7 +883,7 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Re-upload. Must fail now.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Document node Llamas are cool EDITED has been archived. Please upload again.');
+    $this->assertSession()->pageTextContains('Document node Llamas are cool EDITED has been archived. Please upload again.');
 
     // The node has been marked with the error status.
     $this->node = Node::load(1);
@@ -893,7 +896,7 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     \Drupal::state()->set('lingotek.must_document_archived_error_in_update', FALSE);
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
   }
 
   /**
@@ -915,7 +918,7 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     $this->saveAndKeepPublishedNodeForm($edit, 1);
 
     // The document was updated automatically and failed.
-    $this->assertText('Document node Llamas are cool EDITED has been archived. Uploading again.');
+    $this->assertSession()->pageTextContains('Document node Llamas are cool EDITED has been archived. Uploading again.');
 
     // The node has been marked with the error status.
     $this->node = Node::load(1);
@@ -944,11 +947,11 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document, which must succeed.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // Check that the upload succeeded.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Edit the node.
     $edit['title[0][value]'] = 'Llamas are cool EDITED';
@@ -963,20 +966,20 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Re-upload. Must fail now.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Document node Llamas are cool EDITED has a new version. The document id has been updated for all future interactions. Please try again.');
+    $this->assertSession()->pageTextContains('Document node Llamas are cool EDITED has a new version. The document id has been updated for all future interactions. Please try again.');
 
     // The node has been marked with the error status.
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_EDITED, $source_status, 'The node has been marked as edited, needs new upload.');
+    $this->assertEquals(Lingotek::STATUS_EDITED, $source_status, 'The node has been marked as edited, needs new upload.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_document_locked_error_in_update', FALSE);
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
   }
 
   /**
@@ -998,14 +1001,14 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     $this->saveAndKeepPublishedNodeForm($edit, 1);
 
     // The document was updated automatically and failed.
-    $this->assertText('Document node Llamas are cool EDITED has a new version. The document id has been updated for all future interactions. Please try again.');
+    $this->assertSession()->pageTextContains('Document node Llamas are cool EDITED has a new version. The document id has been updated for all future interactions. Please try again.');
 
     // The node has been marked with the error status.
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_EDITED, $source_status, 'The node has been marked as edited, needs new upload.');
+    $this->assertEquals(Lingotek::STATUS_EDITED, $source_status, 'The node has been marked as edited, needs new upload.');
   }
 
   /**
@@ -1023,14 +1026,14 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     $this->saveAndPublishNodeForm($edit);
 
     // The document was uploaded automatically and failed.
-    $this->assertText('The upload for node Llamas are cool failed. Please try again.');
+    $this->assertSession()->pageTextContains('The upload for node Llamas are cool failed. Please try again.');
 
     // The node has been marked with the error status.
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
   }
 
   /**
@@ -1048,14 +1051,14 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     $this->saveAndPublishNodeForm($edit);
 
     // The document was uploaded automatically and failed.
-    $this->assertText('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
+    $this->assertSession()->pageTextContains('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
 
     // The node has been marked with the error status.
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
   }
 
   /**
@@ -1073,14 +1076,14 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     $this->saveAndPublishNodeForm($edit);
 
     // The document was uploaded automatically and failed.
-    $this->assertText('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
+    $this->assertSession()->pageTextContains('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
 
     // The node has been marked with the error status.
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
   }
 
   /**
@@ -1104,12 +1107,12 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // I can check current status.
-    $this->assertLink('Check Upload Status');
+    $this->assertSession()->linkExists('Check Upload Status');
 
     $this->clickLink('Check Upload Status');
 
@@ -1117,8 +1120,8 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_IMPORTING, $source_status);
-    $this->assertText('The check for node status failed. Please try again.');
+    $this->assertEquals(Lingotek::STATUS_IMPORTING, $source_status);
+    $this->assertSession()->pageTextContains('The check for node status failed. Please try again.');
   }
 
   /**
@@ -1140,12 +1143,12 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // I can check current status.
-    $this->assertLink('Check Upload Status');
+    $this->assertSession()->linkExists('Check Upload Status');
 
     // The document has not been imported yet.
     \Drupal::state()->set('lingotek.document_status_completion', FALSE);
@@ -1156,8 +1159,8 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_IMPORTING, $source_status);
-    $this->assertText('The import for node Llamas are cool is still pending.');
+    $this->assertEquals(Lingotek::STATUS_IMPORTING, $source_status);
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is still pending.');
   }
 
   /**
@@ -1180,20 +1183,20 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // I can check current status.
-    $this->assertLink('Check Upload Status');
+    $this->assertSession()->linkExists('Check Upload Status');
     $this->clickLink('Check Upload Status');
 
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_UNTRACKED, $source_status);
-    $this->assertText('Document node Llamas are cool was not found. Please upload again.');
+    $this->assertEquals(Lingotek::STATUS_UNTRACKED, $source_status);
+    $this->assertSession()->pageTextContains('Document node Llamas are cool was not found. Please upload again.');
   }
 
   /**
@@ -1215,14 +1218,14 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     $this->saveAndKeepPublishedNodeForm($edit, 1);
 
     // The document was updated automatically and failed.
-    $this->assertText('The update for node Llamas are cool EDITED failed. Please try again.');
+    $this->assertSession()->pageTextContains('The update for node Llamas are cool EDITED failed. Please try again.');
 
     // The node has been marked with the error status.
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
   }
 
   /**
@@ -1244,14 +1247,14 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     $this->saveAndKeepPublishedNodeForm($edit, 1);
 
     // The document was updated automatically and failed.
-    $this->assertText('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
+    $this->assertSession()->pageTextContains('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
 
     // The node has been marked with the error status.
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
   }
 
   /**
@@ -1273,14 +1276,14 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     $this->saveAndKeepPublishedNodeForm($edit, 1);
 
     // The document was updated automatically and failed.
-    $this->assertText('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
+    $this->assertSession()->pageTextContains('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
 
     // The node has been marked with the error status.
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The node has been marked as error.');
   }
 
   /**
@@ -1302,13 +1305,13 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     $this->saveAndKeepPublishedNodeForm($edit, 1);
 
     // The document was updated automatically and failed.
-    $this->assertText('Document node Llamas are cool EDITED was not found. Please upload again.');
+    $this->assertSession()->pageTextContains('Document node Llamas are cool EDITED was not found. Please upload again.');
 
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_UNTRACKED, $source_status);
+    $this->assertEquals(Lingotek::STATUS_UNTRACKED, $source_status);
   }
 
   /**
@@ -1332,26 +1335,26 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $this->clickLink('Request translation');
 
     // We failed at requesting a translation, but we don't know what happened.
     // So we don't mark as error but keep it on request.
-    $this->assertText('The translation request for node failed. Please try again.');
+    $this->assertSession()->pageTextContains('The translation request for node failed. Please try again.');
 
     // The node has been marked with the error status.
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual(Lingotek::STATUS_CURRENT, $source_status, 'The node has not been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_CURRENT, $source_status, 'The node has not been marked as error.');
   }
 
   /**
@@ -1375,24 +1378,24 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $this->clickLink('Request translation');
 
-    $this->assertText('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
+    $this->assertSession()->pageTextContains('Community has been disabled. Please contact support@lingotek.com to re-enable your community.');
 
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual($source_status, Lingotek::STATUS_CURRENT);
-    $this->assertEqual($translation_service->getTargetStatus($this->node, 'ES'), Lingotek::STATUS_UNTRACKED);
+    $this->assertEquals($source_status, Lingotek::STATUS_CURRENT);
+    $this->assertEquals($translation_service->getTargetStatus($this->node, 'ES'), Lingotek::STATUS_UNTRACKED);
   }
 
   /**
@@ -1416,24 +1419,24 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $this->clickLink('Request translation');
 
-    $this->assertText('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
+    $this->assertSession()->pageTextContains('Processed word limit exceeded. Please contact your local administrator or Lingotek Client Success (sales@lingotek.com) for assistance.');
 
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual($source_status, Lingotek::STATUS_CURRENT);
-    $this->assertEqual($translation_service->getTargetStatus($this->node, 'ES'), Lingotek::STATUS_UNTRACKED);
+    $this->assertEquals($source_status, Lingotek::STATUS_CURRENT);
+    $this->assertEquals($translation_service->getTargetStatus($this->node, 'ES'), Lingotek::STATUS_UNTRACKED);
   }
 
   /**
@@ -1457,17 +1460,17 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $this->clickLink('Request translation');
 
-    $this->assertText('Document node Llamas are cool has been archived. Uploading again.');
+    $this->assertSession()->pageTextContains('Document node Llamas are cool has been archived. Uploading again.');
 
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
@@ -1498,24 +1501,24 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $this->clickLink('Request translation');
 
-    $this->assertText('Document node Llamas are cool was not found. Please upload again.');
+    $this->assertSession()->pageTextContains('Document node Llamas are cool was not found. Please upload again.');
 
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual($source_status, Lingotek::STATUS_UNTRACKED);
-    $this->assertEqual($translation_service->getTargetStatus($this->node, 'ES'), Lingotek::STATUS_UNTRACKED);
+    $this->assertEquals($source_status, Lingotek::STATUS_UNTRACKED);
+    $this->assertEquals($translation_service->getTargetStatus($this->node, 'ES'), Lingotek::STATUS_UNTRACKED);
   }
 
   /**
@@ -1539,24 +1542,24 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Upload the document.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $this->clickLink('Request translation');
 
-    $this->assertText('Document node Llamas are cool has a new version. The document id has been updated for all future interactions. Please try again.');
+    $this->assertSession()->pageTextContains('Document node Llamas are cool has a new version. The document id has been updated for all future interactions. Please try again.');
 
     $this->node = Node::load(1);
     /** @var \Drupal\lingotek\LingotekContentTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.content_translation');
     $source_status = $translation_service->getSourceStatus($this->node);
-    $this->assertEqual($source_status, Lingotek::STATUS_CURRENT);
-    $this->assertEqual($translation_service->getTargetStatus($this->node, 'ES'), Lingotek::STATUS_UNTRACKED);
+    $this->assertEquals($source_status, Lingotek::STATUS_CURRENT);
+    $this->assertEquals($translation_service->getTargetStatus($this->node, 'ES'), Lingotek::STATUS_UNTRACKED);
   }
 
   /**
@@ -1577,7 +1580,7 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     // Check that the translate tab is in the node.
     $this->clickLink('Translate');
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $this->clickLink('Request translation');
@@ -1605,10 +1608,10 @@ class LingotekNodeTranslationTest extends LingotekTestBase {
     ]);
     $response = json_decode($request->getBody(), TRUE);
     $this->assertTrue($response['result']['download'], 'Spanish language has been downloaded after notification automatically.');
-    $this->assertEqual('Document downloaded.', $response['messages'][0]);
+    $this->assertEquals('Document downloaded.', $response['messages'][0]);
 
     $this->drupalGet('node/1/translations');
-    $this->assertText('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
   }
 
   /**

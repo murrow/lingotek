@@ -22,7 +22,7 @@ class LingotekContactMessageBodyTranslationTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'node', 'field_ui', 'contact'];
+  protected static $modules = ['block', 'node', 'field_ui', 'contact'];
 
   /**
    * @var \Drupal\node\NodeInterface
@@ -74,7 +74,7 @@ class LingotekContactMessageBodyTranslationTest extends LingotekTestBase {
     $this->clickLink(t('Translate'));
 
     $this->clickLink(t('Upload'));
-    $this->assertText(t('field_test uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('field_test uploaded successfully'));
 
     // Check that only the translatable fields have been uploaded.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
@@ -84,20 +84,20 @@ class LingotekContactMessageBodyTranslationTest extends LingotekTestBase {
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
     $this->clickLink(t('Check upload status'));
-    $this->assertText('field_test status checked successfully');
+    $this->assertSession()->pageTextContains('field_test status checked successfully');
 
     $this->clickLink(t('Request translation'));
-    $this->assertText(t('Translation to es_MX requested successfully'));
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSession()->pageTextContains(t('Translation to es_MX requested successfully'));
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     $this->clickLink(t('Check Download'));
-    $this->assertText(t('Translation to es_MX status checked successfully'));
+    $this->assertSession()->pageTextContains(t('Translation to es_MX status checked successfully'));
 
     $this->clickLink('Download');
-    $this->assertText(t('Translation to es_MX downloaded successfully'));
+    $this->assertSession()->pageTextContains(t('Translation to es_MX downloaded successfully'));
 
     // Check that the edit link is there.
     $basepath = \Drupal::request()->getBasePath();

@@ -15,7 +15,7 @@ class LingotekModuleUninstallationWithDataTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node'];
+  protected static $modules = ['block', 'node'];
 
   /**
    * {@inheritdoc}
@@ -69,40 +69,40 @@ class LingotekModuleUninstallationWithDataTest extends LingotekTestBase {
 
     $this->assertSession()->fieldDisabled('edit-uninstall-lingotek');
     // Plural reasons.
-    $this->assertText('The following reasons prevent Lingotek Translation from being uninstalled:');
+    $this->assertSession()->pageTextContains('The following reasons prevent Lingotek Translation from being uninstalled:');
 
     // Post the form uninstalling the lingotek_test module.
     $edit = ['uninstall[lingotek_test]' => '1'];
-    $this->drupalPostForm(NULL, $edit, 'Uninstall');
-    $this->drupalPostForm(NULL, [], 'Uninstall');
-    $this->assertText('The selected modules have been uninstalled.');
+    $this->submitForm($edit, 'Uninstall');
+    $this->submitForm([], 'Uninstall');
+    $this->assertSession()->pageTextContains('The selected modules have been uninstalled.');
 
     // Singular reason.
-    $this->assertText('The following reason prevents Lingotek Translation from being uninstalled:');
-    $this->assertText('There is content for the entity type: Lingotek Content Metadata');
+    $this->assertSession()->pageTextContains('The following reason prevents Lingotek Translation from being uninstalled:');
+    $this->assertSession()->pageTextContains('There is content for the entity type: Lingotek Content Metadata');
     $assert_session->linkExists('Remove lingotek content metadata entities');
 
     $this->assertSession()->fieldDisabled('edit-uninstall-lingotek');
 
     $this->clickLink('Remove lingotek content metadata entities');
-    $this->assertText('Are you sure you want to delete all lingotek content metadata entities?');
-    $this->assertText('This will delete 1 lingotek content metadata.');
-    $this->drupalPostForm(NULL, [], 'Delete all lingotek content metadata entities');
+    $this->assertSession()->pageTextContains('Are you sure you want to delete all lingotek content metadata entities?');
+    $this->assertSession()->pageTextContains('This will delete 1 lingotek content metadata.');
+    $this->submitForm([], 'Delete all lingotek content metadata entities');
 
     $this->assertFalse($this->getSession()->getPage()->findField('edit-uninstall-lingotek')->hasAttribute('disabled'));
 
     // Post the form uninstalling the lingotek module.
     $edit = ['uninstall[lingotek]' => '1'];
-    $this->drupalPostForm(NULL, $edit, 'Uninstall');
+    $this->submitForm($edit, 'Uninstall');
 
     // We get an advice and we can confirm.
-    $this->assertText('The following modules will be completely uninstalled from your site, and all data from these modules will be lost!');
-    $this->assertText('The listed configuration will be deleted.');
-    $this->assertText('Lingotek Profile');
+    $this->assertSession()->pageTextContains('The following modules will be completely uninstalled from your site, and all data from these modules will be lost!');
+    $this->assertSession()->pageTextContains('The listed configuration will be deleted.');
+    $this->assertSession()->pageTextContains('Lingotek Profile');
 
-    $this->drupalPostForm(NULL, [], 'Uninstall');
+    $this->submitForm([], 'Uninstall');
 
-    $this->assertText('The selected modules have been uninstalled.');
+    $this->assertSession()->pageTextContains('The selected modules have been uninstalled.');
   }
 
   /**
@@ -127,31 +127,31 @@ class LingotekModuleUninstallationWithDataTest extends LingotekTestBase {
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 2);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('manual', $used_profile, 'The manual profile was used.');
+    $this->assertSame('manual', $used_profile, 'The manual profile was used.');
 
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     $this->clickLink('Request translation');
-    $this->assertText("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSession()->pageTextContains("Locale 'es_MX' was added as a translation target for node Llamas are cool.");
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.added_target_locale'));
 
     $this->clickLink('Check translation status');
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.checked_target_locale'));
-    $this->assertText('The es_MX translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_MX translation for node Llamas are cool is ready for download.');
 
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Llamas are cool into es_MX has been downloaded.');
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_MX has been downloaded.');
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.downloaded_locale'));
   }
 

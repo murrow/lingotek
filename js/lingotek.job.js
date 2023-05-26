@@ -1,4 +1,4 @@
-(function ($, Drupal, drupalSettings) {
+(function ($, Drupal,once, drupalSettings) {
   Drupal.behaviors.lingotekJobId = {
     attach: function attach(context, settings) {
       var $context = $(context);
@@ -15,7 +15,7 @@
       Object.keys(settings.lingotekJobId).forEach(function (elementId) {
         var options = settings.lingotekJobId[elementId];
 
-        var $element = $context.find(elementId).once('job-id');
+        var $element = $(once('job-id', elementId , context));
 
         var eventData = {
           element: $element,
@@ -33,4 +33,4 @@
       return transliteration;
     }
   };
-})(jQuery, Drupal, drupalSettings);
+})(jQuery, Drupal, once, drupalSettings);

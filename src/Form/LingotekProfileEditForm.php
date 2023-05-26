@@ -20,9 +20,10 @@ class LingotekProfileEditForm extends LingotekProfileFormBase {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state) {
-    parent::save($form, $form_state);
+    $return = parent::save($form, $form_state);
     $this->messenger()->addStatus($this->t('The Lingotek profile has been successfully edited.'));
     $form_state->setRedirect('lingotek.settings');
+    return $return;
   }
 
 }

@@ -27,6 +27,7 @@ class LingotekContentMetadataFieldItemList extends EntityReferenceFieldItemList 
 
     if ($entity->id()) {
       $metadata_result = \Drupal::entityTypeManager()->getStorage('lingotek_content_metadata')->getQuery()
+        ->accessCheck(FALSE)
         ->condition('content_entity_type_id', $entity->getEntityTypeId())
         ->condition('content_entity_id', $entity->id())
         ->execute();

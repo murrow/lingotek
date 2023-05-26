@@ -17,7 +17,7 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'workbench_moderation'];
+  protected static $modules = ['block', 'node', 'workbench_moderation'];
 
   /**
    * {@inheritdoc}
@@ -92,10 +92,11 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
     $edit['body[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
-    $this->drupalPostForm('/node/add/article', $edit, t('Save and Request Review'));
+    $this->drupalGet('/node/add/article');
+    $this->submitForm($edit, t('Save and Request Review'));
 
-    $this->assertText('Article Llamas are cool has been created.');
-    $this->assertNoText('Llamas are cool sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
+    $this->assertSession()->pageTextNotContains('Llamas are cool sent to Lingotek successfully.');
   }
 
   /**
@@ -107,10 +108,11 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
     $edit['body[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
-    $this->drupalPostForm('/node/add/article', $edit, t('Save and Request Review'));
+    $this->drupalGet('/node/add/article');
+    $this->submitForm($edit, t('Save and Request Review'));
 
-    $this->assertText('Article Llamas are cool has been created.');
-    $this->assertNoText('Llamas are cool sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
+    $this->assertSession()->pageTextNotContains('Llamas are cool sent to Lingotek successfully.');
   }
 
   /**
@@ -122,10 +124,11 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
     $edit['body[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
-    $this->drupalPostForm('/node/add/article', $edit, t('Save and Create New Draft'));
+    $this->drupalGet('/node/add/article');
+    $this->submitForm($edit, t('Save and Create New Draft'));
 
-    $this->assertText('Article Llamas are cool has been created.');
-    $this->assertText('Llamas are cool sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
+    $this->assertSession()->pageTextContains('Llamas are cool sent to Lingotek successfully.');
   }
 
   /**
@@ -137,10 +140,11 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
     $edit['body[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
-    $this->drupalPostForm('/node/add/article', $edit, t('Save and Create New Draft'));
+    $this->drupalGet('/node/add/article');
+    $this->submitForm($edit, t('Save and Create New Draft'));
 
-    $this->assertText('Article Llamas are cool has been created.');
-    $this->assertNoText('Llamas are cool sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
+    $this->assertSession()->pageTextNotContains('Llamas are cool sent to Lingotek successfully.');
   }
 
   /**
@@ -152,13 +156,15 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
     $edit['body[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
-    $this->drupalPostForm('/node/add/article', $edit, t('Save and Create New Draft'));
+    $this->drupalGet('/node/add/article');
+    $this->submitForm($edit, t('Save and Create New Draft'));
 
-    $this->assertText('Article Llamas are cool has been created.');
-    $this->drupalPostForm('/node/1/edit', $edit, t('Save and Request Review (this translation)'));
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
+    $this->drupalGet('/node/1/edit');
+    $this->submitForm($edit, t('Save and Request Review (this translation)'));
 
-    $this->assertText('Article Llamas are cool has been updated.');
-    $this->assertNoText('Llamas are cool was updated and sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been updated.');
+    $this->assertSession()->pageTextNotContains('Llamas are cool was updated and sent to Lingotek successfully.');
   }
 
   /**
@@ -170,13 +176,15 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
     $edit['body[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
-    $this->drupalPostForm('/node/add/article', $edit, t('Save and Create New Draft'));
+    $this->drupalGet('/node/add/article');
+    $this->submitForm($edit, t('Save and Create New Draft'));
 
-    $this->assertText('Article Llamas are cool has been created.');
-    $this->drupalPostForm('/node/1/edit', $edit, t('Save and Request Review (this translation)'));
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
+    $this->drupalGet('/node/1/edit');
+    $this->submitForm($edit, t('Save and Request Review (this translation)'));
 
-    $this->assertText('Article Llamas are cool has been updated.');
-    $this->assertNoText('Llamas are cool was updated and sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been updated.');
+    $this->assertSession()->pageTextNotContains('Llamas are cool was updated and sent to Lingotek successfully.');
   }
 
   /**
@@ -188,14 +196,16 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
     $edit['body[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
-    $this->drupalPostForm('/node/add/article', $edit, t('Save and Create New Draft'));
+    $this->drupalGet('/node/add/article');
+    $this->submitForm($edit, t('Save and Create New Draft'));
 
-    $this->assertText('Article Llamas are cool has been created.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
     $edit['title[0][value]'] = 'Llamas are cool!';
-    $this->drupalPostForm('/node/1/edit', $edit, t('Save and Create New Draft (this translation)'));
+    $this->drupalGet('/node/1/edit');
+    $this->submitForm($edit, t('Save and Create New Draft (this translation)'));
 
-    $this->assertText('Article Llamas are cool! has been updated.');
-    $this->assertText('Llamas are cool! was updated and sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool! has been updated.');
+    $this->assertSession()->pageTextContains('Llamas are cool! was updated and sent to Lingotek successfully.');
   }
 
   /**
@@ -208,18 +218,20 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
     $edit['body[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
-    $this->drupalPostForm('/node/add/article', $edit, t('Save and Create New Draft'));
+    $this->drupalGet('/node/add/article');
+    $this->submitForm($edit, t('Save and Create New Draft'));
 
-    $this->assertText('Article Llamas are cool has been created.');
-    $this->assertText('Llamas are cool sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
+    $this->assertSession()->pageTextContains('Llamas are cool sent to Lingotek successfully.');
     $currentStatus = $this->getSession()->getPage()->find('css', 'div[id="edit-current"]');
-    $this->assertEqual($currentStatus->getText(), 'Status Draft');
+    $this->assertEquals($currentStatus->getText(), 'Status Draft');
+    $this->drupalGet('/node/1/edit');
 
-    $this->drupalPostForm('/node/1/edit', $edit, t('Save and Create New Draft (this translation)'));
-    $this->assertText('Article Llamas are cool has been updated.');
-    $this->assertText('Llamas are cool was updated and sent to Lingotek successfully.');
+    $this->submitForm($edit, t('Save and Create New Draft (this translation)'));
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been updated.');
+    $this->assertSession()->pageTextContains('Llamas are cool was updated and sent to Lingotek successfully.');
     $currentStatus = $this->getSession()->getPage()->find('css', 'div[id="edit-current"]');
-    $this->assertEqual($currentStatus->getText(), 'Status Draft');
+    $this->assertEquals($currentStatus->getText(), 'Status Draft');
   }
 
   /**
@@ -231,13 +243,15 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
     $edit['body[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
-    $this->drupalPostForm('/node/add/article', $edit, t('Save and Create New Draft'));
+    $this->drupalGet('/node/add/article');
+    $this->submitForm($edit, t('Save and Create New Draft'));
 
-    $this->assertText('Article Llamas are cool has been created.');
-    $this->drupalPostForm('/node/1/edit', $edit, t('Save and Create New Draft (this translation)'));
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been created.');
+    $this->drupalGet('/node/1/edit');
+    $this->submitForm($edit, t('Save and Create New Draft (this translation)'));
 
-    $this->assertText('Article Llamas are cool has been updated.');
-    $this->assertNoText('Llamas are cool was updated and sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Article Llamas are cool has been updated.');
+    $this->assertSession()->pageTextNotContains('Llamas are cool was updated and sent to Lingotek successfully.');
   }
 
   /**
@@ -252,7 +266,8 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
       'node[article][moderation][upload_status]' => 'needs_review',
       'node[article][moderation][download_transition]' => 'needs_review_published',
     ];
-    $this->drupalPostForm('admin/lingotek/settings', $edit, 'Save', [], 'lingoteksettings-tab-content-form');
+    $this->drupalGet('admin/lingotek/settings', []);
+    $this->submitForm($edit, 'Save', 'lingoteksettings-tab-content-form');
   }
 
   /**
@@ -266,13 +281,14 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
     $edit['body[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
-    $this->drupalPostForm('/node/add/article', $edit, t('Save and Create New Draft'));
+    $this->drupalGet('/node/add/article');
+    $this->submitForm($edit, t('Save and Create New Draft'));
 
     // Moderate.
     $edit = ['new_state' => 'needs_review'];
-    $this->drupalPostForm(NULL, $edit, 'Apply');
-    $this->assertText('The moderation state has been updated.');
-    $this->assertText('Llamas are cool sent to Lingotek successfully.');
+    $this->submitForm($edit, 'Apply');
+    $this->assertSession()->pageTextContains('The moderation state has been updated.');
+    $this->assertSession()->pageTextContains('Llamas are cool sent to Lingotek successfully.');
   }
 
   /**
@@ -286,13 +302,14 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
     $edit['body[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
-    $this->drupalPostForm('/node/add/article', $edit, t('Save and Create New Draft'));
+    $this->drupalGet('/node/add/article');
+    $this->submitForm($edit, t('Save and Create New Draft'));
 
     // Moderate.
     $edit = ['new_state' => 'published'];
-    $this->drupalPostForm(NULL, $edit, 'Apply');
-    $this->assertText('The moderation state has been updated.');
-    $this->assertNoText('Llamas are cool sent to Lingotek successfully.');
+    $this->submitForm($edit, 'Apply');
+    $this->assertSession()->pageTextContains('The moderation state has been updated.');
+    $this->assertSession()->pageTextNotContains('Llamas are cool sent to Lingotek successfully.');
   }
 
   /**
@@ -306,13 +323,14 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
     $edit['body[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
-    $this->drupalPostForm('/node/add/article', $edit, t('Save and Create New Draft'));
+    $this->drupalGet('/node/add/article');
+    $this->submitForm($edit, t('Save and Create New Draft'));
 
     // Moderate.
     $edit = ['new_state' => 'needs_review'];
-    $this->drupalPostForm(NULL, $edit, 'Apply');
-    $this->assertText('The moderation state has been updated.');
-    $this->assertNoText('Llamas are cool sent to Lingotek successfully.');
+    $this->submitForm($edit, 'Apply');
+    $this->assertSession()->pageTextContains('The moderation state has been updated.');
+    $this->assertSession()->pageTextNotContains('Llamas are cool sent to Lingotek successfully.');
   }
 
   /**
@@ -326,13 +344,14 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
     $edit['body[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'manual';
-    $this->drupalPostForm('/node/add/article', $edit, t('Save and Create New Draft'));
+    $this->drupalGet('/node/add/article');
+    $this->submitForm($edit, t('Save and Create New Draft'));
 
     // Moderate.
     $edit = ['new_state' => 'published'];
-    $this->drupalPostForm(NULL, $edit, 'Apply');
-    $this->assertText('The moderation state has been updated.');
-    $this->assertNoText('Llamas are cool sent to Lingotek successfully.');
+    $this->submitForm($edit, 'Apply');
+    $this->assertSession()->pageTextContains('The moderation state has been updated.');
+    $this->assertSession()->pageTextNotContains('Llamas are cool sent to Lingotek successfully.');
   }
 
   /**
@@ -346,21 +365,22 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
     $edit['body[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
-    $this->drupalPostForm('/node/add/article', $edit, t('Save and Create New Draft'));
+    $this->drupalGet('/node/add/article');
+    $this->submitForm($edit, t('Save and Create New Draft'));
 
     // The status is draft.
     $value = $this->xpath('//div[@id="edit-current"]/text()');
     $value = trim($value[1]->getText());
-    $this->assertEqual($value, 'Draft', 'Workbench current status is draft');
+    $this->assertEquals($value, 'Draft', 'Workbench current status is draft');
 
     // Moderate to Needs review, so it's uploaded.
     $edit = ['new_state' => 'needs_review'];
-    $this->drupalPostForm(NULL, $edit, 'Apply');
+    $this->submitForm($edit, 'Apply');
 
     // The status is needs review.
     $value = $this->xpath('//div[@id="edit-current"]/text()');
     $value = trim($value[1]->getText());
-    $this->assertEqual($value, 'Needs Review', 'Workbench current status is Needs Review');
+    $this->assertEquals($value, 'Needs Review', 'Workbench current status is Needs Review');
 
     $this->goToContentBulkManagementForm();
     // Request translation.
@@ -372,7 +392,7 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
 
     // Let's see the current status is modified.
     $this->clickLink('Llamas are cool');
-    $this->assertNoFieldByName('new_state', 'The transition to a new workbench status happened (so no moderation form is shown).');
+    $this->assertSession()->fieldValueNotEquals('new_state', 'The transition to a new workbench status happened (so no moderation form is shown).');
   }
 
   public function testDownloadWhenContentModerationWasSetupAfterLingotek() {
@@ -411,20 +431,21 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
     $edit['body[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
-    $this->drupalPostForm('/node/add/article', $edit, t('Save and Create New Draft'));
+    $this->drupalGet('/node/add/article');
+    $this->submitForm($edit, t('Save and Create New Draft'));
 
     // The status is draft.
     $value = $this->xpath('//div[@id="edit-current"]/text()');
     $value = trim($value[1]->getText());
-    $this->assertEqual($value, 'Draft', 'Workbench current status is draft');
+    $this->assertEquals($value, 'Draft', 'Workbench current status is draft');
 
     // Moderate to Needs review, so it's uploaded.
     $edit = ['new_state' => 'needs_review'];
-    $this->drupalPostForm(NULL, $edit, 'Apply');
+    $this->submitForm($edit, 'Apply');
 
     // Moderate back to draft, so the transition won't happen on download.
     $edit = ['new_state' => 'draft'];
-    $this->drupalPostForm(NULL, $edit, 'Apply');
+    $this->submitForm($edit, 'Apply');
 
     $this->goToContentBulkManagementForm();
     // Request translation.
@@ -438,7 +459,7 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
     $this->clickLink('Llamas are cool');
     $value = $this->xpath('//div[@id="edit-current"]/text()');
     $value = trim($value[1]->getText());
-    $this->assertEqual($value, 'Draft', 'The transition to a new workbench status didn\'t happen because the source wasn\'t the expected.');
+    $this->assertEquals($value, 'Draft', 'The transition to a new workbench status didn\'t happen because the source wasn\'t the expected.');
   }
 
   /**
@@ -454,8 +475,8 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
     $this->saveAndPublishNodeForm($edit, 'page');
 
-    $this->assertText('Page Llamas are cool has been created.');
-    $this->assertText('Llamas are cool sent to Lingotek successfully.');
+    $this->assertSession()->pageTextContains('Page Llamas are cool has been created.');
+    $this->assertSession()->pageTextContains('Llamas are cool sent to Lingotek successfully.');
   }
 
   /**
@@ -470,8 +491,8 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
    */
   protected function enableModerationThroughUI($content_type_id, array $allowed_states, $default_state) {
     $this->drupalGet('admin/structure/types/manage/' . $content_type_id . '/moderation');
-    $this->assertFieldByName('enable_moderation_state');
-    $this->assertNoFieldChecked('edit-enable-moderation-state');
+    $this->assertSession()->fieldExists('enable_moderation_state');
+    $this->assertSession()->checkboxNotChecked('edit-enable-moderation-state');
 
     $edit['enable_moderation_state'] = 1;
 
@@ -483,7 +504,7 @@ class LingotekWorkbenchModerationTest extends LingotekTestBase {
 
     $edit['default_moderation_state'] = $default_state;
 
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
   }
 
 }

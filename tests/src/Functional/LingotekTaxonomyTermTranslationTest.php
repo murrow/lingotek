@@ -22,7 +22,7 @@ class LingotekTaxonomyTermTranslationTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'taxonomy'];
+  protected static $modules = ['block', 'taxonomy'];
 
   /**
    * Vocabulary for testing.
@@ -91,8 +91,9 @@ class LingotekTaxonomyTermTranslationTest extends LingotekTestBase {
     $edit['name[0][value]'] = 'Llamas are cool';
     $edit['description[0][value]'] = 'Llamas are very cool';
     $edit['langcode[0][value]'] = 'en';
+    $this->drupalGet("admin/structure/taxonomy/manage/$bundle/add");
 
-    $this->drupalPostForm("admin/structure/taxonomy/manage/$bundle/add", $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
 
     $this->term = Term::load(1);
 
@@ -100,7 +101,7 @@ class LingotekTaxonomyTermTranslationTest extends LingotekTestBase {
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 2);
     $this->assertTrue(isset($data['name'][0]['value']));
-    $this->assertEqual(1, count($data['description'][0]));
+    $this->assertEquals(1, count($data['description'][0]));
     $this->assertTrue(isset($data['description'][0]['value']));
 
     // Check that the translate tab is in the node.
@@ -110,24 +111,24 @@ class LingotekTaxonomyTermTranslationTest extends LingotekTestBase {
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for taxonomy_term Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for taxonomy_term Llamas are cool is complete.');
 
     // Request translation.
     $this->clickLink('Request translation');
-    $this->assertText("Locale 'es_ES' was added as a translation target for taxonomy_term Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_ES' was added as a translation target for taxonomy_term Llamas are cool.");
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_ES translation for taxonomy_term Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_ES translation for taxonomy_term Llamas are cool is ready for download.');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of taxonomy_term Llamas are cool into es_ES has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of taxonomy_term Llamas are cool into es_ES has been downloaded.');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
   }
 
   /**
@@ -170,7 +171,7 @@ class LingotekTaxonomyTermTranslationTest extends LingotekTestBase {
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 2);
     $this->assertTrue(isset($data['name'][0]['value']));
-    $this->assertEqual(1, count($data['description'][0]));
+    $this->assertEquals(1, count($data['description'][0]));
     $this->assertTrue(isset($data['description'][0]['value']));
 
     // Check that the translate tab is in the node.
@@ -180,24 +181,24 @@ class LingotekTaxonomyTermTranslationTest extends LingotekTestBase {
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for taxonomy_term Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for taxonomy_term Llamas are cool is complete.');
 
     // Request translation.
     $this->clickLink('Request translation');
-    $this->assertText("Locale 'es_ES' was added as a translation target for taxonomy_term Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_ES' was added as a translation target for taxonomy_term Llamas are cool.");
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_ES translation for taxonomy_term Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_ES translation for taxonomy_term Llamas are cool is ready for download.');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of taxonomy_term Llamas are cool into es_ES has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of taxonomy_term Llamas are cool into es_ES has been downloaded.');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
   }
 
   /**
@@ -237,36 +238,36 @@ class LingotekTaxonomyTermTranslationTest extends LingotekTestBase {
     // The document should not have been automatically uploaded, so let's upload it.
     $this->clickLink('Upload');
     $this->checkForMetaRefresh();
-    $this->assertText('Uploaded 1 document to Lingotek.');
+    $this->assertSession()->pageTextContains('Uploaded 1 document to Lingotek.');
 
     // Check that only the configured fields have been uploaded.
     $data = json_decode(\Drupal::state()->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 2);
     $this->assertTrue(isset($data['name'][0]['value']));
-    $this->assertEqual(1, count($data['description'][0]));
+    $this->assertEquals(1, count($data['description'][0]));
     $this->assertTrue(isset($data['description'][0]['value']));
 
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for taxonomy_term Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for taxonomy_term Llamas are cool is complete.');
 
     // Request translation.
     $this->clickLink('Request translation');
-    $this->assertText("Locale 'es_ES' was added as a translation target for taxonomy_term Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_ES' was added as a translation target for taxonomy_term Llamas are cool.");
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_ES translation for taxonomy_term Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_ES translation for taxonomy_term Llamas are cool is ready for download.');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of taxonomy_term Llamas are cool into es_ES has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of taxonomy_term Llamas are cool into es_ES has been downloaded.');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
   }
 
 }

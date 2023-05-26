@@ -30,7 +30,7 @@ class LingotekChangeAccountDefaultsTest extends LingotekTestBase {
 
     // Click on the Community link.
     $this->clickLink(t('Edit defaults'), 0);
-    $this->drupalPostForm(NULL, ['community' => 'test_community2'], t('Save configuration'));
+    $this->submitForm(['community' => 'test_community2'], t('Save configuration'));
 
     $this->assertTableValue('community', 'Test community 2 (test_community2)');
     $this->assertTableValue('workflow', 'Test workflow (test_workflow)');
@@ -39,7 +39,7 @@ class LingotekChangeAccountDefaultsTest extends LingotekTestBase {
 
     // Click on the Project link.
     $this->clickLink(t('Edit defaults'), 1);
-    $this->drupalPostForm(NULL, ['project' => 'test_project2', 'vault' => 'test_vault2'], t('Save configuration'));
+    $this->submitForm(['project' => 'test_project2', 'vault' => 'test_vault2'], t('Save configuration'));
 
     $this->assertTableValue('community', 'Test community 2 (test_community2)');
     $this->assertTableValue('workflow', 'Test workflow (test_workflow)');

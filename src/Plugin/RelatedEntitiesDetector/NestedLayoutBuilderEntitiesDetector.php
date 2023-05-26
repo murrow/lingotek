@@ -167,7 +167,7 @@ class NestedLayoutBuilderEntitiesDetector extends PluginBase implements RelatedE
   private function prepareBlockContentIds(array $blockContentRevisionIds) {
     /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $blockContentStorage */
     $blockContentStorage = $this->entityTypeManager->getStorage('block_content');
-    $ids = $blockContentStorage->getQuery()->condition($blockContentStorage->getEntityType()->getKey('revision'), $blockContentRevisionIds, 'IN')->execute();
+    $ids = $blockContentStorage->getQuery()->accessCheck(FALSE)->condition($blockContentStorage->getEntityType()->getKey('revision'), $blockContentRevisionIds, 'IN')->execute();
     return $ids;
   }
 

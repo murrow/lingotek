@@ -24,7 +24,7 @@ class LingotekTaxonomyTermTranslationDownloadStatusTest extends LingotekTestBase
    *
    * @var array
    */
-  public static $modules = ['block', 'node', 'taxonomy'];
+  protected static $modules = ['block', 'node', 'taxonomy'];
 
   /**
    * Vocabulary for testing.
@@ -98,8 +98,8 @@ class LingotekTaxonomyTermTranslationDownloadStatusTest extends LingotekTestBase
     $this->createAndDownloadATaxonomyTermTranslation(self::PUBLISHED);
 
     // Ensure that there is one and only one unpublished content.
-    $this->assertText('Not published');
-    $this->assertUniqueText('Not published');
+    $this->assertSession()->pageTextContains('Not published');
+    $this->assertSession()->pageTextContainsOnce('Not published');
   }
 
   /**
@@ -120,8 +120,8 @@ class LingotekTaxonomyTermTranslationDownloadStatusTest extends LingotekTestBase
     $this->createAndDownloadATaxonomyTermTranslation(self::UNPUBLISHED);
 
     // Ensure that there is one and only one published content.
-    $this->assertText('Published');
-    $this->assertUniqueText('Published');
+    $this->assertSession()->pageTextContains('Published');
+    $this->assertSession()->pageTextContainsOnce('Published');
   }
 
   /**
@@ -142,8 +142,10 @@ class LingotekTaxonomyTermTranslationDownloadStatusTest extends LingotekTestBase
     $this->createAndDownloadATaxonomyTermTranslation(self::PUBLISHED);
 
     // Ensure that there is more than one published content.
-    $this->assertNoText('Not published');
-    $this->assertNoUniqueText('Published');
+    $this->assertSession()->pageTextNotContains('Not published');
+    $page_text = $this->getSession()->getPage()->getText();
+    $nr_found = substr_count($page_text, 'Published');
+    $this->assertGreaterThan(1, $nr_found, "'Published' found more than once on the page");
   }
 
   /**
@@ -164,8 +166,10 @@ class LingotekTaxonomyTermTranslationDownloadStatusTest extends LingotekTestBase
     $this->createAndDownloadATaxonomyTermTranslation(self::UNPUBLISHED);
 
     // Ensure that there is more than one unpublished content.
-    $this->assertNoText('Published');
-    $this->assertNoUniqueText('Not published');
+    $this->assertSession()->pageTextNotContains('Published');
+    $page_text = $this->getSession()->getPage()->getText();
+    $nr_found = substr_count($page_text, 'Not published');
+    $this->assertGreaterThan(1, $nr_found, "'Not published' found more than once on the page");
   }
 
   /**
@@ -186,8 +190,9 @@ class LingotekTaxonomyTermTranslationDownloadStatusTest extends LingotekTestBase
     else {
       $edit['status[value]'] = FALSE;
     }
+    $this->drupalGet("admin/structure/taxonomy/manage/$bundle/add");
 
-    $this->drupalPostForm("admin/structure/taxonomy/manage/$bundle/add", $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
 
     $this->term = Term::load(1);
 
@@ -196,14 +201,14 @@ class LingotekTaxonomyTermTranslationDownloadStatusTest extends LingotekTestBase
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 2);
     $this->assertTrue(isset($data['name'][0]['value']));
-    $this->assertEqual(1, count($data['description'][0]));
+    $this->assertEquals(1, count($data['description'][0]));
     $this->assertTrue(isset($data['description'][0]['value']));
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('automatic', $used_profile, 'The automatic profile was used.');
+    $this->assertSame('automatic', $used_profile, 'The automatic profile was used.');
 
     // Check that the translate tab is in the term.
     $this->drupalGet('taxonomy/term/1');
@@ -212,27 +217,27 @@ class LingotekTaxonomyTermTranslationDownloadStatusTest extends LingotekTestBase
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for taxonomy_term Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for taxonomy_term Llamas are cool is complete.');
 
     // Request translation.
     $this->clickLink('Request translation');
-    $this->assertText("Locale 'es_MX' was added as a translation target for taxonomy_term Llamas are cool.");
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSession()->pageTextContains("Locale 'es_MX' was added as a translation target for taxonomy_term Llamas are cool.");
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.added_target_locale'));
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.checked_target_locale'));
-    $this->assertText('The es_MX translation for taxonomy_term Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_MX translation for taxonomy_term Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
     $this->assertLingotekWorkbenchLink('es_MX', 'dummy-document-hash-id', 'Edit in Ray Enterprise Workbench');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of taxonomy_term Llamas are cool into es_MX has been downloaded.');
-    $this->assertIdentical('es_MX', \Drupal::state()
+    $this->assertSession()->pageTextContains('The translation of taxonomy_term Llamas are cool into es_MX has been downloaded.');
+    $this->assertSame('es_MX', \Drupal::state()
       ->get('lingotek.downloaded_locale'));
   }
 

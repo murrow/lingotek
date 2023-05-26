@@ -48,6 +48,13 @@ class CheckTranslationsTest extends UnitTestCase {
   protected $entityTypeBundleInfo;
 
   /**
+   * The mocked language manager.
+   *
+   * @var \Drupal\Core\Language\LanguageManagerInterface|\PHPUnit\Framework\MockObject\MockObject
+   */
+  protected $languageManager;
+
+  /**
    * The mocked Lingotek configuration service.
    *
    * @var \Drupal\lingotek\LingotekConfigurationServiceInterface|\PHPUnit\Framework\MockObject\MockObject

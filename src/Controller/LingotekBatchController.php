@@ -41,7 +41,7 @@ class LingotekBatchController extends LingotekControllerBase {
       'operations' => $this->getUploadOperations($entity_type, [$entity_id]),
       'error_message' => t('An error happened.'),
       'finished' => 'lingotek_operation_content_upload_finished',
-      'file' => drupal_get_path('module', 'lingotek') . '/lingotek.batch.inc',
+      'file' => \Drupal::service('extension.list.module')->getPath('lingotek') . '/lingotek.batch.inc',
     ];
     $redirect_url = \Drupal::urlGenerator()->generate("entity.$entity_type.content_translation_overview",
       [$entity_type => $entity_id], UrlGeneratorInterface::ABSOLUTE_URL);
@@ -54,7 +54,7 @@ class LingotekBatchController extends LingotekControllerBase {
       'title' => $this->t('Downloading translations from Lingotek'),
       'operations' => $this->getDownloadOperations($entity_type, [$entity_id], $locales),
       'finished' => 'lingotek_operation_content_download_finished',
-      'file' => drupal_get_path('module', 'lingotek') . '/lingotek.batch.inc',
+      'file' => \Drupal::service('extension.list.module')->getPath('lingotek') . '/lingotek.batch.inc',
     ];
     $entity = \Drupal::entityTypeManager()->getStorage($entity_type)->load($entity_id);
     $redirect_url = \Drupal::urlGenerator()->generate("entity.$entity_type.content_translation_overview",

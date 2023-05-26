@@ -14,7 +14,7 @@ class LingotekContentTypeBulkLocaleTranslationTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['node', 'comment'];
+  protected static $modules = ['node', 'comment'];
 
   /**
    * {@inheritdoc}
@@ -63,8 +63,8 @@ class LingotekContentTypeBulkLocaleTranslationTest extends LingotekTestBase {
     $assert_session->linkByHrefNotExists($basepath . '/admin/lingotek/config/request/node_type/article/es_AR?destination=' . $basepath . '/admin/lingotek/config/manage');
 
     $this->clickLink('EN');
-    $this->assertText(t('Article uploaded successfully'));
-    $this->assertIdentical('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
+    $this->assertSession()->pageTextContains(t('Article uploaded successfully'));
+    $this->assertSame('en_US', \Drupal::state()->get('lingotek.uploaded_locale'));
 
     // There is a link for checking status.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_upload/node_type/article?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -72,14 +72,14 @@ class LingotekContentTypeBulkLocaleTranslationTest extends LingotekTestBase {
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/node_type/article/es_ES?destination=' . $basepath . '/admin/lingotek/config/manage');
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/node_type/article/es_AR?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('EN');
-    $this->assertText('Article status checked successfully');
+    $this->assertSession()->pageTextContains('Article status checked successfully');
 
     // Request the German (AT) translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/node_type/article/de_AT?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('DE-AT');
-    $this->assertText("Translation to de_AT requested successfully");
+    $this->assertSession()->pageTextContains("Translation to de_AT requested successfully");
     // Check that the requested locale is the right one.
-    $this->assertIdentical('de_AT', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSame('de_AT', \Drupal::state()->get('lingotek.added_target_locale'));
 
     \Drupal::state()->resetCache();
 
@@ -87,31 +87,31 @@ class LingotekContentTypeBulkLocaleTranslationTest extends LingotekTestBase {
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/node_type/article/es_ES?destination=' . $basepath . '/admin/lingotek/config/manage');
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/node_type/article/es_AR?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertText("Translation to es_AR requested successfully");
+    $this->assertSession()->pageTextContains("Translation to es_AR requested successfully");
     // Check that the requested locale is the right one.
-    $this->assertIdentical('es_AR', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSame('es_AR', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_download/node_type/article/es_AR?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertIdentical('es_AR', \Drupal::state()->get('lingotek.checked_target_locale'));
-    $this->assertText("Translation to es_AR status checked successfully");
+    $this->assertSame('es_AR', \Drupal::state()->get('lingotek.checked_target_locale'));
+    $this->assertSession()->pageTextContains("Translation to es_AR status checked successfully");
 
     // Download the Spanish translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/download/node_type/article/es_AR?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('ES');
-    $this->assertText('Translation to es_AR downloaded successfully');
-    $this->assertIdentical('es_AR', \Drupal::state()->get('lingotek.downloaded_locale'));
+    $this->assertSession()->pageTextContains('Translation to es_AR downloaded successfully');
+    $this->assertSame('es_AR', \Drupal::state()->get('lingotek.downloaded_locale'));
 
     // Now the link is to the workbench, and it opens in a new tab.
     $this->assertLingotekWorkbenchLink('es_AR', 'dummy-document-hash-id', 'ES');
 
     // Check that the order of target languages is always alphabetical.
     $target_links = $this->xpath("//a[contains(@class,'language-icon')]");
-    $this->assertEqual(count($target_links), 3, 'The three languages appear as targets');
-    $this->assertEqual('DE-AT', $target_links[0]->getHtml(), 'DE-AT is the first language');
-    $this->assertEqual('ES', $target_links[1]->getHtml(), 'ES is the second language');
-    $this->assertEqual('ES-ES', $target_links[2]->getHtml(), 'ES-ES is the third language');
+    $this->assertEquals(count($target_links), 3, 'The three languages appear as targets');
+    $this->assertEquals('DE-AT', $target_links[0]->getHtml(), 'DE-AT is the first language');
+    $this->assertEquals('ES', $target_links[1]->getHtml(), 'ES is the second language');
+    $this->assertEquals('ES-ES', $target_links[2]->getHtml(), 'ES-ES is the third language');
   }
 
   /**
@@ -129,7 +129,7 @@ class LingotekContentTypeBulkLocaleTranslationTest extends LingotekTestBase {
 
     // Upload it
     $this->clickLink('EN');
-    $this->assertText(t('Article uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('Article uploaded successfully'));
 
     // There is a link for checking status.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/check_upload/node_type/article?destination=' . $basepath . '/admin/lingotek/config/manage');
@@ -139,7 +139,7 @@ class LingotekContentTypeBulkLocaleTranslationTest extends LingotekTestBase {
     // Request the German (AT) translation.
     $assert_session->linkByHrefExists($basepath . '/admin/lingotek/config/request/node_type/article/de_AT?destination=' . $basepath . '/admin/lingotek/config/manage');
     $this->clickLink('DE-AT');
-    $this->assertText("Translation to de_AT requested successfully");
+    $this->assertSession()->pageTextContains("Translation to de_AT requested successfully");
 
     // Check that the source status has been updated.
     $assert_session->linkByHrefNotExists($basepath . '/admin/lingotek/config/check_upload/node_type/article?destination=' . $basepath . '/admin/lingotek/config/manage');

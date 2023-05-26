@@ -99,7 +99,7 @@ class NestedLayoutBuilderEntitiesDetectorTest extends UnitTestCase {
       ->method('getLabel')
       ->willReturn('Entity');
 
-    $blockManager = $this->getMockBuilder(BlockManager::class)->disableOriginalConstructor()->getMock();
+    $blockManager = $this->createMock(BlockManager::class);
     $blockManager->expects($this->any())
       ->method('getDefinition')
       ->with('inline_block')

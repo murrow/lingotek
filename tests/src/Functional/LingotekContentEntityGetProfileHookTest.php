@@ -20,7 +20,7 @@ class LingotekContentEntityGetProfileHookTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'comment', 'node'];
+  protected static $modules = ['block', 'comment', 'node'];
 
   /**
    * @var \Drupal\node\NodeInterface
@@ -140,7 +140,7 @@ class LingotekContentEntityGetProfileHookTest extends LingotekTestBase {
     $edit = [];
     $edit['subject[0][value]'] = 'Group 1 test';
     $edit['comment_body[0][value]'] = 'Group 1 test body';
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
 
     // Check that the configured fields have been uploaded, but also the one
     // added via the hook.
@@ -161,7 +161,7 @@ class LingotekContentEntityGetProfileHookTest extends LingotekTestBase {
     $edit = [];
     $edit['subject[0][value]'] = 'Group 2 test';
     $edit['comment_body[0][value]'] = 'Group 2 test body';
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
 
     // Check that the configured fields have been uploaded, but also the one
     // added via the hook.
@@ -186,7 +186,7 @@ class LingotekContentEntityGetProfileHookTest extends LingotekTestBase {
     $edit = [];
     $edit['subject[0][value]'] = 'First test';
     $edit['comment_body[0][value]'] = 'First test body';
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
 
     $this->saveLingotekContentTranslationSettings([
       'node' => [
@@ -216,7 +216,7 @@ class LingotekContentEntityGetProfileHookTest extends LingotekTestBase {
     $edit = [];
     $edit['subject[0][value]'] = 'Second test';
     $edit['comment_body[0][value]'] = 'Second test body';
-    $this->drupalPostForm(NULL, $edit, 'Save');
+    $this->submitForm($edit, 'Save');
 
     $this->goToContentBulkManagementForm('comment');
   }

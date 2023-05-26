@@ -25,7 +25,7 @@ class LingotekNodeNotificationCallbackQueueWorkerTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'node'];
+  protected static $modules = ['block', 'node'];
 
   /**
    * @var \Drupal\node\NodeInterface
@@ -91,7 +91,7 @@ class LingotekNodeNotificationCallbackQueueWorkerTest extends LingotekTestBase {
     $content_translation_service = \Drupal::service('lingotek.content_translation');
 
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $content_translation_service->getSourceStatus($node));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $content_translation_service->getSourceStatus($node));
 
     $this->goToContentBulkManagementForm();
 
@@ -114,17 +114,17 @@ class LingotekNodeNotificationCallbackQueueWorkerTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
-    $this->assertIdentical(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
+    dump($request);
+    $this->assertSame(['es'], $response['result']['request_translations'], 'Spanish language has been requested after notification automatically.');
 
     $this->goToContentBulkManagementForm();
 
     $node = $this->resetStorageCachesAndReloadNode();
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($node));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $content_translation_service->getSourceStatus($node));
     // Assert the target is pending.
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $content_translation_service->getTargetStatus($node, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $content_translation_service->getTargetStatus($node, 'es'));
 
     $this->goToContentBulkManagementForm();
 
@@ -150,7 +150,7 @@ class LingotekNodeNotificationCallbackQueueWorkerTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
     $this->assertTrue($response['result']['download_queued'], 'Spanish language has been queued after notification automatically.');
 
     $this->goToContentBulkManagementForm();
@@ -158,7 +158,7 @@ class LingotekNodeNotificationCallbackQueueWorkerTest extends LingotekTestBase {
     $node = $this->resetStorageCachesAndReloadNode();
 
     // Assert the target is ready, but was not downloaded.
-    $this->assertIdentical(Lingotek::STATUS_READY, $content_translation_service->getTargetStatus($node, 'es'));
+    $this->assertSame(Lingotek::STATUS_READY, $content_translation_service->getTargetStatus($node, 'es'));
 
     $this->goToContentBulkManagementForm();
     $this->assertTargetStatus('ES', Lingotek::STATUS_READY);
@@ -189,7 +189,7 @@ class LingotekNodeNotificationCallbackQueueWorkerTest extends LingotekTestBase {
 
     // Upload the node.
     $this->clickLink('EN');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request languages.
     $languages = [
@@ -201,7 +201,7 @@ class LingotekNodeNotificationCallbackQueueWorkerTest extends LingotekTestBase {
     ];
     foreach ($languages as $langcode => $locale) {
       $this->clickLink($langcode);
-      $this->assertText(new FormattableMarkup("Locale '@locale' was added as a translation target for node Llamas are cool.", ['@locale' => $locale]));
+      $this->assertSession()->pageTextContains(new FormattableMarkup("Locale '@locale' was added as a translation target for node Llamas are cool.", ['@locale' => $locale]));
     }
 
     /** @var \GuzzleHttp\Promise\PromiseInterface[] $requests */
@@ -231,14 +231,14 @@ class LingotekNodeNotificationCallbackQueueWorkerTest extends LingotekTestBase {
               '%status' => $response->getStatusCode(),
               '%body' => (string) $response->getBody(TRUE),
             ]);
-          $this->verbose($message);
+          dump($message);
         }, function ($response) use ($request) {
             $message = new TranslatableMarkup(
               'REJECTED. Got a response with status %status and body: %body', [
                 '%status' => $response->getStatusCode(),
                 '%body' => (string) $response->getBody(TRUE),
               ]);
-            $this->verbose($message);
+            dump($message);
         });
       }
       catch (\Exception $error) {
@@ -254,18 +254,18 @@ class LingotekNodeNotificationCallbackQueueWorkerTest extends LingotekTestBase {
 
     // All the links are ready.
     $current_links = $this->xpath("//a[contains(@class,'language-icon') and contains(@class, 'target-ready')]");
-    $this->assertEqual(count($current_links), count($languages) - $count, new FormattableMarkup('Various languages (@var) are ready.', ['@var' => count($languages) - $count]));
+    $this->assertEquals(count($current_links), count($languages) - $count, new FormattableMarkup('Various languages (@var) are ready.', ['@var' => count($languages) - $count]));
     $this->assertTrue(TRUE, new FormattableMarkup('@count target languages failed, but error where given back so the TMS can retry.', ['@count' => $count]));
-    $this->assertEqual(5, count($current_links), new FormattableMarkup('All languages (@var) are ready.', ['@var' => count($current_links)]));
+    $this->assertEquals(5, count($current_links), new FormattableMarkup('All languages (@var) are ready.', ['@var' => count($current_links)]));
 
     // Run cron.
     $this->container->get('cron')->run();
     $this->goToContentBulkManagementForm();
 
     $current_links = $this->xpath("//a[contains(@class,'language-icon') and contains(@class, 'target-current')]");
-    $this->assertEqual(count($current_links), count($languages) - $count, new FormattableMarkup('Various languages (@var) are current.', ['@var' => count($languages) - $count]));
+    $this->assertEquals(count($current_links), count($languages) - $count, new FormattableMarkup('Various languages (@var) are current.', ['@var' => count($languages) - $count]));
     $this->assertTrue(TRUE, new FormattableMarkup('@count target languages failed, but error where given back so the TMS can retry.', ['@count' => $count]));
-    $this->assertEqual(5, count($current_links), new FormattableMarkup('All languages (@var) are current.', ['@var' => count($current_links)]));
+    $this->assertEquals(5, count($current_links), new FormattableMarkup('All languages (@var) are current.', ['@var' => count($current_links)]));
   }
 
   /**
@@ -324,9 +324,9 @@ class LingotekNodeNotificationCallbackQueueWorkerTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
     $this->assertTrue($response['result']['download_queued'], 'Spanish language has been queued after notification automatically.');
-    $this->assertEqual('Download for target es_ES in document dummy-document-hash-id has been queued.', $response['messages'][0]);
+    $this->assertEquals('Download for target es_ES in document dummy-document-hash-id has been queued.', $response['messages'][0]);
 
     // Go to the bulk node management page.
     $this->goToContentBulkManagementForm();
@@ -364,9 +364,9 @@ class LingotekNodeNotificationCallbackQueueWorkerTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
     $this->assertTrue($response['result']['download_queued'], 'Italian language has been queued after notification automatically.');
-    $this->assertEqual('Download for target it_IT in document dummy-document-hash-id has been queued.', $response['messages'][0]);
+    $this->assertEquals('Download for target it_IT in document dummy-document-hash-id has been queued.', $response['messages'][0]);
 
     $url = Url::fromRoute('lingotek.notify', [], [
       'query' => [
@@ -393,7 +393,7 @@ class LingotekNodeNotificationCallbackQueueWorkerTest extends LingotekTestBase {
         $this->fail('The request fail with an unexpected status code.');
       }
     }
-    $this->verbose(var_export($response, TRUE));
+    dump(var_export($response, TRUE));
 
     // Run cron.
     $this->container->get('cron')->run();
@@ -404,12 +404,12 @@ class LingotekNodeNotificationCallbackQueueWorkerTest extends LingotekTestBase {
 
     // Try to re-download the Italian translation.
     $this->clickLink('IT');
-    $this->assertText('The download for node Llamas are cool failed. Please try again.');
+    $this->assertSession()->pageTextContains('The download for node Llamas are cool failed. Please try again.');
 
     // Check that the Target Status is Error
     $node = Node::load(1);
     $content_translation_service = \Drupal::service('lingotek.content_translation');
-    $this->assertIdentical(Lingotek::STATUS_ERROR, $content_translation_service->getTargetStatus($node, 'it'));
+    $this->assertSame(Lingotek::STATUS_ERROR, $content_translation_service->getTargetStatus($node, 'it'));
   }
 
 }

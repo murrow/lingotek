@@ -41,8 +41,8 @@ class LingotekUpgrade8221RemoveContentCloudSettingsTest extends UpdatePathTestBa
    */
   public function testUpgrade() {
     $this->assertFalse($this->lingotekConfiguration->getPreference('enable_content_cloud'));
-    $this->assertEqual($this->lingotekConfiguration->getPreference('content_cloud_import_format'), 'article');
-    $this->assertEqual($this->lingotekConfiguration->getPreference('content_cloud_import_status'), 0);
+    $this->assertEquals($this->lingotekConfiguration->getPreference('content_cloud_import_format'), 'article');
+    $this->assertEquals($this->lingotekConfiguration->getPreference('content_cloud_import_status'), 0);
 
     $this->runUpdates();
 

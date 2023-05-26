@@ -25,7 +25,7 @@ class LingotekNodeWithBlockfieldTranslationTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'dblog', 'block_content', 'block_field', 'frozenintime'];
+  protected static $modules = ['block', 'node', 'dblog', 'block_content', 'block_field', 'frozenintime'];
 
   /**
    * @var \Drupal\node\NodeInterface
@@ -170,8 +170,8 @@ class LingotekNodeWithBlockfieldTranslationTest extends LingotekTestBase {
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
     $this->saveAndKeepPublishedNodeForm($edit, 1);
 
-    $this->assertText('Current theme overridden title block');
-    $this->assertText('Current theme: stark');
+    $this->assertSession()->pageTextContains('Current theme overridden title block');
+    $this->assertSession()->pageTextContains('Current theme: stark');
 
     // Ensure it has the expected timestamp for updated and upload
     $timestamp = \Drupal::time()->getRequestTime();
@@ -188,10 +188,10 @@ class LingotekNodeWithBlockfieldTranslationTest extends LingotekTestBase {
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
-    $this->assertEqual(1, count($data['field_block'][0]));
-    $this->assertEqual($data['field_block'][0]['label'], 'Current theme overridden title block');
+    $this->assertEquals(1, count($data['field_block'][0]));
+    $this->assertEquals($data['field_block'][0]['label'], 'Current theme overridden title block');
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -200,30 +200,30 @@ class LingotekNodeWithBlockfieldTranslationTest extends LingotekTestBase {
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $link = $this->xpath('//a[normalize-space()="Request translation" and contains(@href,"es_AR")]');
     $link[0]->click();
-    $this->assertText("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_AR translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
     $this->assertLingotekWorkbenchLink('es_AR', 'dummy-document-hash-id', 'Edit in Ray Enterprise Workbench');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Llamas are cool into es_AR has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_AR has been downloaded.');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
-    $this->assertText('Tema actual titulo sobreescrito del bloque');
-    $this->assertText('Current theme: stark');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Tema actual titulo sobreescrito del bloque');
+    $this->assertSession()->pageTextContains('Current theme: stark');
   }
 
   /**
@@ -253,8 +253,8 @@ class LingotekNodeWithBlockfieldTranslationTest extends LingotekTestBase {
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
     $this->saveAndKeepPublishedNodeForm($edit, 1);
 
-    $this->assertText('Custom block title');
-    $this->assertText('Custom block body');
+    $this->assertSession()->pageTextContains('Custom block title');
+    $this->assertSession()->pageTextContains('Custom block body');
 
     $this->node = Node::load(1);
 
@@ -264,11 +264,11 @@ class LingotekNodeWithBlockfieldTranslationTest extends LingotekTestBase {
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
-    $this->assertEqual(2, count($data['field_block'][0]));
-    $this->assertEqual($data['field_block'][0]['label'], 'Custom block title');
-    $this->assertEqual($data['field_block'][0]['rich_text.value'], 'Custom block body');
+    $this->assertEquals(2, count($data['field_block'][0]));
+    $this->assertEquals($data['field_block'][0]['label'], 'Custom block title');
+    $this->assertEquals($data['field_block'][0]['rich_text.value'], 'Custom block body');
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -277,37 +277,37 @@ class LingotekNodeWithBlockfieldTranslationTest extends LingotekTestBase {
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $link = $this->xpath('//a[normalize-space()="Request translation" and contains(@href,"es_AR")]');
     $link[0]->click();
-    $this->assertText("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_AR translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
     $this->assertLingotekWorkbenchLink('es_AR', 'dummy-document-hash-id', 'Edit in Ray Enterprise Workbench');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Llamas are cool into es_AR has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_AR has been downloaded.');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
-    $this->assertText('Título de bloque personalizado');
-    $this->assertText('Cuerpo de bloque personalizado');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Título de bloque personalizado');
+    $this->assertSession()->pageTextContains('Cuerpo de bloque personalizado');
 
     // The original content didn't change.
     $this->drupalGet('node/1');
-    $this->assertText('Llamas are cool');
-    $this->assertText('Llamas are very cool');
-    $this->assertText('Custom block title');
-    $this->assertText('Custom block body');
+    $this->assertSession()->pageTextContains('Llamas are cool');
+    $this->assertSession()->pageTextContains('Llamas are very cool');
+    $this->assertSession()->pageTextContains('Custom block title');
+    $this->assertSession()->pageTextContains('Custom block body');
   }
 
   /**
@@ -321,20 +321,22 @@ class LingotekNodeWithBlockfieldTranslationTest extends LingotekTestBase {
     $edit = [];
     $edit['info[0][value]'] = 'Dogs block';
     $edit['body[0][value]'] = 'Dogs are very cool block';
-    $this->drupalPostForm('block/add/custom_content_block', $edit, t('Save'));
+    $this->drupalGet('block/add/custom_content_block');
+    $this->submitForm($edit, t('Save'));
 
     $dogsBlock = BlockContent::load(1);
 
     $edit = [];
     $edit['info[0][value]'] = 'Cats block';
     $edit['body[0][value]'] = 'Cats are very cool block';
-    $this->drupalPostForm('block/add/custom_content_block', $edit, t('Save'));
+    $this->drupalGet('block/add/custom_content_block');
+    $this->submitForm($edit, t('Save'));
 
     $catsBlock = BlockContent::load(2);
 
     // Create a node.
     $this->drupalGet('node/add/article');
-    $this->drupalPostForm(NULL, [], 'Add another item');
+    $this->submitForm([], 'Add another item');
     $edit = [];
     $edit['title[0][value]'] = 'Llamas are cool';
     $edit['body[0][value]'] = 'Llamas are very cool';
@@ -353,10 +355,10 @@ class LingotekNodeWithBlockfieldTranslationTest extends LingotekTestBase {
     $edit['lingotek_translation_management[lingotek_translation_profile]'] = 'automatic';
     $this->saveAndKeepPublishedNodeForm($edit, 1);
 
-    $this->assertText('Dogs overridden title block');
-    $this->assertText('Dogs are very cool block');
-    $this->assertText('Cats overridden title block');
-    $this->assertText('Cats are very cool block');
+    $this->assertSession()->pageTextContains('Dogs overridden title block');
+    $this->assertSession()->pageTextContains('Dogs are very cool block');
+    $this->assertSession()->pageTextContains('Cats overridden title block');
+    $this->assertSession()->pageTextContains('Cats are very cool block');
 
     $this->node = Node::load(1);
 
@@ -366,23 +368,23 @@ class LingotekNodeWithBlockfieldTranslationTest extends LingotekTestBase {
       ->get('lingotek.uploaded_content', '[]'), TRUE);
     $this->assertUploadedDataFieldCount($data, 3);
     $this->assertTrue(isset($data['title'][0]['value']));
-    $this->assertEqual(1, count($data['body'][0]));
+    $this->assertEquals(1, count($data['body'][0]));
     $this->assertTrue(isset($data['body'][0]['value']));
-    $this->assertEqual(2, count($data['field_block']));
-    $this->assertEqual(3, count($data['field_block'][0]));
-    $this->assertEqual(3, count($data['field_block'][1]));
-    $this->assertEqual($data['field_block'][0]['label'], 'Dogs overridden title block');
-    $this->assertEqual($data['field_block'][0]['info'], '');
+    $this->assertEquals(2, count($data['field_block']));
+    $this->assertEquals(3, count($data['field_block'][0]));
+    $this->assertEquals(3, count($data['field_block'][1]));
+    $this->assertEquals($data['field_block'][0]['label'], 'Dogs overridden title block');
+    $this->assertEquals($data['field_block'][0]['info'], '');
     $this->assertTrue(isset($data['field_block'][0]['entity']));
-    $this->assertEqual($data['field_block'][0]['entity']['body'][0]['value'], 'Dogs are very cool block');
-    $this->assertEqual($data['field_block'][0]['entity']['_lingotek_metadata']['_entity_type_id'], 'block_content');
-    $this->assertEqual($data['field_block'][0]['entity']['_lingotek_metadata']['_entity_id'], '1');
-    $this->assertEqual($data['field_block'][1]['label'], 'Cats overridden title block');
-    $this->assertEqual($data['field_block'][1]['info'], '');
+    $this->assertEquals($data['field_block'][0]['entity']['body'][0]['value'], 'Dogs are very cool block');
+    $this->assertEquals($data['field_block'][0]['entity']['_lingotek_metadata']['_entity_type_id'], 'block_content');
+    $this->assertEquals($data['field_block'][0]['entity']['_lingotek_metadata']['_entity_id'], '1');
+    $this->assertEquals($data['field_block'][1]['label'], 'Cats overridden title block');
+    $this->assertEquals($data['field_block'][1]['info'], '');
     $this->assertTrue(isset($data['field_block'][1]['entity']));
-    $this->assertEqual($data['field_block'][1]['entity']['body'][0]['value'], 'Cats are very cool block');
-    $this->assertEqual($data['field_block'][1]['entity']['_lingotek_metadata']['_entity_type_id'], 'block_content');
-    $this->assertEqual($data['field_block'][1]['entity']['_lingotek_metadata']['_entity_id'], '2');
+    $this->assertEquals($data['field_block'][1]['entity']['body'][0]['value'], 'Cats are very cool block');
+    $this->assertEquals($data['field_block'][1]['entity']['_lingotek_metadata']['_entity_type_id'], 'block_content');
+    $this->assertEquals($data['field_block'][1]['entity']['_lingotek_metadata']['_entity_id'], '2');
 
     // Check that the translate tab is in the node.
     $this->drupalGet('node/1');
@@ -391,32 +393,32 @@ class LingotekNodeWithBlockfieldTranslationTest extends LingotekTestBase {
     // The document should have been automatically uploaded, so let's check
     // the upload status.
     $this->clickLink('Check Upload Status');
-    $this->assertText('The import for node Llamas are cool is complete.');
+    $this->assertSession()->pageTextContains('The import for node Llamas are cool is complete.');
 
     // Request translation.
     $link = $this->xpath('//a[normalize-space()="Request translation" and contains(@href,"es_AR")]');
     $link[0]->click();
-    $this->assertText("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
+    $this->assertSession()->pageTextContains("Locale 'es_AR' was added as a translation target for node Llamas are cool.");
 
     // Check translation status.
     $this->clickLink('Check translation status');
-    $this->assertText('The es_AR translation for node Llamas are cool is ready for download.');
+    $this->assertSession()->pageTextContains('The es_AR translation for node Llamas are cool is ready for download.');
 
     // Check that the Edit link points to the workbench and it is opened in a new tab.
     $this->assertLingotekWorkbenchLink('es_AR', 'dummy-document-hash-id', 'Edit in Ray Enterprise Workbench');
 
     // Download translation.
     $this->clickLink('Download completed translation');
-    $this->assertText('The translation of node Llamas are cool into es_AR has been downloaded.');
+    $this->assertSession()->pageTextContains('The translation of node Llamas are cool into es_AR has been downloaded.');
 
     // The content is translated and published.
     $this->clickLink('Las llamas son chulas');
-    $this->assertText('Las llamas son chulas');
-    $this->assertText('Las llamas son muy chulas');
-    $this->assertText('Bloque sobreescrito con título Perros');
-    $this->assertText('Bloque Los perros son muy chulos');
-    $this->assertText('Bloque sobreescrito con título Gatos');
-    $this->assertText('Bloque Los gatos son muy chulos');
+    $this->assertSession()->pageTextContains('Las llamas son chulas');
+    $this->assertSession()->pageTextContains('Las llamas son muy chulas');
+    $this->assertSession()->pageTextContains('Bloque sobreescrito con título Perros');
+    $this->assertSession()->pageTextContains('Bloque Los perros son muy chulos');
+    $this->assertSession()->pageTextContains('Bloque sobreescrito con título Gatos');
+    $this->assertSession()->pageTextContains('Bloque Los gatos son muy chulos');
   }
 
 }

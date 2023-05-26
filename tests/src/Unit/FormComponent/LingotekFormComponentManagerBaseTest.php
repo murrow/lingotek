@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\lingotek\Unit\FormComponent;
 
+use Prophecy\PhpUnit\ProphecyTrait;
 use Drupal\Component\Plugin\Discovery\DiscoveryInterface;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -20,6 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class LingotekFormComponentManagerBaseTest extends UnitTestCase {
 
+  use ProphecyTrait;
   /**
    * The form component manager under test.
    *

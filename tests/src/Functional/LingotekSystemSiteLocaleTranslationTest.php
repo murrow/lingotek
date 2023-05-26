@@ -16,7 +16,7 @@ class LingotekSystemSiteLocaleTranslationTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'node', 'image', 'comment'];
+  protected static $modules = ['block', 'node', 'image', 'comment'];
 
   /**
    * @var \Drupal\node\NodeInterface
@@ -58,39 +58,39 @@ class LingotekSystemSiteLocaleTranslationTest extends LingotekTestBase {
     $this->clickLink(t('Translate'), 2);
 
     $this->clickLink(t('Upload'));
-    $this->assertText(t('System information uploaded successfully'));
+    $this->assertSession()->pageTextContains(t('System information uploaded successfully'));
 
     // Check that only the translatable fields have been uploaded.
     $data = json_decode(\Drupal::state()
       ->get('lingotek.uploaded_content', '[]'), TRUE);
-    $this->assertEqual(1, count($data));
+    $this->assertEquals(1, count($data));
     $this->assertTrue(array_key_exists('system.site', $data));
-    $this->assertEqual(2, count($data['system.site']));
+    $this->assertEquals(2, count($data['system.site']));
     $this->assertTrue(array_key_exists('name', $data['system.site']));
     $this->assertTrue(array_key_exists('slogan', $data['system.site']));
 
     // Check that the url used was the right one.
     $uploaded_url = \Drupal::state()->get('lingotek.uploaded_url');
-    $this->assertIdentical(NULL, $uploaded_url, 'There is not URL.');
+    $this->assertSame(NULL, $uploaded_url, 'There is not URL.');
     // Check that the profile used was the right one.
     $used_profile = \Drupal::state()->get('lingotek.used_profile');
-    $this->assertIdentical('manual', $used_profile, 'The manual profile was used.');
+    $this->assertSame('manual', $used_profile, 'The manual profile was used.');
 
     $this->clickLink(t('Check upload status'));
-    $this->assertText(t('System information status checked successfully'));
+    $this->assertSession()->pageTextContains(t('System information status checked successfully'));
 
     // Request translation.
     $link = $this->xpath('//a[normalize-space()="Request translation" and contains(@href,"es_AR")]');
     $link[0]->click();
-    $this->assertText(t('Translation to es_AR requested successfully'));
-    $this->assertIdentical('es_AR', \Drupal::state()
+    $this->assertSession()->pageTextContains(t('Translation to es_AR requested successfully'));
+    $this->assertSame('es_AR', \Drupal::state()
       ->get('lingotek.added_target_locale'));
 
     $this->clickLink(t('Check Download'));
-    $this->assertText(t('Translation to es_AR checked successfully'));
+    $this->assertSession()->pageTextContains(t('Translation to es_AR checked successfully'));
 
     $this->clickLink('Download');
-    $this->assertText(t('Translation to es_AR downloaded successfully'));
+    $this->assertSession()->pageTextContains(t('Translation to es_AR downloaded successfully'));
 
     // Check that the edit link is there.
     $basepath = \Drupal::request()->getBasePath();

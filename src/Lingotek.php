@@ -339,7 +339,7 @@ class Lingotek implements LingotekInterface {
 
     $statusCode = $response->getStatusCode();
     if ($statusCode == Response::HTTP_ACCEPTED) {
-      $responseBody = Json::decode($response->getBody(), TRUE);
+      $responseBody = Json::decode($response->getBody());
       if (!empty($responseBody) && !empty($responseBody['properties']['id'])) {
         $process_id = $responseBody['properties']['process_id'];
         return $responseBody['properties']['id'];
@@ -462,7 +462,7 @@ class Lingotek implements LingotekInterface {
     $response = $this->api->patchDocument($doc_id, $args);
     $statusCode = $response->getStatusCode();
     if ($statusCode == Response::HTTP_ACCEPTED) {
-      $responseBody = Json::decode($response->getBody(), TRUE);
+      $responseBody = Json::decode($response->getBody());
       if (empty($responseBody)) {
         return TRUE;
       }
@@ -857,7 +857,7 @@ class Lingotek implements LingotekInterface {
         // If an exception didn't happen, the document is succesfully imported.
         // The status value there is related with translation status, so we must
         // ignore it.
-        $bodyResponse = Json::decode($response->getBody(), TRUE);
+        $bodyResponse = Json::decode($response->getBody());
         $progress = $bodyResponse['properties']['progress'];
         $completed = ($progress === self::PROGRESS_COMPLETE) &&
           ($bodyResponse['properties']['status'] === 'COMPLETED');

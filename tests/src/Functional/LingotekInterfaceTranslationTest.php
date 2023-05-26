@@ -18,7 +18,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['block', 'node', 'potx', 'lingotek_interface_translation_test', 'frozenintime'];
+  protected static $modules = ['block', 'node', 'potx', 'lingotek_interface_translation_test', 'frozenintime'];
 
   /**
    * {@inheritdoc}
@@ -55,13 +55,13 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
 
     // Post the form uninstalling the lingotek module.
     $edit = ['uninstall[potx]' => '1'];
-    $this->drupalPostForm(NULL, $edit, 'Uninstall');
+    $this->submitForm($edit, 'Uninstall');
 
     // We get an advice and we can confirm.
     $assert_session->responseContains('The following modules will be completely uninstalled from your site, and <em>all data from these modules will be lost</em>!');
     $assert_session->responseContains('Translation template extractor');
 
-    $this->drupalPostForm(NULL, [], 'Uninstall');
+    $this->submitForm([], 'Uninstall');
 
     $this->goToInterfaceTranslationManagementForm();
 
@@ -75,7 +75,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -165,7 +165,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     $this->assertLingotekInterfaceTranslationRequestTranslationLink($component, 'es_MX');
     $this->clickLink('ES');
     $assert_session->responseContains('Locale \'es_MX\' was added as a translation target for <em class="placeholder">' . $component . '</em>.');
-    $this->assertIdentical('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
+    $this->assertSame('es_MX', \Drupal::state()->get('lingotek.added_target_locale'));
 
     // Check status of the Spanish translation.
     $this->assertLingotekInterfaceTranslationCheckTargetStatusLink($component, 'es_MX');
@@ -206,8 +206,8 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path1 = drupal_get_path('module', 'lingotek_interface_translation_test');
-    $path2 = drupal_get_path('module', 'lingotek_test');
+    $path1 = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
+    $path2 = \Drupal::service('extension.list.module')->getPath('lingotek_test');
     $component1 = $path1;
     $component2 = $path2;
     $indexOfModuleLink1 = 2;
@@ -250,10 +250,10 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     $this->clickLink('ES');
     $assert_session->responseContains('Locale \'es_MX\' was added as a translation target for <em class="placeholder">' . $component1 . '</em>.');
 
-    $this->drupalPostForm(NULL, [], 'Clear Lingotek interface translation metadata');
+    $this->submitForm([], 'Clear Lingotek interface translation metadata');
     $assert_session->responseContains('This will remove the metadata stored about your Lingotek interface translations, so you will need to re-upload those in case you want to translate them.');
 
-    $this->drupalPostForm(NULL, [], 'Clear metadata');
+    $this->submitForm([], 'Clear metadata');
     $assert_session->responseContains('You have cleared the Lingotek metadata for interface translations.');
 
     // Download the Spanish translation.
@@ -283,7 +283,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
 
     $this->assertLingotekInterfaceTranslationRequestTranslationLink($component, 'ca_ES');
@@ -319,7 +319,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -342,7 +342,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekInterfaceTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.interface_translation');
     $source_status = $translation_service->getSourceStatus($component);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The source upload has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The source upload has been marked as error.');
     $this->assertEmpty($translation_service->getLastUploaded($component));
 
     // I can still re-try the upload.
@@ -363,7 +363,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -389,7 +389,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekInterfaceTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.interface_translation');
     $source_status = $translation_service->getSourceStatus($component);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The source upload has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The source upload has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_payment_required_error_in_upload', FALSE);
@@ -406,7 +406,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -432,7 +432,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekInterfaceTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.interface_translation');
     $source_status = $translation_service->getSourceStatus($component);
-    $this->assertEqual(Lingotek::STATUS_ERROR, $source_status, 'The source upload has been marked as error.');
+    $this->assertEquals(Lingotek::STATUS_ERROR, $source_status, 'The source upload has been marked as error.');
 
     // I can still re-try the upload.
     \Drupal::state()->set('lingotek.must_processed_words_limit_error_in_upload', FALSE);
@@ -449,7 +449,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -490,7 +490,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -528,7 +528,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -566,7 +566,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -617,7 +617,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -660,7 +660,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -694,7 +694,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -733,7 +733,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -775,7 +775,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -820,7 +820,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -835,7 +835,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
 
     $this->clickLink('EN', $indexOfModuleLink);
     $assert_session->responseContains('<em class="placeholder">' . $component . '</em> uploaded successfully');
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -856,7 +856,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -871,7 +871,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
 
     $this->clickLink('EN', $indexOfModuleLink);
     $assert_session->responseContains('<em class="placeholder">' . $component . '</em> uploaded successfully');
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -897,7 +897,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -912,7 +912,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
 
     $this->clickLink('EN', $indexOfModuleLink);
     $assert_session->responseContains('<em class="placeholder">' . $component . '</em> uploaded successfully');
-    $this->assertIdentical('en_US', \Drupal::state()
+    $this->assertSame('en_US', \Drupal::state()
       ->get('lingotek.uploaded_locale'));
 
     // I can check current status.
@@ -937,7 +937,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -954,7 +954,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekInterfaceTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.interface_translation');
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $translation_service->getSourceStatus($component));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $translation_service->getSourceStatus($component));
 
     $this->goToInterfaceTranslationManagementForm();
 
@@ -977,21 +977,21 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
-    $this->assertIdentical([], $response['result']['request_translations'], 'No translations have been requested after notification automatically.');
+    dump($request);
+    $this->assertSame([], $response['result']['request_translations'], 'No translations have been requested after notification automatically.');
 
     $this->goToInterfaceTranslationManagementForm();
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $translation_service->getSourceStatus($component));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $translation_service->getSourceStatus($component));
     // Assert the target is ready for requesting.
-    $this->assertIdentical(Lingotek::STATUS_REQUEST, $translation_service->getTargetStatus($component, 'es'));
+    $this->assertSame(Lingotek::STATUS_REQUEST, $translation_service->getTargetStatus($component, 'es'));
 
     // Request Spanish manually.
     $this->clickLink('ES');
     // Assert the target is pending.
     $this->goToInterfaceTranslationManagementForm();
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $translation_service->getTargetStatus($component, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $translation_service->getTargetStatus($component, 'es'));
 
     // Simulate the notification of content successfully translated.
     $url = Url::fromRoute('lingotek.notify', [], [
@@ -1015,18 +1015,18 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
     $this->assertFalse($response['result']['download'], 'No targets have been downloaded after notification automatically.');
 
     $this->goToInterfaceTranslationManagementForm();
-    $this->assertIdentical(Lingotek::STATUS_READY, $translation_service->getTargetStatus($component, 'es'));
+    $this->assertSame(Lingotek::STATUS_READY, $translation_service->getTargetStatus($component, 'es'));
 
     // Download Spanish manually.
     $this->clickLink('ES');
 
     // Assert the target is downloaded.
     $this->goToInterfaceTranslationManagementForm();
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $translation_service->getTargetStatus($component, 'es'));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $translation_service->getTargetStatus($component, 'es'));
   }
 
   /**
@@ -1039,7 +1039,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -1056,7 +1056,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekInterfaceTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.interface_translation');
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $translation_service->getSourceStatus($component));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $translation_service->getSourceStatus($component));
 
     $this->goToInterfaceTranslationManagementForm();
 
@@ -1079,21 +1079,21 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
-    $this->assertIdentical([], $response['result']['request_translations'], 'No translations have been requested after notification automatically.');
+    dump($request);
+    $this->assertSame([], $response['result']['request_translations'], 'No translations have been requested after notification automatically.');
 
     $this->goToInterfaceTranslationManagementForm();
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $translation_service->getSourceStatus($component));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $translation_service->getSourceStatus($component));
     // Assert the target is ready for requesting.
-    $this->assertIdentical(Lingotek::STATUS_REQUEST, $translation_service->getTargetStatus($component, 'es'));
+    $this->assertSame(Lingotek::STATUS_REQUEST, $translation_service->getTargetStatus($component, 'es'));
 
     // Request Spanish manually.
     $this->clickLink('ES');
     // Assert the target is pending.
     $this->goToInterfaceTranslationManagementForm();
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $translation_service->getTargetStatus($component, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $translation_service->getTargetStatus($component, 'es'));
 
     // Simulate the notification of content successfully translated.
     $url = Url::fromRoute('lingotek.notify', [], [
@@ -1116,12 +1116,12 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
     $this->assertEquals($response['messages'][0], "Document $path was archived in Lingotek.");
 
     $this->goToInterfaceTranslationManagementForm();
-    $this->assertIdentical(Lingotek::STATUS_ARCHIVED, $translation_service->getSourceStatus($component));
-    $this->assertIdentical(Lingotek::STATUS_ARCHIVED, $translation_service->getTargetStatus($component, 'es'));
+    $this->assertSame(Lingotek::STATUS_ARCHIVED, $translation_service->getSourceStatus($component));
+    $this->assertSame(Lingotek::STATUS_ARCHIVED, $translation_service->getTargetStatus($component, 'es'));
 
     $link = $this->xpath("//span[@class='language-icon target-archived' and @title='Spanish - This target was archived in Lingotek.' and text()='ES']");
     $this->assertEquals(1, count($link), 'Span exists.');
@@ -1136,7 +1136,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
 
     // In Drupal.org CI the module will be at modules/conrtib/lingotek.
     // We need to generate the path and not hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -1153,7 +1153,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekInterfaceTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.interface_translation');
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $translation_service->getSourceStatus($component));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $translation_service->getSourceStatus($component));
 
     $this->goToInterfaceTranslationManagementForm();
 
@@ -1176,21 +1176,21 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
-    $this->assertIdentical([], $response['result']['request_translations'], 'No translations have been requested after notification automatically.');
+    dump($request);
+    $this->assertSame([], $response['result']['request_translations'], 'No translations have been requested after notification automatically.');
 
     $this->goToInterfaceTranslationManagementForm();
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $translation_service->getSourceStatus($component));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $translation_service->getSourceStatus($component));
     // Assert the target is ready for requesting.
-    $this->assertIdentical(Lingotek::STATUS_REQUEST, $translation_service->getTargetStatus($component, 'es'));
+    $this->assertSame(Lingotek::STATUS_REQUEST, $translation_service->getTargetStatus($component, 'es'));
 
     // Request Spanish manually.
     $this->clickLink('ES');
     // Assert the target is pending.
     $this->goToInterfaceTranslationManagementForm();
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $translation_service->getTargetStatus($component, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $translation_service->getTargetStatus($component, 'es'));
 
     // Simulate the notification of document deleted.
     $url = Url::fromRoute('lingotek.notify', [], [
@@ -1212,12 +1212,12 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
     $this->assertEquals($response['messages'][0], "Document for entity $path deleted by user@example.com in the TMS.");
 
     $this->goToInterfaceTranslationManagementForm();
-    $this->assertIdentical(Lingotek::STATUS_DELETED, $translation_service->getSourceStatus($component));
-    $this->assertIdentical(Lingotek::STATUS_DELETED, $translation_service->getTargetStatus($component, 'es'));
+    $this->assertSame(Lingotek::STATUS_DELETED, $translation_service->getSourceStatus($component));
+    $this->assertSame(Lingotek::STATUS_DELETED, $translation_service->getTargetStatus($component, 'es'));
 
     $link = $this->xpath("//span[@class='language-icon target-deleted' and @title='Spanish - This target was deleted in Lingotek.' and text()='ES']");
     $this->assertEquals(1, count($link), 'Span exists.');
@@ -1233,7 +1233,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     // In Drupal.org CI the module will be at modules/contrib/lingotek.
     // In my local that's modules/lingotek. We need to generate the path and not
     // hardcode it.
-    $path = drupal_get_path('module', 'lingotek_interface_translation_test');
+    $path = \Drupal::service('extension.list.module')->getPath('lingotek_interface_translation_test');
     $component = $path;
     $indexOfModuleLink = 2;
     $assert_session = $this->assertSession();
@@ -1250,7 +1250,7 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
     /** @var \Drupal\lingotek\LingotekInterfaceTranslationServiceInterface $translation_service */
     $translation_service = \Drupal::service('lingotek.interface_translation');
     // Assert the content is importing.
-    $this->assertIdentical(Lingotek::STATUS_IMPORTING, $translation_service->getSourceStatus($component));
+    $this->assertSame(Lingotek::STATUS_IMPORTING, $translation_service->getSourceStatus($component));
 
     $this->goToInterfaceTranslationManagementForm();
 
@@ -1273,21 +1273,21 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
-    $this->assertIdentical([], $response['result']['request_translations'], 'No translations have been requested after notification automatically.');
+    dump($request);
+    $this->assertSame([], $response['result']['request_translations'], 'No translations have been requested after notification automatically.');
 
     $this->goToInterfaceTranslationManagementForm();
 
     // Assert the content is imported.
-    $this->assertIdentical(Lingotek::STATUS_CURRENT, $translation_service->getSourceStatus($component));
+    $this->assertSame(Lingotek::STATUS_CURRENT, $translation_service->getSourceStatus($component));
     // Assert the target is ready for requesting.
-    $this->assertIdentical(Lingotek::STATUS_REQUEST, $translation_service->getTargetStatus($component, 'es'));
+    $this->assertSame(Lingotek::STATUS_REQUEST, $translation_service->getTargetStatus($component, 'es'));
 
     // Request Spanish manually.
     $this->clickLink('ES');
     // Assert the target is pending.
     $this->goToInterfaceTranslationManagementForm();
-    $this->assertIdentical(Lingotek::STATUS_PENDING, $translation_service->getTargetStatus($component, 'es'));
+    $this->assertSame(Lingotek::STATUS_PENDING, $translation_service->getTargetStatus($component, 'es'));
 
     // Simulate the notification of content successfully translated.
     $url = Url::fromRoute('lingotek.notify', [], [
@@ -1310,11 +1310,11 @@ class LingotekInterfaceTranslationTest extends LingotekTestBase {
       'http_errors' => FALSE,
     ]);
     $response = json_decode($request->getBody(), TRUE);
-    $this->verbose($request);
+    dump($request);
     $this->assertEquals($response['messages'][0], "Document $path cancelled in TMS.");
 
     $this->goToInterfaceTranslationManagementForm();
-    $this->assertIdentical(Lingotek::STATUS_CANCELLED, $translation_service->getTargetStatus($component, 'es'));
+    $this->assertSame(Lingotek::STATUS_CANCELLED, $translation_service->getTargetStatus($component, 'es'));
   }
 
 }
