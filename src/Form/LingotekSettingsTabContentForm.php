@@ -298,7 +298,7 @@ class LingotekSettingsTabContentForm extends LingotekConfigFormBase {
     /** @var \Drupal\lingotek\LingotekConfigurationServiceInterface $lingotek_config */
     $lingotek_config = \Drupal::service('lingotek.configuration');
     $enable_bulk_management = $lingotek_config->getPreference('contrib.paragraphs.enable_bulk_management');
-
+    $select = [];
     if (!in_array($entity_id, ['paragraph', 'cohesion_layout']) || $enable_bulk_management) {
       $select = [
         '#type' => 'select',
@@ -368,7 +368,7 @@ class LingotekSettingsTabContentForm extends LingotekConfigFormBase {
           $field_checkboxes[$field_id] = $field_checkbox;
 
           // Display the column translatability configuration widget.
-          \Drupal::moduleHandler()->loadInclude('inc', 'content_translation', 'content_translation.admin');
+          \Drupal::moduleHandler()->loadInclude('content_translation', 'inc', 'content_translation.admin');
           $column_element = content_translation_field_sync_widget($field_definition);
           if ($column_element) {
             $default_properties = $lingotek_config->getDefaultFieldPropertiesLingotekEnabled($entity_id, $bundle_id, $field_id);
