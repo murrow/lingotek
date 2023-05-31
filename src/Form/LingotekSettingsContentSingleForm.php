@@ -291,8 +291,8 @@ class LingotekSettingsContentSingleForm extends LingotekConfigFormBase {
           $field_checkboxes[$field_id] = $field_checkbox;
 
           // Display the column translatability configuration widget.
-          \Drupal::moduleHandler()->loadInclude('inc', 'content_translation', 'content_translation.admin');
-          $column_element = content_translation_field_sync_widget($field_definition);
+          \Drupal::moduleHandler()->loadInclude('content_translation', 'inc', 'content_translation.admin');
+          $column_element = \content_translation_field_sync_widget($field_definition);
           if ($column_element) {
             $default_properties = $lingotek_config->getDefaultFieldPropertiesLingotekEnabled($entity_id, $bundle_id, $field_id);
             $properties_checkbox_choice = $lingotek_config->getFieldPropertiesLingotekEnabled($entity_id, $bundle_id, $field_id);
