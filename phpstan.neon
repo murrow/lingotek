@@ -1,0 +1,5 @@
+parameters:
+    level: 2
+    ignoreErrors:
+      - '#\Drupal calls should be avoided in classes, [a-zA-Z0-9\\_]#'
+#      - "#^Class .* extends @internal class#"

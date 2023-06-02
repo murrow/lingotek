@@ -51,7 +51,7 @@ class LingotekFieldConfigEditForm {
     $field_id = $field->getName();
 
     // Add the option to translate the field with Lingotek
-    if (!$form['translatable']['#disabled']) {
+    if (!empty($form['translatable']) && !$form['translatable']['#disabled']) {
       $form['translatable_for_lingotek'] = [
         '#type' => 'checkbox',
         '#title' => $this->t('Use Lingotek to translate this field'),

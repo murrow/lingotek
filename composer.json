@@ -40,7 +40,19 @@
     }
   },
   "minimum-stability": "dev",
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Drupal\\lingotek\\": "src"
+    }
+  },
   "require-dev": {
+    "drupal/core": "^10.0",
     "drupal/metatag": "*",
     "drupal/paragraphs": "dev-1.x",
     "drupal/pathauto": "dev-1.x",
@@ -56,10 +68,17 @@
     "drupal/layout_builder_at": "dev-2.x",
     "drupal/layout_builder_st": "dev-1.x",
     "drupal/tablefield": "dev-2.x",
-    "drupal/webform": "dev-6.x",
-    "acquia/cohesion": "6.3.*"
+    "drupal/webform": "*",
+    "acquia/cohesion": "*",
+    "phpstan/phpstan-deprecation-rules": "1.1.x-dev",
+    "phpstan/phpstan": "1.11.x-dev"
   },
   "suggest": {
     "drupal/potx": "dev-1.x"
+  },
+  "config": {
+    "allow-plugins": {
+      "cweagans/composer-patches": true
+    }
   }
 }
