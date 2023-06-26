@@ -2,6 +2,7 @@
 
 namespace Drupal\lingotek;
 
+use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -61,7 +62,7 @@ class LingotekContentTranslationEntityRevisionResolver implements ContainerInjec
     if ($entity instanceof RevisionableInterface) {
       $storage = $this->entityTypeManager->getStorage($entity->getEntityTypeId());
       $langcode = $entity->getUntranslated()->language()->getId();
-      if (!($entity instanceof \Drupal\paragraphs\Entity\Paragraph) &&
+      if (!($entity instanceof Paragraph) &&
         $mode === self::RESOLVE_LATEST_TRANSLATION_AFFECTED &&
         $revision_id = $storage->getLatestTranslationAffectedRevisionId($entity->id(), $langcode)) {
         $source_entity = $storage->loadRevision($revision_id);

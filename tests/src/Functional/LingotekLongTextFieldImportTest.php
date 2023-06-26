@@ -19,7 +19,7 @@ class LingotekLongTextFieldImportTest extends LingotekTestBase {
    *
    * @var array
    */
-  public static $modules = ['block', 'node', 'field_ui'];
+  protected static $modules = ['block', 'node', 'field_ui'];
 
   protected function setUp(): void {
     parent::setUp();
